@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+<style>
+  :root {
+    --void: #07070b; --panel: #0d0d14; --edge: #1e1e2a;
+    --volt: #ccf244; --volt-deep: #9dc41c; --lilac: #b5a1ff;
+    --paper: #f4f1e8; --ink: #14130e;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1080px; height: 1080px; overflow: hidden; }
+  body { font-family: "Inter", sans-serif; position: relative; }
+  .display { font-family: "Bricolage Grotesque", sans-serif; }
+  .serif { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+  .mono { font-family: "JetBrains Mono", monospace; }
+
+  .tile { width: 1080px; height: 1080px; position: relative; overflow: hidden; padding: 88px; display: flex; flex-direction: column; justify-content: space-between; }
+  .bg-void  { background: var(--void);  color: #f4f4f5; }
+  .bg-volt  { background: var(--volt);  color: var(--void); }
+  .bg-paper { background: var(--paper); color: var(--ink); }
+
+  .grain { position: absolute; inset: -50%; width: 200%; height: 200%; pointer-events: none; opacity: 0.055; z-index: 50;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  .dots { position: absolute; inset: 0; pointer-events: none; }
+  .bg-void  .dots { background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.07) 1.5px, transparent 0); background-size: 44px 44px; }
+  .bg-volt  .dots { background-image: radial-gradient(circle at 1px 1px, rgba(7,7,11,0.14) 1.5px, transparent 0); background-size: 44px 44px; }
+  .bg-paper .dots { background-image: radial-gradient(circle at 1px 1px, rgba(20,19,14,0.16) 1.5px, transparent 0); background-size: 44px 44px; }
+
+  .glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(150px); pointer-events: none; }
+
+  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 22px; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; display: flex; align-items: center; gap: 18px; }
+  .eyebrow .dash { width: 56px; height: 2px; background: currentColor; opacity: 0.5; }
+  .bg-void .eyebrow { color: var(--volt); }
+  .bg-volt .eyebrow { color: var(--void); opacity: 0.85; }
+  .bg-paper .eyebrow { color: #7c6df2; }
+
+  h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; text-transform: uppercase; letter-spacing: -0.02em; line-height: 0.95; }
+  .accent-volt { color: var(--volt); }
+  .accent-lilac { color: var(--lilac); }
+
+  .footer { position: relative; z-index: 10; display: flex; align-items: center; justify-content: space-between; }
+  .brandrow { display: flex; align-items: center; gap: 20px; }
+  .brandrow .name { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.01em; }
+  .handle { font-family: "JetBrains Mono", monospace; font-size: 22px; font-weight: 700; letter-spacing: 0.14em; opacity: 0.65; }
+  .idx { font-family: "JetBrains Mono", monospace; font-size: 22px; font-weight: 700; opacity: 0.45; }
+
+  .content { position: relative; z-index: 10; }
+
+  ul.checks { list-style: none; display: flex; flex-direction: column; gap: 26px; }
+  ul.checks li { display: flex; align-items: center; gap: 24px; font-size: 34px; font-weight: 700; }
+  .check { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; flex-shrink: 0; }
+
+  .rows { display: flex; flex-direction: column; gap: 18px; }
+  .rowitem { display: flex; align-items: center; justify-content: space-between; border: 2px solid var(--edge); border-radius: 22px; padding: 28px 34px; background: rgba(255,255,255,0.025); }
+  .rowitem .t { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 36px; text-transform: uppercase; letter-spacing: -0.01em; }
+  .chip { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 21px; padding: 10px 20px; border-radius: 999px; }
+
+  .term { border: 2px solid var(--edge); border-radius: 26px; background: #0a0a10; overflow: hidden; box-shadow: 0 40px 90px rgba(0,0,0,0.6); }
+  .term-bar { display: flex; align-items: center; gap: 12px; padding: 22px 28px; border-bottom: 2px solid var(--edge); background: rgba(255,255,255,0.03); }
+  .term-bar .b { width: 18px; height: 18px; border-radius: 50%; }
+  .term-bar .label { margin-left: auto; font-family: "JetBrains Mono", monospace; font-size: 19px; font-weight: 700; letter-spacing: 0.2em; color: #6b6b7a; text-transform: uppercase; }
+  .term-body { padding: 36px; font-family: "JetBrains Mono", monospace; font-size: 27px; line-height: 1.85; }
+
+  .bolt-watermark { position: absolute; right: -120px; bottom: -130px; opacity: 0.07; z-index: 1; }
+</style>
+</head>
+<body>
+<script>
+const BOLT = (fill, size) => `<svg width="${size}" height="${size}" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${fill === 'volt' ? '#ccf244' : '#07070b'}"/><path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="${fill === 'volt' ? '#07070b' : '#ccf244'}"/></svg>`;
+const BOLT_ONLY = (color, size) => `<svg width="${size}" height="${size}" viewBox="0 0 64 64"><path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="${color}"/></svg>`;
+
+const footer = (theme, n) => `
+  <div class="footer">
+    <div class="brandrow">${BOLT(theme === 'volt' ? 'void' : 'volt', 56)}<span class="name">AI Founder Hub</span></div>
+    <span class="handle">@aifounderhub</span>
+    <span class="idx">0${n} / 09</span>
+  </div>`;
+
+const POSTS = {
+  1: { theme: 'volt', html: `
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>EST. 2026 · DUBAI &amp; EVERYWHERE</div>
+      <h1 style="font-size:128px; margin-top:54px;">Learn it.<br/>Build it.<br/>Get paid<br/>for it.</h1>
+      <p class="serif" style="font-size:64px; margin-top:44px; opacity:0.85;">the AI builders community.</p>
+    </div>` },
+  2: { theme: 'void', html: `
+    <div class="glow" style="background: rgba(204,242,68,0.13); top:-150px; left:-150px;"></div>
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>Real talk</div>
+      <h1 style="font-size:104px; margin-top:60px;">You don't need<br/>to learn to code.</h1>
+      <p class="serif accent-volt" style="font-size:96px; margin-top:36px;">You need to learn to ship.</p>
+      <p style="font-size:34px; font-weight:600; color:#a1a1aa; margin-top:56px; max-width:820px; line-height:1.5;">AI writes the code. You bring the idea. We teach the loop in between.</p>
+    </div>` },
+  3: { theme: 'paper', html: `
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>Save this list</div>
+      <h1 style="font-size:80px; margin-top:48px;">What AI can build<br/>for you <span class="serif" style="font-weight:400; text-transform:none; letter-spacing:0; color:#7c6df2;">this month:</span></h1>
+      <ul class="checks" style="margin-top:60px;">
+        <li><span class="check" style="background:var(--ink); color:var(--volt);">✓</span>A booking app for your barbershop</li>
+        <li><span class="check" style="background:var(--ink); color:var(--volt);">✓</span>A client dashboard for your agency</li>
+        <li><span class="check" style="background:var(--ink); color:var(--volt);">✓</span>A quiz maker that grades itself</li>
+        <li><span class="check" style="background:var(--ink); color:var(--volt);">✓</span>Automations that save 10+ hrs a week</li>
+        <li><span class="check" style="background:var(--ink); color:var(--volt);">✓</span>A micro-SaaS with a real paywall</li>
+      </ul>
+    </div>` },
+  4: { theme: 'void', html: `
+    <div class="glow" style="background: rgba(181,161,255,0.12); bottom:-150px; right:-150px;"></div>
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>Live masterclasses</div>
+      <h1 style="font-size:108px; margin-top:48px;">Every Friday.<br/><span class="accent-volt">Free.</span></h1>
+      <div class="rows" style="margin-top:58px;">
+        <div class="rowitem"><span class="t">Claude MasterClass</span><span class="chip" style="background:rgba(204,242,68,0.12); color:var(--volt);">JUN 26</span></div>
+        <div class="rowitem"><span class="t">OpenClaw Agents</span><span class="chip" style="background:rgba(204,242,68,0.12); color:var(--volt);">JUL 03</span></div>
+        <div class="rowitem"><span class="t">Build Apps Using AI</span><span class="chip" style="background:rgba(204,242,68,0.12); color:var(--volt);">JUL 10</span></div>
+        <div class="rowitem"><span class="t">AI Automations</span><span class="chip" style="background:rgba(204,242,68,0.12); color:var(--volt);">JUL 31</span></div>
+      </div>
+    </div>` },
+  5: { theme: 'volt', center: true, html: `
+    <div class="content" style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:52px;">
+      ${BOLT('void', 300)}
+      <div>
+        <h1 style="font-size:96px;">AI Founder Hub</h1>
+        <p class="mono" style="font-size:28px; font-weight:700; letter-spacing:0.42em; margin-top:30px; opacity:0.7;">IDEA → APP → INCOME</p>
+      </div>
+    </div>` },
+  6: { theme: 'void', html: `
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>A conversation that compiles</div>
+      <div class="term" style="margin-top:56px;">
+        <div class="term-bar">
+          <span class="b" style="background:#ff5f57;"></span><span class="b" style="background:#febc2e;"></span><span class="b" style="background:#28c840;"></span>
+          <span class="label">founder-terminal</span>
+        </div>
+        <div class="term-body">
+          <div><span style="color:var(--volt); font-weight:700;">you ▸</span> <span style="color:#f4f4f5;">build a booking app for my barbershop</span></div>
+          <div style="margin-top:14px;"><span style="color:var(--lilac); font-weight:700;">ai ▸</span> <span style="color:#9ca3af;">writing code, wiring payments…</span></div>
+          <div style="margin-top:14px; color:#34d399;">✓ payments live &nbsp;✓ SMS reminders on</div>
+          <div style="margin-top:30px; border:2px solid rgba(204,242,68,0.4); background:rgba(204,242,68,0.08); border-radius:18px; padding:24px 30px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="color:var(--volt); font-weight:700;">deployed → sharpcuts.app</span>
+            <span style="background:var(--volt); color:var(--void); font-weight:700; font-size:21px; padding:8px 18px; border-radius:10px;">LIVE ↗</span>
+          </div>
+        </div>
+      </div>
+      <p style="font-size:33px; font-weight:600; color:#a1a1aa; margin-top:48px; line-height:1.5;">No syntax. No CS degree. Just a conversation.<br/>We run this loop live, every single week.</p>
+    </div>` },
+  7: { theme: 'paper', html: `
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>The AI Builder Bootcamp</div>
+      <h1 style="font-size:84px; margin-top:46px;">One goal.<br/><span class="serif" style="font-weight:400; text-transform:none; letter-spacing:0; color:#7c6df2;">One pathway.</span> One month.</h1>
+      <div style="margin-top:54px; display:flex; flex-direction:column; gap:20px;">
+        ${['Founder Launch', 'Freelance Pro', 'Business Scale-Up', 'Automation Agency'].map((p, i) => `
+          <div style="display:flex; align-items:center; gap:28px; border-bottom:2px solid rgba(20,19,14,0.12); padding-bottom:20px;">
+            <span class="mono" style="font-size:26px; font-weight:700; color:#9dc41c;">0${i + 1}</span>
+            <span class="display" style="font-size:44px; font-weight:800; text-transform:uppercase; letter-spacing:-0.01em;">${p}</span>
+          </div>`).join('')}
+      </div>
+      <p class="mono" style="font-size:24px; font-weight:700; letter-spacing:0.18em; margin-top:44px; color:rgba(20,19,14,0.55);">$249 · 4 WEEKS · LIVE LABS · DEMO DAY</p>
+    </div>` },
+  8: { theme: 'void', html: `
+    <div class="glow" style="background: rgba(204,242,68,0.10); top:-120px; right:-120px;"></div>
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>Mentorship &amp; advisory</div>
+      <h1 style="font-size:96px; margin-top:50px;">Builders,<br/><span class="serif accent-lilac" style="font-weight:400; text-transform:none; letter-spacing:0;">not lecturers.</span></h1>
+      <div style="display:flex; gap:26px; margin-top:60px;">
+        <div style="flex:1; border:2px solid var(--edge); border-radius:26px; padding:38px; background:rgba(255,255,255,0.025);">
+          <div style="width:96px; height:96px; border-radius:24px; background:linear-gradient(135deg, #ccf244, #34d399); color:var(--void); display:flex; align-items:center; justify-content:center; font-family:'Bricolage Grotesque'; font-weight:800; font-size:38px;">AH</div>
+          <p class="display" style="font-size:42px; font-weight:800; margin-top:26px; text-transform:uppercase;">Ahmed</p>
+          <p class="mono" style="font-size:21px; font-weight:700; color:var(--volt); margin-top:10px; letter-spacing:0.1em;">BUSINESS &amp; GROWTH</p>
+        </div>
+        <div style="flex:1; border:2px solid var(--edge); border-radius:26px; padding:38px; background:rgba(255,255,255,0.025);">
+          <div style="width:96px; height:96px; border-radius:24px; background:linear-gradient(135deg, #b5a1ff, #38bdf8); color:var(--void); display:flex; align-items:center; justify-content:center; font-family:'Bricolage Grotesque'; font-weight:800; font-size:38px;">ZA</div>
+          <p class="display" style="font-size:42px; font-weight:800; margin-top:26px; text-transform:uppercase;">Zain</p>
+          <p class="mono" style="font-size:21px; font-weight:700; color:var(--lilac); margin-top:10px; letter-spacing:0.1em;">AI ENGINEERING</p>
+        </div>
+      </div>
+      <p class="mono" style="font-size:23px; font-weight:700; letter-spacing:0.16em; margin-top:46px; color:#71717a;">PRIVATE 1:1 SESSIONS · $299/HR · BOOK ON DEMAND</p>
+    </div>` },
+  9: { theme: 'volt', html: `
+    <div class="content">
+      <div class="eyebrow"><span class="dash"></span>The flagship · Free &amp; live</div>
+      <h1 style="font-size:140px; margin-top:56px;">3 days.<br/>1 working<br/>app.</h1>
+      <div style="display:flex; align-items:center; gap:26px; margin-top:60px;">
+        <span class="chip" style="background:var(--void); color:var(--volt); font-size:30px; padding:18px 34px;">JULY 17-19</span>
+        <span class="chip" style="border:3px solid var(--void); font-size:30px; padding:15px 34px; font-weight:700;">LINK IN BIO ↗</span>
+      </div>
+    </div>` },
+};
+
+const p = Math.min(9, Math.max(1, parseInt(new URLSearchParams(location.search).get('p') || '1', 10)));
+const post = POSTS[p];
+document.body.innerHTML = `
+  <div class="tile bg-${post.theme}" ${post.center ? 'style="justify-content:center; align-items:center;"' : ''}>
+    <div class="dots"></div>
+    <div class="bolt-watermark">${BOLT_ONLY(post.theme === 'volt' ? '#07070b' : (post.theme === 'paper' ? '#14130e' : '#ccf244'), 540)}</div>
+    ${post.html}
+    ${post.center ? '' : footer(post.theme, p)}
+    <div class="grain"></div>
+  </div>`;
+if (post.center) {
+  document.querySelector('.tile').insertAdjacentHTML('beforeend',
+    `<div style="position:absolute; bottom:88px; left:88px; right:88px;">${footer(post.theme, p)}</div>`);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=JetBrains+Mono:wght@700&display=swap" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1600px; height: 400px; background: transparent; overflow: hidden; }
+  .lockup { width: 1600px; height: 400px; display: flex; align-items: center; justify-content: center; gap: 44px; }
+  .text .name { font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-size: 124px; letter-spacing: -0.02em; line-height: 1; }
+  .text .tag { font-family: "JetBrains Mono", monospace; font-weight: 700; font-size: 30px; letter-spacing: 0.42em; margin-top: 22px; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<script>
+const v = new URLSearchParams(location.search).get('v') || 'dark';
+const onDark = v === 'dark'; // lockup for dark backgrounds
+document.body.innerHTML = `
+  <div class="lockup">
+    <svg width="220" height="220" viewBox="0 0 64 64">
+      <rect width="64" height="64" rx="14" fill="#ccf244"/>
+      <path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="#07070b"/>
+    </svg>
+    <div class="text">
+      <div class="name" style="color:${onDark ? '#ffffff' : '#14130e'};">AI Founder Hub</div>
+      <div class="tag" style="color:${onDark ? '#ccf244' : '#9dc41c'};">Idea → App → Income</div>
+    </div>
+  </div>`;
+</script>
+</body>
+</html>
