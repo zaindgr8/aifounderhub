@@ -3,11 +3,154 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>AI Founder Hub</title>
+    <meta name="theme-color" content="#07070b" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://aifounderhub.com/" />
+
+    <title>AI Founder Hub | Learn AI, Build Apps, Get Paid. Free Workshops</title>
+    <meta
+      name="description"
+      content="Join the AI builders community. Free weekly AI masterclasses (Claude, OpenClaw, app building), a goal-based AI bootcamp, and 1:1 mentorship. Virtual and in Dubai."
+    />
+    <meta name="author" content="AI Founder Hub" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AI Founder Hub" />
+    <meta property="og:url" content="https://aifounderhub.com/" />
+    <meta property="og:title" content="AI Founder Hub | Learn It. Build It. Get Paid For It." />
+    <meta
+      property="og:description"
+      content="The AI builders community: free weekly workshops, a goal-based AI bootcamp, and 1:1 mentorship. Start free, grow as far as you want."
+    />
+    <meta property="og:image" content="https://aifounderhub.com/og-cover.jpg" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AI Founder Hub | Learn It. Build It. Get Paid For It." />
+    <meta
+      name="twitter:description"
+      content="Free weekly AI masterclasses, a goal-based AI bootcamp, and 1:1 mentorship. Virtual and in Dubai."
+    />
+    <meta name="twitter:image" content="https://aifounderhub.com/og-cover.jpg" />
+
+    <!-- Fonts: preconnect + non-blocking load -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap"
+    />
+
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ccf244'/%3E%3Cpath d='M35 8 L18 38 H30 L27 56 L46 26 H33 Z' fill='%2307070b'/%3E%3C/svg%3E"
+    />
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Organization",
+            "@id": "https://aifounderhub.com/#org",
+            "name": "AI Founder Hub",
+            "url": "https://aifounderhub.com/",
+            "description": "The community where AI builders are made. Free weekly AI masterclasses, a goal-based AI bootcamp, and 1:1 mentorship.",
+            "email": "support@aifounderhub.com",
+            "location": { "@type": "Place", "address": { "@type": "PostalAddress", "addressLocality": "Dubai", "addressCountry": "AE" } }
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://aifounderhub.com/#site",
+            "url": "https://aifounderhub.com/",
+            "name": "AI Founder Hub",
+            "publisher": { "@id": "https://aifounderhub.com/#org" }
+          },
+          {
+            "@type": "Event",
+            "name": "The 3-Day AI Build Summit",
+            "description": "Free live summit: describe an idea on Day 1 and ship a working app by Day 3 using AI. No coding experience required.",
+            "startDate": "2026-07-17T16:00:00Z",
+            "endDate": "2026-07-19T20:00:00Z",
+            "eventAttendanceMode": "https://schema.org/OnlineEventAttendanceMode",
+            "eventStatus": "https://schema.org/EventScheduled",
+            "location": { "@type": "VirtualLocation", "url": "https://aifounderhub.com/" },
+            "isAccessibleForFree": true,
+            "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/InStock", "url": "https://aifounderhub.com/" },
+            "organizer": { "@id": "https://aifounderhub.com/#org" },
+            "image": "https://aifounderhub.com/og-cover.jpg"
+          },
+          {
+            "@type": "Product",
+            "name": "AI Founder Hub Courses Membership",
+            "description": "All-access monthly subscription: the full AI course library, every masterclass and summit replay, the template and prompt vault, and members-only community channels.",
+            "brand": { "@id": "https://aifounderhub.com/#org" },
+            "offers": {
+              "@type": "Offer",
+              "price": "49.99",
+              "priceCurrency": "USD",
+              "availability": "https://schema.org/InStock",
+              "url": "https://aifounderhub.com/#membership"
+            }
+          },
+          {
+            "@type": "Course",
+            "name": "AI Builder Bootcamp",
+            "description": "A 4-week, goal-based AI bootcamp with four pathways: Founder Launch, Freelance Pro, Business Scale-Up, and Automation Agency. Live labs, 1:1 checkpoints, and a demo day.",
+            "provider": { "@id": "https://aifounderhub.com/#org" },
+            "offers": { "@type": "Offer", "price": "249", "priceCurrency": "USD", "category": "Paid" },
+            "hasCourseInstance": {
+              "@type": "CourseInstance",
+              "courseMode": "Online",
+              "courseWorkload": "PT10H"
+            }
+          },
+          {
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What do I get for free at AI Founder Hub?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Weekly live masterclasses on Claude, OpenClaw, app building and automations, the 3-day flagship build summit, the community itself, and free Dubai build nights."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need coding skills to join the AI bootcamp?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No experience is required. You direct the AI in plain language and it writes the code. The curriculum starts from absolute ground level."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How much does the AI Builder Bootcamp cost?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "The bootcamp costs $249 per program and runs up to 4 weeks. A courses membership is $49.99 per month, and private 1:1 sessions cost $299 per hour."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Are sessions in person or online?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Virtual-first, with regular free and paid in-person sessions in Dubai."
+                }
+              }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
