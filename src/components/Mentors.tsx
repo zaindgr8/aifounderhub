@@ -61,6 +61,12 @@ export function Mentors() {
               <span className="font-serif italic font-normal normal-case text-lilac">not lecturers.</span>
             </h2>
           </Reveal>
+          <Reveal delay={0.13}>
+            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400">
+              Your founders, Ahmed and Zain, personally lead every bootcamp, 1:1 session, and in-person Dubai
+              workshop. The course library is taught by invited industry experts.
+            </p>
+          </Reveal>
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
@@ -184,8 +190,9 @@ export function Mentors() {
                   Dubai, in person 🇦🇪
                 </h3>
                 <p className="mt-1.5 max-w-2xl text-[13px] leading-relaxed text-zinc-400">
-                  We're virtual-first but Dubai-rooted. Free community build nights, paid hands-on intensives, and
-                  founder meetups run regularly across the city. Members get first access to every seat.
+                  We're virtual-first but Dubai-rooted. Build nights and hands-on intensives, delivered by the
+                  founders and invited guest experts, run regularly across the city. Members get first access to
+                  every seat.
                 </p>
               </div>
             </div>

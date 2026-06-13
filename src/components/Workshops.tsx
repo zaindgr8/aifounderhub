@@ -95,8 +95,9 @@ export function Workshops() {
             </Reveal>
             <Reveal delay={0.14}>
               <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400">
-                Live, hands-on, and genuinely free. The live room costs nothing, no card and no catch. Join the
-                community once and your invite to every upcoming workshop lands in your inbox automatically.
+                Live, hands-on, and genuinely free, led by a rotating roster of invited industry experts. The live
+                room costs nothing, no card and no catch. Join the community once and your invite to every upcoming
+                workshop lands in your inbox automatically.
               </p>
             </Reveal>
           </div>

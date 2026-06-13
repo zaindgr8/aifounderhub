@@ -53,8 +53,9 @@ export function Membership() {
 
           <Reveal delay={0.14}>
             <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-300">
-              The live masterclasses stay free, forever. The membership is for builders who want it all
-              now: every course, every replay, every template, the moment you join.
+              Every course is taught by a rotating roster of invited industry experts. The live masterclasses stay
+              free, forever. The membership is for builders who want it all now: every course, every replay, every
+              template, the moment you join.
             </p>
           </Reveal>
 

@@ -214,6 +214,11 @@ export function Pathways() {
               and follow a 4-week build plan with live labs, 1:1 checkpoints, and a demo day at the end.
             </p>
           </Reveal>
+          <Reveal delay={0.19}>
+            <p className="mx-auto mt-3 font-mono text-[11px] font-bold uppercase tracking-wider text-volt/80">
+              Led by founders Ahmed Al Kindi &amp; Zain Ul Abaideen
+            </p>
+          </Reveal>
           <Reveal delay={0.22}>
             <div className="mt-6 inline-flex items-center gap-3 rounded-full border border-volt/30 bg-volt/[0.07] px-5 py-2.5">
               <span className="font-display text-2xl font-extrabold text-volt">$249</span>
