@@ -1,26 +1,17 @@
 # Read this before sending the deck to an investor
 
-The deck and memo are complete and the financial model ties out. Three things are
-yours to confirm or fill in, because I cannot invent them honestly.
+The deck and memo are complete and the financial model ties out. One thing is still
+yours to handle.
 
-## 1. Founder credentials (Slide 11, important)
-A skeptical angel review flagged the Team slide as the weakest point: at pre-launch,
-the investment is a bet on you two. Right now each bio leads with what you genuinely
-built for AI Founder Hub (true and a good signal), but it has no prior track record.
+## 1. Founder credentials (DONE)
+Real bios are now in. Slide 11 and the memo Team section credit Ahmed Yahya Al Kindi
+(TSB Labs, Devmate Solutions, The System Builder, GCC Top 20 Entrepreneur) and Zain Ul
+Abaideen (cofounder and CTO of Devmate Solutions, AI infrastructure and platform
+engineering). The memo and risk section state both founders are full-time from launch.
+If any detail changes, edit `deck.html` (Team slide) and `INVESTOR_MEMO.md`, then
+re-render with the command below.
 
-Before sending, add one concrete, verifiable proof point per founder, for example:
-- A company you built, ran, or sold
-- A product you shipped or a named role you held
-- Years in the field, a notable client, or a relevant win
-
-To edit: open `deck.html`, find the Ahmed and Zain `<p>` bios on the Team slide,
-add your real credential, then re-render (command in `branding/BRAND_KIT.md` or below).
-
-## 2. "Both full-time from launch" (memo risk section)
-The memo now states you are both full-time on AI Founder Hub from launch. If that is
-not yet true, change that line in `INVESTOR_MEMO.md` so the deck stays honest.
-
-## 3. The equity and round structure
+## 2. The equity and round structure (your action)
 The deck offers 20% for 100,000 AED and names a 250,000 AED alternative. Confirm with
 the investor how it is structured (priced equity, SAFE, or convertible) and get it
 papered properly. The deck states the offer; the term sheet makes it real.

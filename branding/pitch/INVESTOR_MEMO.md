@@ -1,7 +1,7 @@
 # AI Founder Hub: Investor Memo
 
 > Pre-seed angel round. Dubai, June 2026.
-> Founders: Ahmed (business and growth), Zain (AI engineering).
+> Cofounders: Ahmed Yahya Al Kindi (growth and systems), Zain Ul Abaideen (cofounder and CTO).
 > Currency peg used throughout: 3.6725 AED per 1 USD.
 
 ---
@@ -161,6 +161,29 @@ revenue and ~$38.8K cumulative net after the early funded phase.
 **Break-even:** operating break-even around **Month 5**, durably positive from Month 7.
 Cumulative positive around Month 9. The early losses (~$2K through Q1) are the intended
 investment phase, fully covered by the raise.
+
+---
+
+## The team
+
+Two cofounders who cover both halves of the problem, and who built AI Founder Hub's
+product and brand before raising a dirham.
+
+**Ahmed Yahya Al Kindi, Cofounder (growth and systems).** Founder of TSB Labs, a deep
+tech and AI venture, and cofounder of Devmate Solutions, where he builds AI systems that
+take repetitive work off teams. Author of The System Builder, a book on discipline,
+identity, and building yourself like a system. Recognised as a GCC Top 20 Entrepreneur
+and featured across regional media. He works with founders across the Gulf, turning
+chaos into structure.
+
+**Zain Ul Abaideen, Cofounder and CTO.** Cofounder and Chief Technology Officer of
+Devmate Solutions, leading the technical architecture behind its AI systems. Based in
+Dubai, he specialises in AI infrastructure, platform engineering, and system design,
+turning ideas into products that work in the real world. He is the engineer behind this
+hub and cofounder of The Inner Circle. He builds to one standard: it has to work, not
+just demo.
+
+Both are full-time on AI Founder Hub from launch.
 
 ---
 

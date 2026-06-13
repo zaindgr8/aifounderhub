@@ -14,19 +14,21 @@ import { Reveal, SectionTag, scrollToRegister } from "./shared";
 const ADVISORS = [
   {
     name: "Ahmed",
+    fullName: "Ahmed Al Kindi",
     initials: "AH",
-    role: "Business & Growth Advisor",
+    role: "Cofounder · Growth & Systems",
     avatarClass: "from-volt to-emerald-400 text-void",
-    bio: "Offer design, sales systems, and scaling playbooks. Ahmed has helped founders go from 'I have an idea' to signed clients, and knows the Dubai business ecosystem inside out.",
+    bio: "Founder of TSB Labs, cofounder of Devmate Solutions, and author of The System Builder. A GCC Top 20 Entrepreneur, Ahmed turns founder chaos into structure: offers, pricing, sales, and the path to first clients.",
     topics: ["Offer & pricing strategy", "Sales and first clients", "Scaling & operations", "Dubai market entry"],
     icon: LineChart,
   },
   {
     name: "Zain",
+    fullName: "Zain Ul Abaideen",
     initials: "ZA",
-    role: "AI Engineering Advisor",
+    role: "Cofounder & CTO",
     avatarClass: "from-lilac to-sky-400 text-void",
-    bio: "Agents, app architecture and automation stacks. Zain reviews your actual build (prompts, code, infrastructure) and unblocks in one session what forums can't in a month.",
+    bio: "Cofounder and CTO of Devmate Solutions, specialising in AI infrastructure and platform engineering. Zain reviews your actual build (prompts, code, architecture) and unblocks in one session what forums can't in a month.",
     topics: ["AI app architecture", "Agent & automation stacks", "Code & prompt reviews", "Tool selection & cost control"],
     icon: BrainCircuit,
   },
@@ -75,7 +77,7 @@ export function Mentors() {
                     </div>
                     <div>
                       <h3 className="font-display text-xl font-extrabold uppercase tracking-tight text-white">
-                        {a.name}
+                        {a.fullName}
                       </h3>
                       <span className="flex items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
                         <a.icon className="h-3.5 w-3.5" />
