@@ -11,6 +11,10 @@ import {
 } from "lucide-react";
 import { Reveal, SectionTag, scrollToRegister } from "./shared";
 
+// Manual booking for now: 1:1 requests go to this inbox and are arranged by hand.
+// Change this to your real booking email.
+const BOOKING_EMAIL = "hello@aifounderhub.com";
+
 const ADVISORS = [
   {
     name: "Ahmed",
@@ -117,16 +121,16 @@ export function Mentors() {
                       $299<span className="font-mono text-[10px] font-bold text-zinc-400">/hr</span>
                     </span>
                   </div>
-                  <button
-                    onClick={() => window.dispatchEvent(new CustomEvent("open-booking", { detail: a.slug }))}
+                  <a
+                    href={`mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(`1:1 session request with ${a.fullName}`)}&body=${encodeURIComponent(`Hi,\n\nI'd like to book a private 1:1 session with ${a.fullName} ($299/hr).\n\nMy name:\nBest times for me:\nWhat I want to cover:\n\nThanks!`)}`}
                     className="group flex w-full items-center justify-center gap-2 rounded-xl border border-edge bg-void py-3.5 font-display text-[12px] font-extrabold uppercase tracking-wide text-zinc-200 transition-all duration-300 hover:border-volt/40 hover:text-volt active:scale-[0.98] cursor-pointer"
                   >
                     <CalendarClock className="h-4 w-4" />
-                    Book a session with {a.name}
+                    Request a session with {a.name}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-                  </button>
+                  </a>
                   <p className="mt-2.5 text-center font-mono text-[9.5px] font-bold uppercase tracking-wider text-zinc-500">
-                    Starts with your free account. Your booking link arrives by email.
+                    We arrange every 1:1 personally and send payment details by email.
                   </p>
                 </div>
               </div>

@@ -72,8 +72,18 @@ deployed functions. Save the `ZIINA_WEBHOOK_SECRET` value, you need it in Step 4
 
 ## Step 3 — Deploy the functions
 
+**Live now: CRM only.** Bookings and payments are handled manually for the launch,
+so you only need `capture-lead` to go live:
+
 ```bash
-supabase functions deploy capture-lead availability create-payment ziina-webhook verify-payment
+supabase functions deploy capture-lead
+```
+
+The payment + booking functions are built and ready but NOT wired into the site
+yet (Zain finishes that later). Deploy them when you wire the automated flow:
+
+```bash
+supabase functions deploy availability create-payment ziina-webhook verify-payment
 ```
 
 Your function base URL is `https://<project-ref>.functions.supabase.co/<name>`.
@@ -129,18 +139,24 @@ Set `ZIINA_TEST_MODE="false"` and swap in your **live** Ziina key:
 
 ## What is wired now vs next
 
-**Live now:** CRM lead capture (Hero form), 1:1 booking with availability +
-Ziina checkout + confirmation emails + calendar invite, payment return handling,
-and the create-payment endpoint already supports bootcamp and membership.
+**Live now (this is the launch scope):**
+- CRM lead capture: the Hero signup writes to `leads` and sends the welcome email.
+- "Request a session" buttons open a pre-filled email to your booking inbox.
+  Bookings and payments are arranged **manually** for now.
 
-**Next (backend ready, just needs the buy buttons):**
-- Bootcamp "Apply" and Membership "Start" buttons currently capture leads. To
-  take payment, point them at `createPayment({ purpose: 'bootcamp' | 'membership', ... })`
-  with a small name/email form (same pattern as `BookingModal`).
+**Built but NOT wired (Zain finishes on his end):**
+- Ziina payments + the automated booking flow. The schema, the
+  `availability` / `create-payment` / `ziina-webhook` / `verify-payment`
+  functions, and the frontend `getAvailability` / `createPayment` / `verifyPayment`
+  helpers in `src/lib/api.ts` are all done. To turn it on: deploy those functions,
+  rebuild a `BookingModal` (the previous version is in git history at the commit
+  "CRM + Ziina payments + 1:1 booking backend"), and point the mentor buttons at it.
+- Bootcamp / membership checkout: `create-payment` already supports
+  `purpose: 'bootcamp' | 'membership'`; wire the buttons with a small name/email form.
 - **Membership renewal:** Ziina has no recurring billing, so membership is a
-  one-month pass. Add a daily scheduled function that emails a Ziina renewal
-  link to members whose `expires_at` is near, and flips them to `lapsed` when it
-  passes. (Schema already has `expires_at` and `renewal_reminders_sent`.)
+  one-month pass. Add a daily scheduled function that emails a renewal link to
+  members near `expires_at`. (Schema already has `expires_at` and
+  `renewal_reminders_sent`.)
 - **Admin view:** a simple authed page to read `leads`, `bookings`, `payments`.
 
 ## Honest caveats

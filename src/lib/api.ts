@@ -43,6 +43,12 @@ export async function captureLead(input: CaptureLeadInput): Promise<{ ok: boolea
   return call("capture-lead", { body: input });
 }
 
+// ---- Payment + booking helpers (SCAFFOLDING) ----
+// These are intentionally NOT used by the live site yet. Bookings and payments
+// are handled manually for now. The matching Edge Functions exist in
+// supabase/functions for when Zain wires the automated flow. Kept here so that
+// frontend work is a small lift later.
+
 // ---- Availability ----
 export interface Slot { start: string; end: string }
 export interface MentorAvailability {
