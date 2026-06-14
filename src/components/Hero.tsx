@@ -21,6 +21,7 @@ import {
   Target,
 } from "lucide-react";
 import { EVENT, Magnetic, OrbitRing, Squiggle, scrollToRegister } from "./shared";
+import { captureLead } from "../lib/api";
 
 /* ————————————————— country data ————————————————— */
 
@@ -284,7 +285,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleRegister = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: typeof errors = {};
     if (!firstName.trim()) newErrors.firstName = "First name is required";
@@ -298,12 +299,24 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
 
     setErrors({});
     setIsSubmitting(true);
-    setTimeout(() => {
+    try {
+      await captureLead({
+        firstName: firstName.trim(),
+        email: emailAddress.trim(),
+        phone: phoneNumber || undefined,
+        countryCode: selectedCountry.code,
+        dialCode: selectedCountry.dialCode,
+        goal: goalId,
+        source: "website-hero",
+      });
       const randomId = Math.floor(100000 + Math.random() * 900000);
       setTicketNumber(`AFH-${randomId}`);
-      setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 1200);
+    } catch (err) {
+      setErrors({ emailAddress: "Something went wrong. Please try again." });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const inputBase =

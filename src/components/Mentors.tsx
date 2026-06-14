@@ -14,6 +14,7 @@ import { Reveal, SectionTag, scrollToRegister } from "./shared";
 const ADVISORS = [
   {
     name: "Ahmed",
+    slug: "ahmed",
     fullName: "Ahmed Al Kindi",
     initials: "AH",
     role: "Cofounder · Growth & Systems",
@@ -24,6 +25,7 @@ const ADVISORS = [
   },
   {
     name: "Zain",
+    slug: "zain",
     fullName: "Zain Ul Abaideen",
     initials: "ZA",
     role: "Cofounder & CTO",
@@ -116,7 +118,7 @@ export function Mentors() {
                     </span>
                   </div>
                   <button
-                    onClick={scrollToRegister}
+                    onClick={() => window.dispatchEvent(new CustomEvent("open-booking", { detail: a.slug }))}
                     className="group flex w-full items-center justify-center gap-2 rounded-xl border border-edge bg-void py-3.5 font-display text-[12px] font-extrabold uppercase tracking-wide text-zinc-200 transition-all duration-300 hover:border-volt/40 hover:text-volt active:scale-[0.98] cursor-pointer"
                   >
                     <CalendarClock className="h-4 w-4" />

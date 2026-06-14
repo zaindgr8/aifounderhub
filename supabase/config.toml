@@ -1,0 +1,22 @@
+# Supabase project config. Run `supabase link` then `supabase db push` and
+# `supabase functions deploy`. The webhook and verify endpoints must be public
+# (no JWT) because Ziina and the returning browser call them without a Supabase
+# session. capture-lead / create-payment / availability are public too but are
+# safe: they only write through controlled server logic.
+
+project_id = "ai-founder-hub"
+
+[functions.capture-lead]
+verify_jwt = false
+
+[functions.availability]
+verify_jwt = false
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.ziina-webhook]
+verify_jwt = false
+
+[functions.verify-payment]
+verify_jwt = false
