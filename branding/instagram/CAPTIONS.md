@@ -82,7 +82,7 @@ doesn't flag repetition. Always in the first comment, not the caption.
 >
 > Idea → App → Income. That's the whole brand.
 >
-> ⚡ @aifounderhub
+> ⚡ @aifounderhub.me
 
 `#aifounder #buildwithai #buildinpublic #startup #dubaistartups #ai #aibuilders #tech`
 

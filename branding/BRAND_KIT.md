@@ -80,7 +80,7 @@ The signature move: a heavy uppercase grotesque line followed by one italic seri
 
 ## 6. Social Templates (the system behind the first 9)
 
-Every tile: 88px padding, mono eyebrow with dash, display headline, serif accent phrase, brand footer (tile logo + name, @aifounderhub, post index), dot grid, film grain at 5%, oversized bolt watermark bottom-right at 7%.
+Every tile: 88px padding, mono eyebrow with dash, display headline, serif accent phrase, brand footer (tile logo + name, @aifounderhub.me, post index), dot grid, film grain at 5%, oversized bolt watermark bottom-right at 7%.
 
 Three tile themes rotate to build the grid pattern:
 - **Volt tile** for statements and CTAs
@@ -101,7 +101,7 @@ The volt diagonal (9-5-1) plus paper corners (7, 3) makes the profile read as on
 
 ## 7. Instagram Profile Setup
 
-- **Handle:** @aifounderhub (match on TikTok, X, YouTube, LinkedIn)
+- **Handle:** @aifounderhub.me (claim the closest match on TikTok, X, YouTube, LinkedIn; some platforms disallow periods)
 - **Avatar:** `logo/avatar-instagram-1024.png`
 - **Name field:** AI Founder Hub | Build Apps With AI (searchable keywords)
 - **Bio:**
@@ -109,7 +109,7 @@ The volt diagonal (9-5-1) plus paper corners (7, 3) makes the profile read as on
   > 🆓 Free live masterclass every Friday
   > 🛠 Idea → App → Income, no code needed
   > 📍 Dubai and everywhere ↓
-- **Link:** the website (or a link-in-bio page with workshop signup first)
+- **Link:** the website (aifounderhub.com), or a link-in-bio page (Linktree / Beacons) with the workshop signup first.
 - **Highlights (volt covers, mono labels):** START HERE · WORKSHOPS · BOOTCAMP · DUBAI
   (add a RECEIPTS highlight only once real member results exist; never pad it with mockups)
 

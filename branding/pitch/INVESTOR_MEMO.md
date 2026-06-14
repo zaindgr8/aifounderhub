@@ -238,4 +238,4 @@ We would welcome a conversation. The full pitch deck (13 slides) and the live pr
 are available on request, and we are happy to walk through the model assumptions line
 by line.
 
-**AI Founder Hub** · Ahmed and Zain · Dubai · aifounderhub.com
+**AI Founder Hub** · Ahmed and Zain · Dubai · aifounderhub.com · @aifounderhub.me
