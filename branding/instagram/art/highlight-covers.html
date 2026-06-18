@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<!--
+  AI Founder Hub - Instagram highlight COVER icons.
+  Render 1080x1080. Instagram crops the centre circle, so the glyph sits dead-centre
+  with generous padding. Volt background, void glyph (brand kit section 7).
+  Usage: file://.../highlight-covers.html?h=start|workshops|bootcamp|dubai
+-->
+<style>
+  :root { --void:#07070b; --volt:#ccf244; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:1080px; height:1080px; overflow:hidden; }
+  body { background:var(--volt); position:relative; display:flex; align-items:center; justify-content:center; }
+  .dots { position:absolute; inset:0; pointer-events:none;
+    background-image: radial-gradient(circle at 1px 1px, rgba(7,7,11,0.10) 1.5px, transparent 0);
+    background-size: 52px 52px; }
+  .icon { position:relative; z-index:2; }
+</style>
+</head>
+<body>
+<script>
+const ICONS = {
+  start: `
+    <svg viewBox="0 0 200 200" width="560" height="560">
+      <rect x="62" y="34" width="15" height="138" rx="7.5" fill="#07070b"/>
+      <path d="M77 40 L154 66 L77 100 Z" fill="#07070b"/>
+      <circle cx="69" cy="176" r="13" fill="#07070b"/>
+    </svg>`,
+  workshops: `
+    <svg viewBox="0 0 200 200" width="560" height="560">
+      <rect x="32" y="46" width="136" height="120" rx="20" fill="none" stroke="#07070b" stroke-width="14"/>
+      <path d="M32 72 a20 20 0 0 1 20 -20 h96 a20 20 0 0 1 20 20 v12 h-136 Z" fill="#07070b"/>
+      <rect x="62" y="30" width="15" height="32" rx="7.5" fill="#07070b"/>
+      <rect x="123" y="30" width="15" height="32" rx="7.5" fill="#07070b"/>
+      <rect x="60" y="108" width="34" height="32" rx="8" fill="#07070b"/>
+      <rect x="106" y="108" width="34" height="32" rx="8" fill="#07070b" opacity="0.32"/>
+    </svg>`,
+  bootcamp: `
+    <svg viewBox="0 0 200 200" width="560" height="560">
+      <path d="M100 22 C125 50 133 88 131 122 L121 142 L79 142 L69 122 C67 88 75 50 100 22 Z" fill="#07070b"/>
+      <circle cx="100" cy="84" r="19" fill="#ccf244"/>
+      <path d="M79 140 L55 172 L79 160 Z" fill="#07070b"/>
+      <path d="M121 140 L145 172 L121 160 Z" fill="#07070b"/>
+      <path d="M88 152 L100 188 L112 152 Z" fill="#07070b"/>
+    </svg>`,
+  dubai: `
+    <svg viewBox="0 0 200 200" width="560" height="560">
+      <path d="M100 26 C66 26 42 51 42 86 C42 130 100 178 100 178 C100 178 158 130 158 86 C158 51 134 26 100 26 Z" fill="#07070b"/>
+      <circle cx="100" cy="84" r="23" fill="#ccf244"/>
+    </svg>`,
+};
+const h = (new URLSearchParams(location.search).get('h') || 'start').toLowerCase();
+document.body.insertAdjacentHTML('afterbegin', '<div class="dots"></div>');
+document.body.insertAdjacentHTML('beforeend', `<div class="icon">${ICONS[h] || ICONS.start}</div>`);
+</script>
+</body>
+</html>

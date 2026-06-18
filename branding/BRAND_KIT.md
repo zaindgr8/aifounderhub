@@ -123,8 +123,11 @@ branding/
 ├── logo/                    ← 5 SVGs + 4 PNGs (transparent)
 ├── instagram/
 │   ├── art/posts.html       ← the design source (edit text, re-render)
+│   ├── art/highlight-*.html ← cover + story sources for highlights
 │   ├── png/post-01..09.png  ← 1080x1080, ready to post
 │   ├── grid-preview.png     ← the 3x3 profile preview
+│   ├── highlights/          ← 4 covers + 12 story frames (see highlights/README.md)
+│   ├── render-highlights.sh ← re-render the highlights
 │   └── CAPTIONS.md          ← captions, hashtags, posting plan
 ```
 

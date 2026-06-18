@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 350" role="img" aria-label="Beyond Realty — Property, Redefined Globally (reversed)">
+  <title>Beyond Realty reversed logo on midnight</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&amp;family=Jost:wght@300&amp;display=swap');
+    .word{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;font-weight:500;fill:#F7F4EC;}
+    .sub{font-family:'Jost','Helvetica Neue',Arial,sans-serif;font-weight:300;fill:#C6A05B;}
+    .tag{font-family:'Jost','Helvetica Neue',Arial,sans-serif;font-weight:300;fill:#9aa3ad;}
+  </style>
+  <rect x="0" y="0" width="600" height="350" fill="#0E1B2A"/>
+  <g transform="translate(240,22)">
+    <path d="M30 88 Q30 22 60 22 Q90 22 90 88" fill="none" stroke="#F7F4EC" stroke-width="3" stroke-linecap="round"/>
+    <path d="M39 88 Q39 35 60 35 Q81 35 81 88" fill="none" stroke="#C6A05B" stroke-width="1.3"/>
+    <line x1="14" y1="88" x2="106" y2="88" stroke="#C6A05B" stroke-width="1.3"/>
+    <path d="M60 10 L65.5 16 L60 22 L54.5 16 Z" fill="#C6A05B"/>
+  </g>
+  <text class="word" x="300" y="210" text-anchor="middle" font-size="76" letter-spacing="20">BEYOND</text>
+  <line x1="196" y1="246" x2="240" y2="246" stroke="#C6A05B" stroke-width="1"/>
+  <line x1="360" y1="246" x2="404" y2="246" stroke="#C6A05B" stroke-width="1"/>
+  <text class="sub" x="300" y="252" text-anchor="middle" font-size="18" letter-spacing="11">REALTY</text>
+  <text class="tag" x="300" y="304" text-anchor="middle" font-size="13" letter-spacing="6">PROPERTY, REDEFINED GLOBALLY</text>
+</svg>

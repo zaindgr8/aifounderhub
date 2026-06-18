@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-label="Beyond Realty avatar badge">
+  <title>Beyond Realty badge</title>
+  <circle cx="120" cy="120" r="118" fill="#0E1B2A"/>
+  <circle cx="120" cy="120" r="104" fill="none" stroke="#C6A05B" stroke-width="1"/>
+  <g transform="translate(60,62) scale(1.0)">
+    <path d="M30 88 Q30 22 60 22 Q90 22 90 88" fill="none" stroke="#F7F4EC" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M39 88 Q39 35 60 35 Q81 35 81 88" fill="none" stroke="#C6A05B" stroke-width="1.5"/>
+    <line x1="16" y1="88" x2="104" y2="88" stroke="#C6A05B" stroke-width="1.5"/>
+    <path d="M60 10 L65.5 16 L60 22 L54.5 16 Z" fill="#C6A05B"/>
+  </g>
+</svg>
