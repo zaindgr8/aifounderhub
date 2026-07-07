@@ -293,6 +293,30 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
         console.error("Make.com Webhook error:", webhookErr);
       }
 
+      // 3. Send lead notification email via Resend
+      try {
+        await fetch("/api/send-lead-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName: firstName.trim(),
+            email: emailAddress.trim(),
+            phone: phoneNumber ? phoneNumber.trim() : "",
+            countryCode: selectedCountry.code,
+            dialCode: selectedCountry.dialCode,
+            fullPhoneNumber: phoneNumber ? `${selectedCountry.dialCode}${phoneNumber.trim()}` : "",
+            goal: goalId,
+            source: "website-hero",
+            ticketNumber: generatedTicket,
+            submittedAt: new Date().toISOString(),
+          }),
+        });
+      } catch (resendErr) {
+        console.error("Resend email error:", resendErr);
+      }
+
       setTicketNumber(generatedTicket);
       setIsSubmitted(true);
     } catch (err) {

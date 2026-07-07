@@ -15,6 +15,13 @@ export default defineConfig(() => {
       // Always enable HMR and file watching so live edits reflect in the browser immediately.
       hmr: true,
       watch: {},
+      proxy: {
+        // Forward all /api/* requests to the Express API server
+        '/api': {
+          target: 'http://localhost:3001',
+          changeOrigin: true,
+        },
+      },
     },
   };
 });
