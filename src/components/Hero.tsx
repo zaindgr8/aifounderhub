@@ -668,8 +668,8 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         You're in, {firstName}!
                       </h3>
                       <p className="mx-auto mt-1.5 max-w-xs text-xs leading-relaxed text-zinc-400">
-                        Your profile is synced to our community CRM. Your invite to the next free workshop,{" "}
-                        <span className="font-semibold text-volt">Claude Blueprint on Jun 26</span>, is on its way to{" "}
+                        Your profile is synced. Your free,{" "}
+                        <span className="font-semibold text-volt">Masterclass Access</span>, is confirmed{" "}
                         <span className="font-semibold text-zinc-200">{emailAddress}</span>.
                       </p>
                     </div>
@@ -684,7 +684,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                       <div className="flex items-start justify-between border-b border-white/8 p-4.5">
                         <div>
                           <span className="font-mono text-[9px] font-bold uppercase tracking-[0.3em] text-volt">
-                            Founder All-Access
+                            Free Master Class
                           </span>
                           <span className="mt-1 block font-display text-lg font-extrabold uppercase leading-none text-white">
                             AI Founder Hub
@@ -706,7 +706,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                           </span>
                           <span className="font-mono font-bold text-volt">{ticketNumber}</span>
                         </div>
-                        <div>
+                        {/* <div>
                           <span className="block font-mono text-[8.5px] font-bold uppercase tracking-wider text-zinc-500">
                             Flagship summit
                           </span>
@@ -719,23 +719,22 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                           <span className="font-semibold text-lilac">
                             {GOALS.find((g) => g.id === goalId)?.pathway ?? "Explorer"}
                           </span>
-                        </div>
+                        </div> */}
                       </div>
 
-                      <div className="flex items-end justify-between border-t border-dashed border-white/10 p-4.5 pt-4">
+                      {/* <div className="flex items-end justify-between border-t border-dashed border-white/10 p-4.5 pt-4">
                         <div className="barcode h-8 w-36 text-zinc-400" />
                         <span className="rounded border border-volt/30 bg-volt/10 px-2 py-1 font-mono text-[9px] font-black uppercase text-volt">
                           VIP Confirmed
                         </span>
-                      </div>
+                      </div> */}
                     </div>
 
                     <div className="flex items-start gap-2.5 rounded-xl border border-edge bg-white/[0.03] p-3.5 text-left text-xs">
                       <ShieldCheck className="mt-0.5 h-4 w-4 flex-shrink-0 text-volt" />
                       <span className="text-zinc-400">
-                        <span className="block font-bold text-zinc-200">Next: check your inbox</span>
-                        Your workshop invite + the VIP WhatsApp group link arrive within minutes. Workbook and prompt
-                        templates are inside.
+                        <span className="block font-bold text-zinc-200">NEXT: CHECK YOUR INBOX</span>
+                        Your Masterclass Invite + Exclusive WhatsApp Group Link Lands In Minutes. Your Workbook And Prompt Templates Are Inside.
                       </span>
                     </div>
 
@@ -749,8 +748,11 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         <span className="font-bold text-white">every course, every replay, instantly.</span>
                       </p>
                       <button
-                        onClick={() => {
-                          document.getElementById("membership")?.scrollIntoView({ behavior: "smooth" });
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          document.getElementById("membership")?.scrollIntoView({ behavior: "smooth", block: "start" });
                         }}
                         className="group mt-2.5 flex items-center gap-1.5 font-display text-[11px] font-extrabold uppercase tracking-wide text-volt transition-colors hover:text-white cursor-pointer"
                       >
