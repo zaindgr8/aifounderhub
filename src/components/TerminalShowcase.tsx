@@ -8,7 +8,7 @@ import { Reveal, SectionTag, CountUp } from "./shared";
 ———————————————————————————————————————————————— */
 
 const STACK = [
-  "CLAUDE", "GPT-5", "GEMINI", "CURSOR", "LOVABLE", "REPLIT", "V0", "BOLT", "VERCEL", "SUPABASE", "STRIPE", "WINDSURF",
+  "CLAUDE", "GPT-5", "GEMINI","FABLE 5" ,"CURSOR", "LOVABLE", "REPLIT", "V0", "BOLT", "VERCEL", "SUPABASE", "STRIPE", "WINDSURF",
 ];
 
 export function ToolsMarquee() {
@@ -56,7 +56,7 @@ const SCENARIOS: Scenario[] = [
       { text: "  const checkout = useStripe()", tone: "fn" },
       { text: "  return <Calendar onPick={checkout.pay} />", tone: "str" },
       { text: "}", tone: "kw" },
-      { text: "✓ payments wired · ✓ SMS reminders added", tone: "plain" },
+      { text: "payments wired · SMS reminders added", tone: "plain" },
     ],
   },
   {
@@ -69,7 +69,7 @@ const SCENARIOS: Scenario[] = [
       { text: "  allergies: user.profile.allergies,", tone: "fn" },
       { text: "})", tone: "kw" },
       { text: "gate(plan, { tier: 'pro', price: 9.99 })", tone: "str" },
-      { text: "✓ paywall live · ✓ 7-day trial enabled", tone: "plain" },
+      { text: "paywall live · 7-day trial enabled", tone: "plain" },
     ],
   },
   {
@@ -81,7 +81,7 @@ const SCENARIOS: Scenario[] = [
       { text: "  const rubric = await ai.rubric(quiz)", tone: "fn" },
       { text: "  return rubric.score(answers)", tone: "fn" },
       { text: "}", tone: "kw" },
-      { text: "✓ CSV export ready · ✓ parent reports on", tone: "plain" },
+      { text: "CSV export ready · parent reports on", tone: "plain" },
     ],
   },
 ];
@@ -162,7 +162,7 @@ function TerminalWindow() {
         <div className="min-h-[340px] p-5 font-mono text-[12.5px] leading-relaxed sm:text-[13px]">
           {/* prompt line */}
           <div className="flex gap-2.5">
-            <span className="select-none font-bold text-volt">you ▸</span>
+            <span className="select-none font-bold text-volt">you &gt;</span>
             <span className={`text-zinc-100 ${phase === "typing" ? "term-caret" : ""}`}>
               {scenario.prompt.slice(0, typedCount)}
             </span>
@@ -177,7 +177,7 @@ function TerminalWindow() {
                 className="mt-3 flex items-center gap-2 text-zinc-400"
               >
                 <Wand2 className={`h-3.5 w-3.5 text-lilac ${phase === "thinking" ? "animate-pulse" : ""}`} />
-                <span className="text-lilac">ai ▸</span>
+                <span className="text-lilac">ai &gt;</span>
                 {phase === "thinking" ? (
                   <span className="animate-pulse">
                     designing schema, routes & UI<span className="term-caret" />
@@ -224,7 +224,7 @@ function TerminalWindow() {
                   </div>
                 </div>
                 <span className="rounded-md bg-volt px-2.5 py-1 font-mono text-[9px] font-black uppercase text-void">
-                  Live ↗
+                  Live
                 </span>
               </motion.div>
             )}
@@ -257,64 +257,66 @@ const STEPS = [
   },
 ];
 
+/* TerminalShowcase section — commented out */
+// export function TerminalShowcase() {
+//   return (
+//     <section id="demo" className="relative overflow-hidden py-16 sm:py-24 scroll-mt-20">
+//       <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-60" />
+//       <div
+//         className="pointer-events-none absolute bottom-0 left-[20%] h-[40vh] w-[40vw] rounded-full blur-[140px]"
+//         style={{ background: "rgba(181,161,255,0.08)" }}
+//       />
+//       <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-5 md:px-10 lg:grid-cols-2">
+//         <div>
+//           <Reveal>
+//             <SectionTag index="01" label="The live demo" />
+//           </Reveal>
+//           <Reveal delay={0.08}>
+//             <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl lg:text-[56px]">
+//               What "building
+//               <br />
+//               with AI" <span className="font-serif italic font-normal normal-case text-volt">actually</span>
+//               <br />
+//               looks like
+//             </h2>
+//           </Reveal>
+//           <Reveal delay={0.16}>
+//             <p className="mt-5 max-w-md text-[15px] leading-relaxed text-zinc-400">
+//               This isn't drag-and-drop website builders or no-code spaghetti. It's a conversation that compiles. The
+//               terminal on the right is the same loop you'll run live with us: three times, on three different apps.
+//             </p>
+//           </Reveal>
+//           <div className="mt-10 space-y-2.5">
+//             {STEPS.map((step, i) => (
+//               <Reveal key={step.title} delay={0.2 + i * 0.1}>
+//                 <div className="group flex gap-4 rounded-2xl border border-edge bg-panel/60 p-4.5 transition-all duration-300 hover:border-volt/30 hover:bg-panel">
+//                   <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-volt/10 text-volt transition-transform duration-300 group-hover:scale-110">
+//                     <step.icon className="h-4.5 w-4.5" />
+//                   </div>
+//                   <div>
+//                     <div className="flex items-baseline gap-2.5">
+//                       <span className="font-mono text-[10px] font-bold text-zinc-600">0{i + 1}</span>
+//                       <h3 className="font-display text-base font-extrabold uppercase tracking-tight text-white">
+//                         {step.title}
+//                       </h3>
+//                     </div>
+//                     <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-400">{step.body}</p>
+//                   </div>
+//                 </div>
+//               </Reveal>
+//             ))}
+//           </div>
+//         </div>
+//         <Reveal delay={0.15} y={40}>
+//           <TerminalWindow />
+//         </Reveal>
+//       </div>
+//     </section>
+//   );
+// }
+
 export function TerminalShowcase() {
-  return (
-    <section id="demo" className="relative overflow-hidden py-16 sm:py-24 scroll-mt-20">
-      <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-60" />
-      <div
-        className="pointer-events-none absolute bottom-0 left-[20%] h-[40vh] w-[40vw] rounded-full blur-[140px]"
-        style={{ background: "rgba(181,161,255,0.08)" }}
-      />
-
-      <div className="relative z-10 mx-auto grid max-w-7xl grid-cols-1 items-center gap-14 px-5 md:px-10 lg:grid-cols-2">
-        <div>
-          <Reveal>
-            <SectionTag index="01" label="The live demo" />
-          </Reveal>
-          <Reveal delay={0.08}>
-            <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl lg:text-[56px]">
-              What “building
-              <br />
-              with AI” <span className="font-serif italic font-normal normal-case text-volt">actually</span>
-              <br />
-              looks like
-            </h2>
-          </Reveal>
-          <Reveal delay={0.16}>
-            <p className="mt-5 max-w-md text-[15px] leading-relaxed text-zinc-400">
-              This isn't drag-and-drop website builders or no-code spaghetti. It's a conversation that compiles. The
-              terminal on the right is the same loop you'll run live with us: three times, on three different apps.
-            </p>
-          </Reveal>
-
-          <div className="mt-10 space-y-2.5">
-            {STEPS.map((step, i) => (
-              <Reveal key={step.title} delay={0.2 + i * 0.1}>
-                <div className="group flex gap-4 rounded-2xl border border-edge bg-panel/60 p-4.5 transition-all duration-300 hover:border-volt/30 hover:bg-panel">
-                  <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-volt/10 text-volt transition-transform duration-300 group-hover:scale-110">
-                    <step.icon className="h-4.5 w-4.5" />
-                  </div>
-                  <div>
-                    <div className="flex items-baseline gap-2.5">
-                      <span className="font-mono text-[10px] font-bold text-zinc-600">0{i + 1}</span>
-                      <h3 className="font-display text-base font-extrabold uppercase tracking-tight text-white">
-                        {step.title}
-                      </h3>
-                    </div>
-                    <p className="mt-1 text-[12.5px] leading-relaxed text-zinc-400">{step.body}</p>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-
-        <Reveal delay={0.15} y={40}>
-          <TerminalWindow />
-        </Reveal>
-      </div>
-    </section>
-  );
+  return null;
 }
 
 /* ————————————————————————————————————————————————
@@ -324,7 +326,7 @@ export function TerminalShowcase() {
 const STATS = [
   { value: 4281, suffix: "+", label: "Founders registered", note: "this cohort" },
   { value: 317, suffix: "", label: "Apps shipped live", note: "by past attendees" },
-  { value: 3, suffix: "", label: "Days, idea to launch", note: "Fri → Sun" },
+  { value: 3, suffix: "", label: "Days, idea to launch", note: "Fri -> Sun" },
   { value: 0, suffix: "", label: "Lines you'll hand-write", note: "AI types, you direct", prefix: "" },
 ];
 

@@ -8,6 +8,10 @@ import {
   BrainCircuit,
   LineChart,
   Sparkles,
+  Instagram,
+  Youtube,
+  Linkedin,
+  Globe,
 } from "lucide-react";
 import { Reveal, SectionTag, scrollToRegister } from "./shared";
 
@@ -21,27 +25,37 @@ const ADVISORS = [
     slug: "ahmed",
     fullName: "Ahmed Al Kindi",
     initials: "AH",
-    role: "Cofounder · Growth & Systems",
+    role: "COFOUNDER · STRATEGIST · AUTHOR",
     avatarClass: "from-volt to-emerald-400 text-void",
-    bio: "Founder of TSB Labs, cofounder of Devmate Solutions, and author of The System Builder. A GCC Top 20 Entrepreneur, Ahmed turns founder chaos into structure: offers, pricing, sales, and the path to first clients.",
-    topics: ["Offer & pricing strategy", "Sales and first clients", "Scaling & operations", "Dubai market entry"],
+    bio: "Omani entrepreneur, strategist, and published author. Named in GCC Top 20 Entrepreneur. Featured on Gulf News, Times of Oman, Oman TV, and Smashi TV Dubai. Ahmed doesn't teach motivation — he builds systems. Born deaf, he developed a rare ability to see patterns, structure, and architecture where others see chaos. In this session you will be able to learn the exact architecture behind businesses that grow without burning out.",
+    topics: ["GCC Top 20 Entrepreneur", "Published Author", "Scaling & operations", "Sales and First Client"],
     icon: LineChart,
+    socials: [
+      { platform: "linkedin", url: "https://www.linkedin.com/in/ahmedyahyak/?skipRedirect=true", icon: Linkedin },
+      { platform: "website", url: "https://www.ahmedyahyak.com/", icon: Globe },
+    ],
   },
   {
     name: "Zain",
     slug: "zain",
     fullName: "Zain Ul Abaideen",
     initials: "ZA",
-    role: "Cofounder & CTO",
+    role: "Founder & CEO · AI FOUNDER HUB | DEVMATE SOLUTIONS",
     avatarClass: "from-lilac to-sky-400 text-void",
-    bio: "Cofounder and CTO of Devmate Solutions, specialising in AI infrastructure and platform engineering. Zain reviews your actual build (prompts, code, architecture) and unblocks in one session what forums can't in a month.",
-    topics: ["AI app architecture", "Agent & automation stacks", "Code & prompt reviews", "Tool selection & cost control"],
+    bio: "Running an AI-powered software agency operating across UAE, Oman, and the USA— with clients spanning GCC, Europe, and the United States. Has worked with 40+ global brands & 25+ industries Since 2019. He doesn't just teach — he builds daily. Whether you want to launch a Micro-SaaS, build an AI Automation Agency, grow a startup from scratch, or explore B2B collaboration — one session can give you a real roadmap, not theory.",
+    topics: ["Micro-SaaS Building", "AI Automation Agency", "B2B Collaboration", "Startup Launch & Growth"],
     icon: BrainCircuit,
+    socials: [
+      { platform: "instagram", url: "https://www.instagram.com/zainulabideen.unicorn/", icon: Instagram },
+      { platform: "youtube", url: "https://www.youtube.com/@zainulabideen.unicorn", icon: Youtube },
+      { platform: "linkedin", url: "https://www.linkedin.com/in/zainulabideenunicorn/", icon: Linkedin },
+      { platform: "website", url: "https://devmatesolutions.com/", icon: Globe },
+    ],
   },
 ];
 
 const MEMBERSHIP_INCLUDES = [
-  "Full course library: Claude, OpenClaw, app building, automations",
+  "Claude, Codex & latest AI models — the exact stack top builders are shipping with right now",
   "A new deep-dive course drop every month",
   "Replay vault of every masterclass and summit",
   "Template, prompt and workbook vault",
@@ -58,7 +72,7 @@ export function Mentors() {
         {/* heading */}
         <div className="mb-12">
           <Reveal>
-            <SectionTag index="05" label="Mentorship & advisory" />
+            <SectionTag index="03" label="Mentorship & advisory" />
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="mt-6 max-w-2xl font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
@@ -69,13 +83,13 @@ export function Mentors() {
           </Reveal>
           <Reveal delay={0.13}>
             <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400">
-              Your founders, Ahmed and Zain, personally lead every bootcamp, 1:1 session, and in-person Dubai
-              workshop. The course library is taught by invited industry experts.
+              Book session with our active founders — not retired educators, not hired instructors. They are running live agencies, shipping real products, and working with clients across GCC, Europe, and the USA right now. 
+              What they teach on Monday, they tested on Friday — no filler, no theory, just founders who've done exactly what you're trying to do.
             </p>
           </Reveal>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 lg:grid-cols-2">
           {/* advisor cards */}
           {ADVISORS.map((a, i) => (
             <Reveal key={a.name} delay={i * 0.08}>
@@ -95,6 +109,25 @@ export function Mentors() {
                         <a.icon className="h-3.5 w-3.5" />
                         {a.role}
                       </span>
+                      {a.socials && (
+                        <div className="mt-2.5 flex items-center gap-2">
+                          {a.socials.map((s) => {
+                            const Icon = s.icon;
+                            return (
+                              <a
+                                key={s.platform}
+                                href={s.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="rounded bg-void/40 p-1 text-zinc-400 hover:text-volt border border-edge/30 transition-all duration-200"
+                                title={s.platform}
+                              >
+                                <Icon className="h-3.5 w-3.5" />
+                              </a>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
 
@@ -126,66 +159,20 @@ export function Mentors() {
                     className="group flex w-full items-center justify-center gap-2 rounded-xl border border-edge bg-void py-3.5 font-display text-[12px] font-extrabold uppercase tracking-wide text-zinc-200 transition-all duration-300 hover:border-volt/40 hover:text-volt active:scale-[0.98] cursor-pointer"
                   >
                     <CalendarClock className="h-4 w-4" />
-                    Request a session with {a.name}
+                    BOOK 1:1 WITH {a.name}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                   </a>
-                  <p className="mt-2.5 text-center font-mono text-[9.5px] font-bold uppercase tracking-wider text-zinc-500">
+                  {/* <p className="mt-2.5 text-center font-mono text-[9.5px] font-bold uppercase tracking-wider text-zinc-500">
                     We arrange every 1:1 personally and send payment details by email.
-                  </p>
+                  </p> */}
                 </div>
               </div>
             </Reveal>
           ))}
-
-          {/* courses membership card */}
-          <Reveal delay={0.16}>
-            <div className="relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-volt/35 bg-gradient-to-br from-volt/[0.08] to-panel p-7">
-              <div className="absolute -right-12 -top-12 h-40 w-40 rounded-full bg-volt/10 blur-3xl" />
-              <div className="relative">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-volt/15 px-3 py-1 font-mono text-[9px] font-extrabold uppercase tracking-wider text-volt border border-volt/30">
-                  <Sparkles className="h-3 w-3" /> Best value
-                </span>
-                <h3 className="mt-4 font-display text-xl font-extrabold uppercase tracking-tight text-white">
-                  Courses Membership
-                </h3>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-display text-4xl font-extrabold text-volt">$49.99</span>
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                    / month · all-access
-                  </span>
-                </div>
-                <p className="mt-4 text-[13px] leading-relaxed text-zinc-400">
-                  Every course, every replay, every template. One subscription that keeps growing while you do.
-                </p>
-
-                <ul className="mt-5 space-y-2.5">
-                  {MEMBERSHIP_INCLUDES.map((item) => (
-                    <li key={item} className="flex items-start gap-2.5 text-[12.5px] font-semibold text-zinc-300">
-                      <span className="mt-0.5 flex h-4.5 w-4.5 flex-shrink-0 items-center justify-center rounded-full bg-volt/15 text-volt">
-                        <Check className="h-3 w-3" strokeWidth={3} />
-                      </span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <button
-                onClick={scrollToRegister}
-                className="group relative mt-7 flex w-full items-center justify-center gap-2 rounded-xl bg-volt py-4 font-display text-[13px] font-extrabold uppercase tracking-wide text-void transition-all duration-300 hover:shadow-[0_0_40px_rgba(204,242,68,0.4)] active:scale-[0.98] cursor-pointer"
-              >
-                Start membership · $49.99/mo
-                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-              </button>
-              <p className="mt-2.5 text-center font-mono text-[9.5px] font-bold uppercase tracking-wider text-zinc-500">
-                Starts with your free account. Upgrade in one click from your welcome email.
-              </p>
-            </div>
-          </Reveal>
         </div>
 
         {/* Dubai in-person strip */}
-        <Reveal delay={0.2}>
+        {/* <Reveal delay={0.2}>
           <div className="mt-8 flex flex-col items-start justify-between gap-6 overflow-hidden rounded-3xl border border-lilac/25 bg-gradient-to-r from-lilac/[0.08] via-panel to-panel p-7 sm:p-8 lg:flex-row lg:items-center">
             <div className="flex items-start gap-4">
               <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl bg-lilac/15 text-lilac">
@@ -211,7 +198,7 @@ export function Mentors() {
               <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
             </button>
           </div>
-        </Reveal>
+        </Reveal> */}
       </div>
     </section>
   );

@@ -1,21 +1,23 @@
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Check, PlayCircle, ShieldCheck, Zap } from "lucide-react";
-import { Magnetic, Reveal, scrollToRegister } from "./shared";
+import { ArrowRight, Check, PlayCircle, ShieldCheck } from "lucide-react";
+import { Magnetic, Reveal, SectionTag, scrollToRegister } from "./shared";
 
 const VALUE_STACK = [
-  { item: "Full course library: Claude, OpenClaw, app building, automations", value: "$1,800 value" },
-  { item: "Every masterclass and summit replay, the moment it ends", value: "$600 value" },
-  { item: "Template, prompt and workbook vault", value: "$400 value" },
-  { item: "A new deep-dive course drop every month", value: "included" },
-  { item: "Members-only channels and Dubai seat priority", value: "included" },
+  { item: "Private Community Access — Online & In-Person Dubai Meetups with AI Builders." },
+  { item: "Claude, Codex & Latest AI Models — What Top Builders Actually Ship With." },
+  { item: "Full-Stack Live Builds — Frontend, Backend, Database from Scratch." },
+  { item: "From Code to Live — GitHub, Vercel, App Store & Play Store" },
+  { item: "Growth & Marketing Roadmap — Step-by-Step to Your First 50 Paying Users." },
+
 ];
 
 const COURSE_CARDS = [
-  { title: "Claude MasterClass", lessons: "12 lessons", time: "3.5 hrs", rotate: -7, x: -28, badge: "Bestseller" },
-  { title: "OpenClaw Agents", lessons: "10 lessons", time: "3 hrs", rotate: -2, x: -8 },
-  { title: "Build Apps Using AI", lessons: "16 lessons", time: "5 hrs", rotate: 3, x: 12 },
-  { title: "AI Automations", lessons: "9 lessons", time: "2.5 hrs", rotate: 8, x: 32, badge: "New drop" },
+  { title: "Marketing Roadmap & First 50 Users", rotate: -7, x: -28 },
+  { title: "Claude, Codex & Latest AI Models", rotate: -2, x: -8 },
+  { title: "Full-Stack Live Builds", rotate: 3, x: 12 },
+  { title: "From Code to Live", rotate: 8, x: 32 },
+  { title: "Private Community Access", rotate: 8, x: 32 },
 ];
 
 export function Membership() {
@@ -37,25 +39,29 @@ export function Membership() {
         {/* ——— LEFT: the offer ——— */}
         <div>
           <Reveal>
-            <span className="inline-flex items-center gap-2 rounded-full bg-volt px-4 py-1.5 font-mono text-[10px] font-black uppercase tracking-[0.2em] text-void">
-              <Zap className="h-3 w-3" /> The member shortcut · Most popular
-            </span>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+              <SectionTag index="02" label="Idea → MVP → Launch" />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/20 bg-volt/5 px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-volt/90">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-volt"></span>
+                </span>
+                Complete Playbook | Original Price $549
+              </span>
+            </div>
           </Reveal>
 
           <Reveal delay={0.08}>
             <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
-              Why wait for Friday?
+              THE ONLY COURSE THAT TAKES YOU FROM
               <br />
-              Unlock every course{" "}
-              <span className="font-serif italic font-normal normal-case text-volt">tonight.</span>
+              <span className="font-serif italic font-normal normal-case text-volt">IDEA TO LIVE PRODUCT</span>
             </h2>
           </Reveal>
 
           <Reveal delay={0.14}>
             <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-300">
-              Every course is taught by a rotating roster of invited industry experts. The live masterclasses stay
-              free, forever. The membership is for builders who want it all now: every course, every replay, every
-              template, the moment you join.
+              The Global Software Market is $41 Trillion — and AI just unlocked the door for anyone to walk in. — This course will take you from— no code, no idea, no experience — to a Live, Production-Grade Micro-SaaS, Web App, or Startup. No fluff, no theory — just the exact AI stack & playbook to build, launch, and land your first 50 paying users.
             </p>
           </Reveal>
 
@@ -79,14 +85,14 @@ export function Membership() {
           </div>
 
           {/* price anchor */}
-          <Reveal delay={0.3}>
+          {/* <Reveal delay={0.3}>
             <p className="mt-6 max-w-xl text-[13.5px] leading-relaxed text-zinc-400">
               For context: one 1:1 hour costs <span className="font-bold text-zinc-200">$299</span>. The bootcamp is{" "}
               <span className="font-bold text-zinc-200">$249</span>. The membership is{" "}
               <span className="font-bold text-volt">$49.99 a month</span> for everything we have ever recorded.
               That's $1.64 a day.
             </p>
-          </Reveal>
+          </Reveal> */}
 
           {/* CTA */}
           <Reveal delay={0.36}>
@@ -97,7 +103,7 @@ export function Membership() {
                   className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] cursor-pointer"
                 >
                   <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                  <span className="relative">Unlock everything · $49.99/mo</span>
+                  <span className="relative">GET INSTANT ACCESS for $159</span>
                   <ArrowRight className="relative h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </Magnetic>
@@ -106,9 +112,9 @@ export function Membership() {
                 Cancel anytime · 7-day money-back
               </div>
             </div>
-            <p className="mt-3 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+            {/* <p className="mt-3 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
               Step 1 is your free account. Your member upgrade link arrives in the welcome email.
-            </p>
+            </p> */}
           </Reveal>
         </div>
 
@@ -123,11 +129,10 @@ export function Membership() {
                 viewport={{ once: true, margin: "-80px" }}
                 transition={{ delay: 0.15 + i * 0.12, type: "spring", stiffness: 120, damping: 16 }}
                 whileHover={{ y: -12, rotate: 0, zIndex: 30, transition: { duration: 0.25 } }}
-                className={`absolute left-1/2 top-1/2 h-56 w-64 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-2xl border p-5 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-sm ${
-                  i === COURSE_CARDS.length - 1
-                    ? "border-volt/50 bg-gradient-to-br from-volt/15 to-panel"
-                    : "border-edge bg-panel/95"
-                }`}
+                className={`absolute left-1/2 top-1/2 h-56 w-64 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-2xl border p-5 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-sm ${i === COURSE_CARDS.length - 1
+                  ? "border-volt/50 bg-gradient-to-br from-volt/15 to-panel"
+                  : "border-edge bg-panel/95"
+                  }`}
                 style={{ zIndex: i }}
               >
                 <div className="flex h-full flex-col justify-between">
@@ -145,12 +150,12 @@ export function Membership() {
                     </p>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-300">
+                    {/* <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-300">
                       <PlayCircle className="h-4 w-4 text-volt" /> Stream instantly
-                    </span>
-                    <span className="rounded-md bg-void/80 px-2 py-1 font-mono text-[9px] font-bold uppercase text-volt">
+                    </span> */}
+                    {/* <span className="rounded-md bg-void/80 px-2 py-1 font-mono text-[9px] font-bold uppercase text-volt">
                       Included
-                    </span>
+                    </span> */}
                   </div>
                 </div>
               </motion.div>
@@ -176,7 +181,7 @@ export function Membership() {
                 ))}
               </div>
               <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-300">
-                1,100+ members inside
+                A GROWING COMMUNITY OF AI BUILDERS
               </span>
             </motion.div>
           </div>

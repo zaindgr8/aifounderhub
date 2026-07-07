@@ -339,7 +339,7 @@ export function Wordmark({ dark = false }: { dark?: boolean }) {
           AI Founder Hub
         </span>
         <span className={`font-mono text-[8.5px] tracking-[0.32em] uppercase ${dark ? "text-ink/50" : "text-zinc-500"}`}>
-          Idea → App → Income
+          IDEA → BUILD → LAUNCH
         </span>
       </div>
     </div>

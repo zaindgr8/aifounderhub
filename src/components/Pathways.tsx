@@ -198,7 +198,7 @@ export function Pathways() {
         <div className="mb-12 text-center">
           <Reveal>
             <div className="flex justify-center">
-              <SectionTag index="04" label="The AI Builder Bootcamp" />
+              <SectionTag index="03" label="The AI Builder Bootcamp" />
             </div>
           </Reveal>
           <Reveal delay={0.08}>
@@ -240,9 +240,8 @@ export function Pathways() {
                 <button
                   key={p.id}
                   onClick={() => setActiveId(p.id)}
-                  className={`relative flex items-center gap-2 rounded-full px-5 py-3 font-display text-[12px] font-extrabold uppercase tracking-wide transition-colors duration-300 cursor-pointer ${
-                    isActive ? "text-void" : "border border-edge bg-panel/60 text-zinc-400 hover:text-white"
-                  }`}
+                  className={`relative flex items-center gap-2 rounded-full px-5 py-3 font-display text-[12px] font-extrabold uppercase tracking-wide transition-colors duration-300 cursor-pointer ${isActive ? "text-void" : "border border-edge bg-panel/60 text-zinc-400 hover:text-white"
+                    }`}
                 >
                   {isActive && (
                     <motion.span

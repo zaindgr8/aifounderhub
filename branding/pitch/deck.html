@@ -1,111 +1,359 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" />
-<style>
-  :root{
-    --void:#07070b; --void2:#0a0a12; --panel:#0d0d14; --edge:#20202c; --edge2:#2c2c3a;
-    --volt:#ccf244; --volt-deep:#9dc41c; --lilac:#b5a1ff; --sky:#7dd3fc;
-    --paper:#f4f1e8; --ink:#14130e; --zinc:#a1a1aa; --zinc2:#71717a; --zinc3:#4b4b55;
-  }
-  *{margin:0;padding:0;box-sizing:border-box;}
-  html,body{background:#000;}
-  .display{font-family:"Bricolage Grotesque",sans-serif;}
-  .serif{font-family:"Instrument Serif",serif;font-style:italic;font-weight:400;}
-  .mono{font-family:"JetBrains Mono",monospace;}
+  <meta charset="UTF-8" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" />
+  <style>
+    :root {
+      --void: #07070b;
+      --void2: #0a0a12;
+      --panel: #0d0d14;
+      --edge: #20202c;
+      --edge2: #2c2c3a;
+      --volt: #ccf244;
+      --volt-deep: #9dc41c;
+      --lilac: #b5a1ff;
+      --sky: #7dd3fc;
+      --paper: #f4f1e8;
+      --ink: #14130e;
+      --zinc: #a1a1aa;
+      --zinc2: #71717a;
+      --zinc3: #4b4b55;
+    }
 
-  .slide{
-    width:1280px;height:720px;position:relative;overflow:hidden;
-    font-family:"Inter",sans-serif;background:var(--void);color:#f4f4f5;
-  }
-  .slide.volt{background:var(--volt);color:var(--void);}
-  .inner{position:absolute;inset:0;z-index:6;padding:58px 64px;display:flex;flex-direction:column;}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  /* textures */
-  .grid{position:absolute;inset:0;z-index:1;background-image:
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-    background-size:64px 64px;}
-  .volt .grid{background-image:
-    linear-gradient(rgba(7,7,11,0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(7,7,11,0.07) 1px, transparent 1px);}
-  .scan{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0.4;
-    background:repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 4px);}
-  .grain{position:absolute;inset:-40%;width:180%;height:180%;z-index:3;pointer-events:none;opacity:0.06;
-    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-  .glow{position:absolute;border-radius:50%;filter:blur(130px);z-index:1;pointer-events:none;}
-  .ghost{position:absolute;z-index:1;font-family:"Bricolage Grotesque";font-weight:800;line-height:0.8;letter-spacing:-0.04em;pointer-events:none;
-    -webkit-text-stroke:2px rgba(204,242,68,0.10);color:transparent;}
-  .cross{position:absolute;z-index:7;width:18px;height:18px;pointer-events:none;}
-  .cross::before,.cross::after{content:"";position:absolute;background:rgba(204,242,68,0.5);}
-  .cross::before{left:8px;top:0;width:2px;height:18px;}
-  .cross::after{top:8px;left:0;height:2px;width:18px;}
-  .volt .cross::before,.volt .cross::after{background:rgba(7,7,11,0.45);}
+    html,
+    body {
+      background: #000;
+    }
 
-  /* chrome */
-  .top{position:relative;z-index:8;display:flex;align-items:center;justify-content:space-between;}
-  .tag{font-family:"JetBrains Mono",monospace;font-size:14px;font-weight:700;letter-spacing:0.26em;text-transform:uppercase;color:var(--volt);display:flex;align-items:center;gap:12px;}
-  .volt .tag{color:var(--void);}
-  .tag .sq{width:9px;height:9px;background:var(--volt);box-shadow:0 0 12px var(--volt);}
-  .volt .tag .sq{background:var(--void);box-shadow:none;}
-  .meta{font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:500;color:var(--zinc3);letter-spacing:0.1em;}
-  .volt .meta{color:rgba(7,7,11,0.45);}
+    .display {
+      font-family: "Bricolage Grotesque", sans-serif;
+    }
 
-  .body{position:relative;z-index:8;flex:1;display:flex;flex-direction:column;justify-content:center;min-height:0;}
-  h1{font-family:"Bricolage Grotesque";font-weight:800;text-transform:uppercase;letter-spacing:-0.025em;line-height:0.9;}
-  .av{color:var(--volt);} .al{color:var(--lilac);}
-  .vglow{color:var(--volt);text-shadow:0 0 32px rgba(204,242,68,0.55);}
-  .lead{font-size:20px;line-height:1.5;color:var(--zinc);font-weight:500;}
+    .serif {
+      font-family: "Instrument Serif", serif;
+      font-style: italic;
+      font-weight: 400;
+    }
 
-  .foot{position:relative;z-index:8;display:flex;align-items:center;gap:13px;padding-top:16px;border-top:1.5px solid var(--edge);}
-  .volt .foot{border-color:rgba(7,7,11,0.2);}
-  .foot .nm{font-family:"Bricolage Grotesque";font-weight:800;font-size:16px;}
-  .foot .ft{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;letter-spacing:0.14em;color:var(--zinc3);text-transform:uppercase;}
-  .volt .foot .ft{color:rgba(7,7,11,0.5);}
+    .mono {
+      font-family: "JetBrains Mono", monospace;
+    }
 
-  .chip{border:1.5px solid var(--edge2);border-radius:999px;padding:9px 16px;font-family:"JetBrains Mono",monospace;font-size:13px;font-weight:700;color:var(--zinc);}
-  .chip b{color:var(--volt);}
+    .slide {
+      width: 1280px;
+      height: 720px;
+      position: relative;
+      overflow: hidden;
+      font-family: "Inter", sans-serif;
+      background: var(--void);
+      color: #f4f4f5;
+    }
 
-  @page{size:1280px 720px;margin:0;}
-  @media print{.slide{page-break-after:always;}}
-  body.single .slide{display:none;}
-  body.single .slide.show{display:block;}
-</style>
+    .slide.volt {
+      background: var(--volt);
+      color: var(--void);
+    }
+
+    .inner {
+      position: absolute;
+      inset: 0;
+      z-index: 6;
+      padding: 58px 64px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* textures */
+    .grid {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+      background-size: 64px 64px;
+    }
+
+    .volt .grid {
+      background-image:
+        linear-gradient(rgba(7, 7, 11, 0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(7, 7, 11, 0.07) 1px, transparent 1px);
+    }
+
+    .scan {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.4;
+      background: repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 4px);
+    }
+
+    .grain {
+      position: absolute;
+      inset: -40%;
+      width: 180%;
+      height: 180%;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 0.06;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    .glow {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(130px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .ghost {
+      position: absolute;
+      z-index: 1;
+      font-family: "Bricolage Grotesque";
+      font-weight: 800;
+      line-height: 0.8;
+      letter-spacing: -0.04em;
+      pointer-events: none;
+      -webkit-text-stroke: 2px rgba(204, 242, 68, 0.10);
+      color: transparent;
+    }
+
+    .cross {
+      position: absolute;
+      z-index: 7;
+      width: 18px;
+      height: 18px;
+      pointer-events: none;
+    }
+
+    .cross::before,
+    .cross::after {
+      content: "";
+      position: absolute;
+      background: rgba(204, 242, 68, 0.5);
+    }
+
+    .cross::before {
+      left: 8px;
+      top: 0;
+      width: 2px;
+      height: 18px;
+    }
+
+    .cross::after {
+      top: 8px;
+      left: 0;
+      height: 2px;
+      width: 18px;
+    }
+
+    .volt .cross::before,
+    .volt .cross::after {
+      background: rgba(7, 7, 11, 0.45);
+    }
+
+    /* chrome */
+    .top {
+      position: relative;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .tag {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--volt);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .volt .tag {
+      color: var(--void);
+    }
+
+    .tag .sq {
+      width: 9px;
+      height: 9px;
+      background: var(--volt);
+      box-shadow: 0 0 12px var(--volt);
+    }
+
+    .volt .tag .sq {
+      background: var(--void);
+      box-shadow: none;
+    }
+
+    .meta {
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--zinc3);
+      letter-spacing: 0.1em;
+    }
+
+    .volt .meta {
+      color: rgba(7, 7, 11, 0.45);
+    }
+
+    .body {
+      position: relative;
+      z-index: 8;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 0;
+    }
+
+    h1 {
+      font-family: "Bricolage Grotesque";
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: -0.025em;
+      line-height: 0.9;
+    }
+
+    .av {
+      color: var(--volt);
+    }
+
+    .al {
+      color: var(--lilac);
+    }
+
+    .vglow {
+      color: var(--volt);
+      text-shadow: 0 0 32px rgba(204, 242, 68, 0.55);
+    }
+
+    .lead {
+      font-size: 20px;
+      line-height: 1.5;
+      color: var(--zinc);
+      font-weight: 500;
+    }
+
+    .foot {
+      position: relative;
+      z-index: 8;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding-top: 16px;
+      border-top: 1.5px solid var(--edge);
+    }
+
+    .volt .foot {
+      border-color: rgba(7, 7, 11, 0.2);
+    }
+
+    .foot .nm {
+      font-family: "Bricolage Grotesque";
+      font-weight: 800;
+      font-size: 16px;
+    }
+
+    .foot .ft {
+      margin-left: auto;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      color: var(--zinc3);
+      text-transform: uppercase;
+    }
+
+    .volt .foot .ft {
+      color: rgba(7, 7, 11, 0.5);
+    }
+
+    .chip {
+      border: 1.5px solid var(--edge2);
+      border-radius: 999px;
+      padding: 9px 16px;
+      font-family: "JetBrains Mono", monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--zinc);
+    }
+
+    .chip b {
+      color: var(--volt);
+    }
+
+    @page {
+      size: 1280px 720px;
+      margin: 0;
+    }
+
+    @media print {
+      .slide {
+        page-break-after: always;
+      }
+    }
+
+    body.single .slide {
+      display: none;
+    }
+
+    body.single .slide.show {
+      display: block;
+    }
+  </style>
 </head>
+
 <body>
-<div id="deck"></div>
-<script>
-const BOLT=(f,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${f==='volt'?'#ccf244':'#07070b'}"/><path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="${f==='volt'?'#07070b':'#ccf244'}"/></svg>`;
-const BOLT_ONLY=(c,s)=>`<svg width="${s}" height="${s}" viewBox="0 0 64 64"><path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="${c}"/></svg>`;
-const CROSSES=`<div class="cross" style="top:22px;left:22px;"></div><div class="cross" style="top:22px;right:22px;"></div><div class="cross" style="bottom:22px;left:22px;"></div><div class="cross" style="bottom:22px;right:22px;"></div>`;
+  <div id="deck"></div>
+  <script>
+    const BOLT = (f, s) => `<svg width="${s}" height="${s}" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="${f === 'volt' ? '#ccf244' : '#07070b'}"/><path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="${f === 'volt' ? '#07070b' : '#ccf244'}"/></svg>`;
+    const BOLT_ONLY = (c, s) => `<svg width="${s}" height="${s}" viewBox="0 0 64 64"><path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="${c}"/></svg>`;
+    const CROSSES = `<div class="cross" style="top:22px;left:22px;"></div><div class="cross" style="top:22px;right:22px;"></div><div class="cross" style="bottom:22px;left:22px;"></div><div class="cross" style="bottom:22px;right:22px;"></div>`;
 
-const S=[];
+    const S = [];
 
-// ============ 1 COVER ============
-S.push({theme:'',ghost:'',html:`
+    // ============ 1 COVER ============
+    S.push({
+      theme: '', ghost: '', html: `
   <div class="glow" style="width:680px;height:680px;background:rgba(204,242,68,0.16);top:-220px;left:50%;transform:translateX(-50%);"></div>
   <div class="glow" style="width:520px;height:520px;background:rgba(181,161,255,0.14);bottom:-220px;right:-120px;"></div>
   <!-- radiating starburst -->
   <svg width="1280" height="720" style="position:absolute;inset:0;z-index:2;opacity:0.5;" viewBox="0 0 1280 720">
-    ${Array.from({length:40}).map((_,i)=>{const a=(i/40)*Math.PI*2;const x1=640+Math.cos(a)*120,y1=300+Math.sin(a)*120,x2=640+Math.cos(a)*900,y2=300+Math.sin(a)*900;return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(204,242,68,${i%2?0.05:0.09})" stroke-width="1"/>`}).join('')}
+    ${Array.from({ length: 40 }).map((_, i) => { const a = (i / 40) * Math.PI * 2; const x1 = 640 + Math.cos(a) * 120, y1 = 300 + Math.sin(a) * 120, x2 = 640 + Math.cos(a) * 900, y2 = 300 + Math.sin(a) * 900; return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(204,242,68,${i % 2 ? 0.05 : 0.09})" stroke-width="1"/>` }).join('')}
   </svg>
   <div class="inner" style="align-items:center;text-align:center;justify-content:space-between;">
     <div class="top" style="width:100%;"><div class="tag"><span class="sq"></span>Investor Brief // Pre-Seed</div><div class="meta">DUBAI · 2026 · CONFIDENTIAL</div></div>
     <div class="body" style="align-items:center;">
-      <div style="filter:drop-shadow(0 0 40px rgba(204,242,68,0.5));margin-bottom:26px;">${BOLT('volt',92)}</div>
+      <div style="filter:drop-shadow(0 0 40px rgba(204,242,68,0.5));margin-bottom:26px;">${BOLT('volt', 92)}</div>
       <h1 style="font-size:104px;">AI FOUNDER HUB</h1>
       <div class="serif" style="font-size:44px;color:#e9e9ec;margin-top:14px;">Dubai's launchpad for <span class="av" style="font-style:italic;">AI builders.</span></div>
       <div class="mono" style="font-size:15px;font-weight:700;letter-spacing:0.5em;color:var(--volt);margin-top:30px;">IDEA → APP → INCOME</div>
     </div>
-    <div class="foot" style="width:100%;">${BOLT('volt',28)}<span class="nm">Ahmed Al Kindi &amp; Zain Ul Abaideen</span><span class="ft">Prepared for someone who already knows us</span></div>
+    <div class="foot" style="width:100%;">${BOLT('volt', 28)}<span class="nm">Ahmed Al Kindi &amp; Zain Ul Abaideen</span><span class="ft">Prepared for someone who already knows us</span></div>
   </div>
 `});
 
-// ============ 2 PROBLEM (the gap) ============
-S.push({theme:'',ghost:'01',html:`
+    // ============ 2 PROBLEM (the gap) ============
+    S.push({
+      theme: '', ghost: '01', html: `
   <div class="glow" style="width:420px;height:420px;background:rgba(239,68,68,0.10);top:30%;left:42%;"></div>
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>The Problem</div><div class="meta">S.02 / 13</div></div>
@@ -135,12 +383,13 @@ S.push({theme:'',ghost:'01',html:`
         <div class="chip">Founders stay <b>locked out</b></div>
       </div>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">Completion stat: SNS Insider 2026</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">Completion stat: SNS Insider 2026</span></div>
   </div>
 `});
 
-// ============ 3 SOLUTION (bridge built) ============
-S.push({theme:'',ghost:'02',html:`
+    // ============ 3 SOLUTION (bridge built) ============
+    S.push({
+      theme: '', ghost: '02', html: `
   <div class="glow" style="width:480px;height:480px;background:rgba(204,242,68,0.12);top:20%;right:-100px;"></div>
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>The Solution</div><div class="meta">S.03 / 13</div></div>
@@ -153,23 +402,24 @@ S.push({theme:'',ghost:'02',html:`
         <text x="1000" y="62" text-anchor="middle" fill="#07070b" font-family="Bricolage Grotesque" font-weight="800" font-size="24" letter-spacing="-1">LIVE PRODUCT</text>
         <!-- solid glowing bridge -->
         <path d="M280 120 Q 575 30 870 60" stroke="#ccf244" stroke-width="5" fill="none" filter="drop-shadow(0 0 10px rgba(204,242,68,0.6))"/>
-        ${['Community','Masterclass','Bootcamp','1:1'].map((t,i)=>{const x=350+i*180;const y=120-(i*22)-(i>1?6:0);return `<circle cx="${x}" cy="${108-i*22}" r="7" fill="#07070b" stroke="#ccf244" stroke-width="2.5"/><text x="${x}" y="${145-i*22}" text-anchor="middle" fill="#a1a1aa" font-family="JetBrains Mono" font-size="12" font-weight="700">${t}</text>`}).join('')}
+        ${['Community', 'Masterclass', 'Bootcamp', '1:1'].map((t, i) => { const x = 350 + i * 180; const y = 120 - (i * 22) - (i > 1 ? 6 : 0); return `<circle cx="${x}" cy="${108 - i * 22}" r="7" fill="#07070b" stroke="#ccf244" stroke-width="2.5"/><text x="${x}" y="${145 - i * 22}" text-anchor="middle" fill="#a1a1aa" font-family="JetBrains Mono" font-size="12" font-weight="700">${t}</text>` }).join('')}
       </svg>
       <p class="lead" style="margin-top:18px;max-width:900px;">A community plus a structured program that turns non-technical people into AI builders. You leave with <span style="color:#fff;font-weight:700;">a real product</span>, not a certificate.</p>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">Learn it. Build it. Get paid for it.</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">Learn it. Build it. Get paid for it.</span></div>
   </div>
 `});
 
-// ============ 4 PRODUCT ============
-S.push({theme:'',ghost:'03',html:`
+    // ============ 4 PRODUCT ============
+    S.push({
+      theme: '', ghost: '03', html: `
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Product</div><div class="meta">S.04 / 13</div></div>
     <div class="body" style="flex-direction:row;gap:56px;align-items:center;">
       <div style="flex:1;">
         <h1 style="font-size:62px;">Already built.<br/><span class="vglow">Already live.</span></h1>
         <div style="display:flex;flex-direction:column;gap:14px;margin-top:30px;">
-          ${['Production website + live AI-build demo','Signup funnel wired into a CRM','Full brand identity + 9-post launch kit','Complete curriculum, four pathways'].map(t=>`<div style="display:flex;align-items:center;gap:14px;font-size:18px;font-weight:600;"><span style="width:28px;height:28px;border-radius:8px;background:var(--volt);color:var(--void);display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;">✓</span>${t}</div>`).join('')}
+          ${['Production website + live AI-build demo', 'Signup funnel wired into a CRM', 'Full brand identity + 9-post launch kit', 'Complete curriculum, four pathways'].map(t => `<div style="display:flex;align-items:center;gap:14px;font-size:18px;font-weight:600;"><span style="width:28px;height:28px;border-radius:8px;background:var(--volt);color:var(--void);display:flex;align-items:center;justify-content:center;font-weight:900;flex-shrink:0;">✓</span>${t}</div>`).join('')}
         </div>
         <div class="chip" style="margin-top:26px;display:inline-flex;border-color:var(--volt);color:var(--volt);">An investor funds launch, not discovery</div>
       </div>
@@ -190,12 +440,13 @@ S.push({theme:'',ghost:'03',html:`
         </div>
       </div>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">A working asset, not a slide idea</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">A working asset, not a slide idea</span></div>
   </div>
 `});
 
-// ============ 5 AI GROWTH ENGINE (flywheel) ============
-S.push({theme:'',ghost:'04',html:`
+    // ============ 5 AI GROWTH ENGINE (flywheel) ============
+    S.push({
+      theme: '', ghost: '04', html: `
   <div class="glow" style="width:560px;height:560px;background:rgba(181,161,255,0.13);top:50%;left:30%;transform:translateY(-50%);"></div>
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>The Differentiator</div><div class="meta">S.05 / 13</div></div>
@@ -219,7 +470,7 @@ S.push({theme:'',ghost:'04',html:`
           <!-- orbit ring -->
           <circle cx="270" cy="210" r="155" fill="none" stroke="rgba(204,242,68,0.18)" stroke-width="1.5" stroke-dasharray="3 8"/>
           <!-- connectors -->
-          ${[[270,55,'top'],[105,300,'bl'],[435,300,'br']].map(([x,y])=>`<line x1="270" y1="210" x2="${x}" y2="${y}" stroke="rgba(204,242,68,0.35)" stroke-width="2" marker-end="url(#ar)"/>`).join('')}
+          ${[[270, 55, 'top'], [105, 300, 'bl'], [435, 300, 'br']].map(([x, y]) => `<line x1="270" y1="210" x2="${x}" y2="${y}" stroke="rgba(204,242,68,0.35)" stroke-width="2" marker-end="url(#ar)"/>`).join('')}
           <!-- flywheel loop arrows -->
           <path d="M 270 35 A 175 175 0 0 1 425 295" fill="none" stroke="rgba(181,161,255,0.5)" stroke-width="2.5" marker-end="url(#ar)"/>
           <path d="M 425 320 A 175 175 0 0 1 115 320" fill="none" stroke="rgba(181,161,255,0.5)" stroke-width="2.5" marker-end="url(#ar)"/>
@@ -229,19 +480,20 @@ S.push({theme:'',ghost:'04',html:`
           <text x="270" y="203" text-anchor="middle" fill="#07070b" font-family="Bricolage Grotesque" font-weight="800" font-size="16">AI FOUNDER</text>
           <text x="270" y="224" text-anchor="middle" fill="#07070b" font-family="Bricolage Grotesque" font-weight="800" font-size="16">HUB</text>
           <!-- agent nodes -->
-          ${[[270,55,'✍️','CONTENT'],[105,300,'💬','ENGAGE'],[435,300,'🎯','BUDGET']].map(([x,y,e,t])=>`
+          ${[[270, 55, '✍️', 'CONTENT'], [105, 300, '💬', 'ENGAGE'], [435, 300, '🎯', 'BUDGET']].map(([x, y, e, t]) => `
             <circle cx="${x}" cy="${y}" r="46" fill="#0d0d14" stroke="#ccf244" stroke-width="2"/>
-            <text x="${x}" y="${y-4}" text-anchor="middle" font-size="26">${e}</text>
-            <text x="${x}" y="${y+24}" text-anchor="middle" fill="#ccf244" font-family="JetBrains Mono" font-weight="700" font-size="13">${t}</text>`).join('')}
+            <text x="${x}" y="${y - 4}" text-anchor="middle" font-size="26">${e}</text>
+            <text x="${x}" y="${y + 24}" text-anchor="middle" fill="#ccf244" font-family="JetBrains Mono" font-weight="700" font-size="13">${t}</text>`).join('')}
         </svg>
       </div>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">Agentic AI market: $7.6B → $52.6B by 2030</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">Agentic AI market: $7.6B → $52.6B by 2030</span></div>
   </div>
 `});
 
-// ============ 6 BUSINESS MODEL (ladder) ============
-S.push({theme:'',ghost:'05',html:`
+    // ============ 6 BUSINESS MODEL (ladder) ============
+    S.push({
+      theme: '', ghost: '05', html: `
   <div class="glow" style="width:480px;height:480px;background:rgba(204,242,68,0.10);bottom:-160px;right:10%;"></div>
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Business Model</div><div class="meta">S.06 / 13</div></div>
@@ -249,27 +501,28 @@ S.push({theme:'',ghost:'05',html:`
       <h1 style="font-size:54px;">A revenue <span class="vglow serif" style="text-transform:none;letter-spacing:0;">ladder,</span> not one product.</h1>
       <div style="display:flex;align-items:flex-end;gap:16px;margin-top:40px;height:320px;">
         ${[
-          {h:80,t:'FREE',s:'Masterclasses',d:'Lead gen',o:0.16,solid:0},
-          {h:150,t:'$49.99/mo',s:'Membership',d:'All-access',o:0.34,solid:0},
-          {h:225,t:'$249',s:'Bootcamp',d:'4 wks · 4 paths',o:0.62,solid:0},
-          {h:300,t:'$299/hr',s:'1:1 Founder',d:'Premium',o:1,solid:1},
-        ].map((b,i)=>`
+          { h: 80, t: 'FREE', s: 'Masterclasses', d: 'Lead gen', o: 0.16, solid: 0 },
+          { h: 150, t: '$49.99/mo', s: 'Membership', d: 'All-access', o: 0.34, solid: 0 },
+          { h: 225, t: '$249', s: 'Bootcamp', d: '4 wks · 4 paths', o: 0.62, solid: 0 },
+          { h: 300, t: '$299/hr', s: '1:1 Founder', d: 'Premium', o: 1, solid: 1 },
+        ].map((b, i) => `
           <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:12px;">
             <div class="display vglow" style="font-weight:800;font-size:30px;">${b.t}</div>
-            <div style="width:100%;height:${b.h}px;border-radius:14px 14px 0 0;background:${b.solid?'linear-gradient(180deg,#ccf244,#9dc41c)':'rgba(204,242,68,'+b.o+')'};border:1.5px solid ${b.solid?'transparent':'var(--edge2)'};padding:18px;${b.solid?'filter:drop-shadow(0 0 24px rgba(204,242,68,0.45));':''}">
-              <div class="display" style="font-weight:800;font-size:20px;text-transform:uppercase;color:${b.solid?'var(--void)':'#fff'};">${b.s}</div>
-              <div class="mono" style="font-size:12px;margin-top:6px;color:${b.solid?'rgba(7,7,11,0.6)':'var(--zinc2)'};font-weight:700;">${b.d}</div>
+            <div style="width:100%;height:${b.h}px;border-radius:14px 14px 0 0;background:${b.solid ? 'linear-gradient(180deg,#ccf244,#9dc41c)' : 'rgba(204,242,68,' + b.o + ')'};border:1.5px solid ${b.solid ? 'transparent' : 'var(--edge2)'};padding:18px;${b.solid ? 'filter:drop-shadow(0 0 24px rgba(204,242,68,0.45));' : ''}">
+              <div class="display" style="font-weight:800;font-size:20px;text-transform:uppercase;color:${b.solid ? 'var(--void)' : '#fff'};">${b.s}</div>
+              <div class="mono" style="font-size:12px;margin-top:6px;color:${b.solid ? 'rgba(7,7,11,0.6)' : 'var(--zinc2)'};font-weight:700;">${b.d}</div>
             </div>
           </div>`).join('')}
       </div>
       <p class="mono" style="font-size:13px;color:var(--zinc3);margin-top:18px;font-weight:700;letter-spacing:0.06em;">EACH TIER FEEDS THE NEXT · PLUS FREE + PAID DUBAI EVENTS</p>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">Four stacked revenue streams</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">Four stacked revenue streams</span></div>
   </div>
 `});
 
-// ============ 7 MARKET (orbits) ============
-S.push({theme:'',ghost:'06',html:`
+    // ============ 7 MARKET (orbits) ============
+    S.push({
+      theme: '', ghost: '06', html: `
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Market &amp; Why Now</div><div class="meta">S.07 / 13</div></div>
     <div class="body" style="flex-direction:row;gap:24px;align-items:center;">
@@ -292,7 +545,7 @@ S.push({theme:'',ghost:'06',html:`
       <div style="flex:1;">
         <h1 style="font-size:44px;">Right skill.<br/>Right city.<br/><span class="vglow">Right moment.</span></h1>
         <div style="display:flex;flex-direction:column;gap:14px;margin-top:24px;">
-          ${[['1B+','workers need reskilling by 2030, AI the top skill','WEF 2025'],['10→85%','completion lift from cohort learning','SNS Insider'],['AED 335B','UAE AI economy target by 2031','UAE AI Office']].map(([n,t,s])=>`
+          ${[['1B+', 'workers need reskilling by 2030, AI the top skill', 'WEF 2025'], ['10→85%', 'completion lift from cohort learning', 'SNS Insider'], ['AED 335B', 'UAE AI economy target by 2031', 'UAE AI Office']].map(([n, t, s]) => `
             <div style="display:flex;align-items:center;gap:16px;">
               <div class="display vglow" style="font-weight:800;font-size:30px;min-width:130px;">${n}</div>
               <div><div style="font-size:15px;font-weight:600;color:#e4e4e7;line-height:1.3;">${t}</div><div class="mono" style="font-size:11px;color:var(--zinc3);margin-top:3px;">${s}</div></div>
@@ -300,21 +553,22 @@ S.push({theme:'',ghost:'06',html:`
         </div>
       </div>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">SAM / SOM are forward estimates, pre-launch</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">SAM / SOM are forward estimates, pre-launch</span></div>
   </div>
 `});
 
-// ============ 8 STATUS (build log) ============
-S.push({theme:'',ghost:'07',html:`
+    // ============ 8 STATUS (build log) ============
+    S.push({
+      theme: '', ghost: '07', html: `
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Status</div><div class="meta">S.08 / 13</div></div>
     <div class="body">
       <h1 style="font-size:56px;">Pre-launch, but <span class="vglow serif" style="text-transform:none;letter-spacing:0;">far from zero.</span></h1>
       <div style="border:1.5px solid var(--edge2);border-radius:16px;background:#0a0a10;padding:30px 34px;margin-top:30px;font-family:'JetBrains Mono',monospace;">
-        ${[['build:brand','done','✓ DONE'],['build:website + CRM funnel','done','✓ DONE'],['build:curriculum + launch kit','done','✓ DONE'],['run:AI growth agents','wip','▸ IN PROGRESS'],['run:member platform + license','wip','▸ IN PROGRESS'],['data:members / revenue','none','○ NONE YET, HONESTLY']].map(([k,st,lbl])=>{
-          const col=st==='done'?'#ccf244':st==='wip'?'#b5a1ff':'#71717a';
-          const w=st==='done'?100:st==='wip'?55:0;
-          return `<div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;">
+        ${[['build:brand', 'done', '✓ DONE'], ['build:website + CRM funnel', 'done', '✓ DONE'], ['build:curriculum + launch kit', 'done', '✓ DONE'], ['run:AI growth agents', 'wip', '▸ IN PROGRESS'], ['run:member platform + license', 'wip', '▸ IN PROGRESS'], ['data:members / revenue', 'none', '○ NONE YET, HONESTLY']].map(([k, st, lbl]) => {
+        const col = st === 'done' ? '#ccf244' : st === 'wip' ? '#b5a1ff' : '#71717a';
+        const w = st === 'done' ? 100 : st === 'wip' ? 55 : 0;
+        return `<div style="display:flex;align-items:center;gap:18px;margin-bottom:16px;">
             <span style="flex:0 0 380px;font-size:16px;color:#e4e4e7;font-weight:500;"><span style="color:var(--zinc3);">$</span> ${k}</span>
             <span style="flex:1;height:9px;border-radius:6px;background:rgba(255,255,255,0.06);overflow:hidden;"><span style="display:block;height:100%;width:${w}%;background:${col};"></span></span>
             <span style="flex:0 0 200px;text-align:right;font-size:13px;font-weight:700;color:${col};">${lbl}</span>
@@ -322,12 +576,13 @@ S.push({theme:'',ghost:'07',html:`
       </div>
       <p class="lead" style="margin-top:20px;font-size:17px;">This deck sells the plan, the team, and the work already done. Not numbers that do not exist.</p>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">Honesty is the brand</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">Honesty is the brand</span></div>
   </div>
 `});
 
-// ============ 9 GTM (funnel) ============
-S.push({theme:'',ghost:'08',html:`
+    // ============ 9 GTM (funnel) ============
+    S.push({
+      theme: '', ghost: '08', html: `
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Go-To-Market</div><div class="meta">S.09 / 13</div></div>
     <div class="body" style="flex-direction:row;gap:40px;align-items:center;">
@@ -335,32 +590,35 @@ S.push({theme:'',ghost:'08',html:`
         <h1 style="font-size:50px;">A funnel our <span class="vglow">agents</span> run for us.</h1>
         <p class="lead" style="margin-top:18px;max-width:440px;">Agents publish content at near-zero marginal cost. Every step is measured, tested, and optimized by AI, not by hires.</p>
         <div style="display:flex;flex-direction:column;gap:10px;margin-top:24px;">
-          ${[['Organic reach','agents publish daily'],['Free signups','the Friday lead magnet'],['Membership + bootcamp','$49.99 + $249'],['1:1 sessions','$299/hr premium']].map(([a,b],i)=>`<div style="display:flex;align-items:baseline;gap:12px;"><span class="mono" style="color:var(--volt);font-weight:700;font-size:14px;">0${i+1}</span><span style="font-size:16px;font-weight:600;">${a}</span><span class="mono" style="font-size:12px;color:var(--zinc3);">${b}</span></div>`).join('')}
+          ${[['Organic reach', 'agents publish daily'], ['Free signups', 'the Friday lead magnet'], ['Membership + bootcamp', '$49.99 + $249'], ['1:1 sessions', '$299/hr premium']].map(([a, b], i) => `<div style="display:flex;align-items:baseline;gap:12px;"><span class="mono" style="color:var(--volt);font-weight:700;font-size:14px;">0${i + 1}</span><span style="font-size:16px;font-weight:600;">${a}</span><span class="mono" style="font-size:12px;color:var(--zinc3);">${b}</span></div>`).join('')}
         </div>
       </div>
       <!-- funnel svg -->
       <div style="flex:1;display:flex;justify-content:center;">
         <svg width="470" height="424" viewBox="0 0 470 424">
           ${[
-            {w:452,label:'AGENTS PUBLISH',op:0.20},
-            {w:368,label:'FREE SIGNUPS',op:0.42},
-            {w:286,label:'MEMBERSHIP',op:0.66},
-            {w:212,label:'1:1 SESSIONS',solid:true},
-          ].map((s,i)=>{const w=s.w;const x=(470-w)/2;const y=16+i*98;const h=82;
-            const fill=s.solid?'#ccf244':'rgba(204,242,68,'+s.op+')';
-            const txt=s.solid?'#07070b':'#ffffff';
-            return `<path d="M${x} ${y} H${x+w} L${x+w-28} ${y+h} H${x+28} Z" fill="${fill}" stroke="rgba(204,242,68,0.30)" stroke-width="1" ${s.solid?'filter="drop-shadow(0 0 18px rgba(204,242,68,0.45))"':''}/>
-            <text x="235" y="${y+h/2+6}" text-anchor="middle" fill="${txt}" font-family="Bricolage Grotesque" font-weight="800" font-size="17" letter-spacing="-0.5">${s.label}</text>`}).join('')}
+          { w: 452, label: 'AGENTS PUBLISH', op: 0.20 },
+          { w: 368, label: 'FREE SIGNUPS', op: 0.42 },
+          { w: 286, label: 'MEMBERSHIP', op: 0.66 },
+          { w: 212, label: '1:1 SESSIONS', solid: true },
+        ].map((s, i) => {
+          const w = s.w; const x = (470 - w) / 2; const y = 16 + i * 98; const h = 82;
+          const fill = s.solid ? '#ccf244' : 'rgba(204,242,68,' + s.op + ')';
+          const txt = s.solid ? '#07070b' : '#ffffff';
+          return `<path d="M${x} ${y} H${x + w} L${x + w - 28} ${y + h} H${x + 28} Z" fill="${fill}" stroke="rgba(204,242,68,0.30)" stroke-width="1" ${s.solid ? 'filter="drop-shadow(0 0 18px rgba(204,242,68,0.45))"' : ''}/>
+            <text x="235" y="${y + h / 2 + 6}" text-anchor="middle" fill="${txt}" font-family="Bricolage Grotesque" font-weight="800" font-size="17" letter-spacing="-0.5">${s.label}</text>`
+        }).join('')}
           <path d="M235 410 l-9 -13 h18 Z" fill="rgba(204,242,68,0.6)"/>
         </svg>
       </div>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">Low-cost acquisition by design</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">Low-cost acquisition by design</span></div>
   </div>
 `});
 
-// ============ 10 FINANCIALS (growth curve) ============
-S.push({theme:'',ghost:'09',html:`
+    // ============ 10 FINANCIALS (growth curve) ============
+    S.push({
+      theme: '', ghost: '09', html: `
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Financials // Conservative Case</div><div class="meta">S.10 / 13</div></div>
     <div class="body" style="flex-direction:row;gap:40px;align-items:center;">
@@ -369,34 +627,37 @@ S.push({theme:'',ghost:'09',html:`
         <svg width="600" height="300" viewBox="0 0 600 300" style="margin-top:18px;">
           <defs><linearGradient id="area" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="rgba(204,242,68,0.55)"/><stop offset="1" stop-color="rgba(204,242,68,0.02)"/></linearGradient></defs>
           <!-- gridlines -->
-          ${[0,1,2,3].map(i=>`<line x1="40" y1="${30+i*60}" x2="580" y2="${30+i*60}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`).join('')}
+          ${[0, 1, 2, 3].map(i => `<line x1="40" y1="${30 + i * 60}" x2="580" y2="${30 + i * 60}" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>`).join('')}
           <!-- data: MRR 540,1397,2500,3811,5399,7216 over max 7216 -->
-          ${(()=>{const d=[540,1397,2500,3811,5399,7216];const max=7216;const pts=d.map((v,i)=>[40+i*108,250-(v/max*210)]);
-            const area=`M40 250 `+pts.map(p=>`L${p[0]} ${p[1]}`).join(' ')+` L${pts[5][0]} 250 Z`;
-            const line=`M`+pts.map(p=>`${p[0]} ${p[1]}`).join(' L');
-            const bars=d.map((v,i)=>`<rect x="${28+i*108}" y="${250-(v/max*210)}" width="24" height="${v/max*210}" rx="3" fill="rgba(204,242,68,0.14)"/>`).join('');
-            const dots=pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#ccf244" filter="drop-shadow(0 0 6px rgba(204,242,68,0.8))"/><text x="${p[0]}" y="${p[1]-14}" text-anchor="middle" fill="#ccf244" font-family="JetBrains Mono" font-weight="700" font-size="12">$${(d[i]/1000).toFixed(1)}K</text>`).join('');
-            const labels=['Q1','Q2','Q3','Q4','Q5','Q6'].map((q,i)=>`<text x="${40+i*108}" y="278" text-anchor="middle" fill="#71717a" font-family="JetBrains Mono" font-weight="700" font-size="13">${q}</text>`).join('');
-            return bars+`<path d="${area}" fill="url(#area)"/><path d="${line}" fill="none" stroke="#ccf244" stroke-width="3"/>`+dots+labels;})()}
+          ${(() => {
+          const d = [540, 1397, 2500, 3811, 5399, 7216]; const max = 7216; const pts = d.map((v, i) => [40 + i * 108, 250 - (v / max * 210)]);
+          const area = `M40 250 ` + pts.map(p => `L${p[0]} ${p[1]}`).join(' ') + ` L${pts[5][0]} 250 Z`;
+          const line = `M` + pts.map(p => `${p[0]} ${p[1]}`).join(' L');
+          const bars = d.map((v, i) => `<rect x="${28 + i * 108}" y="${250 - (v / max * 210)}" width="24" height="${v / max * 210}" rx="3" fill="rgba(204,242,68,0.14)"/>`).join('');
+          const dots = pts.map((p, i) => `<circle cx="${p[0]}" cy="${p[1]}" r="5" fill="#ccf244" filter="drop-shadow(0 0 6px rgba(204,242,68,0.8))"/><text x="${p[0]}" y="${p[1] - 14}" text-anchor="middle" fill="#ccf244" font-family="JetBrains Mono" font-weight="700" font-size="12">$${(d[i] / 1000).toFixed(1)}K</text>`).join('');
+          const labels = ['Q1', 'Q2', 'Q3', 'Q4', 'Q5', 'Q6'].map((q, i) => `<text x="${40 + i * 108}" y="278" text-anchor="middle" fill="#71717a" font-family="JetBrains Mono" font-weight="700" font-size="13">${q}</text>`).join('');
+          return bars + `<path d="${area}" fill="url(#area)"/><path d="${line}" fill="none" stroke="#ccf244" stroke-width="3"/>` + dots + labels;
+        })()}
           <!-- break-even marker -->
           <line x1="148" y1="20" x2="148" y2="255" stroke="#b5a1ff" stroke-width="1.5" stroke-dasharray="4 4"/>
           <text x="153" y="32" fill="#b5a1ff" font-family="JetBrains Mono" font-weight="700" font-size="11">BREAK-EVEN ~M5</text>
         </svg>
       </div>
       <div style="flex:0.85;display:flex;flex-direction:column;gap:11px;">
-        ${[['Member LTV','~$600','12.5-mo life, before upsells'],['LTV : CAC','2.3:1','$600 vs ~$259 paid CAC; ~5.8:1 blended'],['Break-even','~Month 5','durable M7 · cumulative +M9'],['Run-rate by M18','~$87K ARR','~144 members, upside excluded']].map(([k,v,d])=>`
+        ${[['Member LTV', '~$600', '12.5-mo life, before upsells'], ['LTV : CAC', '2.3:1', '$600 vs ~$259 paid CAC; ~5.8:1 blended'], ['Break-even', '~Month 5', 'durable M7 · cumulative +M9'], ['Run-rate by M18', '~$87K ARR', '~144 members, upside excluded']].map(([k, v, d]) => `
           <div style="border:1.5px solid var(--edge2);border-radius:14px;padding:16px 20px;background:rgba(255,255,255,0.02);display:flex;align-items:center;justify-content:space-between;gap:12px;">
             <div><div class="display" style="font-weight:800;font-size:15px;text-transform:uppercase;">${k}</div><div class="mono" style="font-size:10.5px;color:var(--zinc3);margin-top:3px;">${d}</div></div>
             <div class="display vglow" style="font-weight:800;font-size:26px;white-space:nowrap;">${v}</div>
           </div>`).join('')}
       </div>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">3.5% conversion · 8% churn · assumed inputs, no actuals yet</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">3.5% conversion · 8% churn · assumed inputs, no actuals yet</span></div>
   </div>
 `});
 
-// ============ 11 TEAM ============
-S.push({theme:'',ghost:'10',html:`
+    // ============ 11 TEAM ============
+    S.push({
+      theme: '', ghost: '10', html: `
   <div class="glow" style="width:440px;height:440px;background:rgba(181,161,255,0.10);bottom:-160px;left:0;"></div>
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>Team</div><div class="meta">S.11 / 13</div></div>
@@ -404,26 +665,27 @@ S.push({theme:'',ghost:'10',html:`
       <h1 style="font-size:50px;">Business and AI, <span class="al serif" style="text-transform:none;letter-spacing:0;">side by side.</span></h1>
       <div style="display:flex;gap:20px;margin-top:30px;">
         ${[
-          {in:'AH',nm:'Ahmed Al Kindi',role:'COFOUNDER · GROWTH & SYSTEMS',grad:'linear-gradient(135deg,#ccf244,#34d399)',col:'var(--volt)',bio:'Founder of TSB Labs and cofounder of Devmate Solutions. Author of The System Builder and a GCC Top 20 Entrepreneur.',tags:['TSB Labs','Devmate','The System Builder','GCC Top 20']},
-          {in:'ZA',nm:'Zain Ul Abaideen',role:'COFOUNDER & CTO',grad:'linear-gradient(135deg,#b5a1ff,#38bdf8)',col:'var(--lilac)',bio:'Cofounder and CTO of Devmate Solutions, leading its AI systems architecture. AI infrastructure and platform engineering.',tags:['Devmate CTO','AI Infra','Platform Eng','The Inner Circle']},
-        ].map(p=>`
+          { in: 'AH', nm: 'Ahmed Al Kindi', role: 'COFOUNDER · GROWTH & SYSTEMS', grad: 'linear-gradient(135deg,#ccf244,#34d399)', col: 'var(--volt)', bio: 'Founder of TSB Labs and cofounder of Devmate Solutions. Author of The System Builder and a GCC Top 20 Entrepreneur.', tags: ['TSB Labs', 'Devmate', 'The System Builder', 'GCC Top 20'] },
+          { in: 'ZA', nm: 'Zain Ul Abaideen', role: 'FOUNDER & CEO', grad: 'linear-gradient(135deg,#b5a1ff,#38bdf8)', col: 'var(--lilac)', bio: 'Cofounder and CTO of Devmate Solutions, leading its AI systems architecture. AI infrastructure and platform engineering.', tags: ['Devmate CTO', 'AI Infra', 'Platform Eng', 'The Inner Circle'] },
+        ].map(p => `
           <div style="flex:1;border:1.5px solid var(--edge2);border-radius:20px;padding:28px;background:rgba(255,255,255,0.02);">
             <div style="display:flex;align-items:center;gap:18px;">
               <div style="width:80px;height:80px;border-radius:20px;background:${p.grad};color:var(--void);display:flex;align-items:center;justify-content:center;font-family:'Bricolage Grotesque';font-weight:800;font-size:30px;flex-shrink:0;">${p.in}</div>
               <div><div class="display" style="font-weight:800;font-size:25px;text-transform:uppercase;">${p.nm}</div><div class="mono" style="font-size:12px;font-weight:700;color:${p.col};letter-spacing:0.05em;margin-top:4px;">${p.role}</div></div>
             </div>
             <p style="font-size:14.5px;line-height:1.5;color:var(--zinc);margin-top:18px;">${p.bio}</p>
-            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;">${p.tags.map(t=>`<span style="border:1px solid var(--edge2);border-radius:6px;padding:5px 10px;font-family:'JetBrains Mono';font-size:11px;font-weight:700;color:var(--zinc2);">${t}</span>`).join('')}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;">${p.tags.map(t => `<span style="border:1px solid var(--edge2);border-radius:6px;padding:5px 10px;font-family:'JetBrains Mono';font-size:11px;font-weight:700;color:var(--zinc2);">${t}</span>`).join('')}</div>
           </div>`).join('')}
       </div>
       <p class="lead" style="margin-top:24px;font-size:18px;">Two founders who can both sell the vision and build the product. Both full-time from launch.</p>
     </div>
-    <div class="foot">${BOLT('volt',28)}<span class="nm">AI Founder Hub</span><span class="ft">We built the product before raising a dirham</span></div>
+    <div class="foot">${BOLT('volt', 28)}<span class="nm">AI Founder Hub</span><span class="ft">We built the product before raising a dirham</span></div>
   </div>
 `});
 
-// ============ 12 THE ASK (volt) ============
-S.push({theme:'volt',ghost:'',html:`
+    // ============ 12 THE ASK (volt) ============
+    S.push({
+      theme: 'volt', ghost: '', html: `
   <div class="inner">
     <div class="top"><div class="tag"><span class="sq"></span>The Ask</div><div class="meta">S.12 / 13</div></div>
     <div class="body">
@@ -436,7 +698,7 @@ S.push({theme:'volt',ghost:'',html:`
       </div>
       <p style="font-size:19px;font-weight:600;color:rgba(7,7,11,0.78);margin-top:20px;max-width:880px;line-height:1.45;">Covers AI agent + platform build, the marketing budget our agents manage, and the UAE trade license. A <b>250,000 AED</b> round is on the table for a larger stake and faster scale.</p>
       <div style="display:flex;gap:12px;margin-top:30px;">
-        ${[['35%','AI agent + platform','35,000 AED'],['30%','Agent-managed marketing','30,000 AED'],['15%','UAE trade license','15,000 AED'],['20%','Operating buffer','20,000 AED']].map(([p,t,a])=>`
+        ${[['35%', 'AI agent + platform', '35,000 AED'], ['30%', 'Agent-managed marketing', '30,000 AED'], ['15%', 'UAE trade license', '15,000 AED'], ['20%', 'Operating buffer', '20,000 AED']].map(([p, t, a]) => `
           <div style="flex:1;background:var(--void);color:#f4f4f5;border-radius:16px;padding:22px;">
             <div class="display vglow" style="font-weight:800;font-size:42px;">${p}</div>
             <div class="display" style="font-weight:800;font-size:15px;text-transform:uppercase;margin-top:8px;line-height:1.1;">${t}</div>
@@ -444,20 +706,21 @@ S.push({theme:'volt',ghost:'',html:`
           </div>`).join('')}
       </div>
     </div>
-    <div class="foot">${BOLT('void',28)}<span class="nm" style="color:var(--void);">AI Founder Hub</span><span class="ft">Build, marketing &amp; license to launch</span></div>
+    <div class="foot">${BOLT('void', 28)}<span class="nm" style="color:var(--void);">AI Founder Hub</span><span class="ft">Build, marketing &amp; license to launch</span></div>
   </div>
 `});
 
-// ============ 13 CLOSE (personal) ============
-S.push({theme:'',ghost:'',html:`
+    // ============ 13 CLOSE (personal) ============
+    S.push({
+      theme: '', ghost: '', html: `
   <div class="glow" style="width:720px;height:720px;background:rgba(204,242,68,0.16);top:50%;left:50%;transform:translate(-50%,-50%);"></div>
   <svg width="1280" height="720" style="position:absolute;inset:0;z-index:2;opacity:0.4;" viewBox="0 0 1280 720">
-    ${Array.from({length:36}).map((_,i)=>{const a=(i/36)*Math.PI*2;const x1=640+Math.cos(a)*100,y1=360+Math.sin(a)*100,x2=640+Math.cos(a)*820,y2=360+Math.sin(a)*820;return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(204,242,68,${i%2?0.04:0.08})" stroke-width="1"/>`}).join('')}
+    ${Array.from({ length: 36 }).map((_, i) => { const a = (i / 36) * Math.PI * 2; const x1 = 640 + Math.cos(a) * 100, y1 = 360 + Math.sin(a) * 100, x2 = 640 + Math.cos(a) * 820, y2 = 360 + Math.sin(a) * 820; return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="rgba(204,242,68,${i % 2 ? 0.04 : 0.08})" stroke-width="1"/>` }).join('')}
   </svg>
   <div class="inner" style="align-items:center;text-align:center;justify-content:space-between;">
     <div class="top" style="width:100%;"><div class="tag"><span class="sq"></span>The Close</div><div class="meta">S.13 / 13</div></div>
     <div class="body" style="align-items:center;">
-      <div style="filter:drop-shadow(0 0 40px rgba(204,242,68,0.55));margin-bottom:22px;">${BOLT('volt',76)}</div>
+      <div style="filter:drop-shadow(0 0 40px rgba(204,242,68,0.55));margin-bottom:22px;">${BOLT('volt', 76)}</div>
       <div class="serif" style="font-size:38px;color:var(--volt);">You already know us.</div>
       <h1 style="font-size:82px;margin-top:10px;max-width:1000px;">Here is the plan,<br/>in full. <span class="vglow">Build with us.</span></h1>
       <p class="lead" style="font-size:19px;margin-top:22px;max-width:760px;">We teach people to build with AI while AI agents grow our company. A community, a product, and a growth engine we can sell.</p>
@@ -468,18 +731,19 @@ S.push({theme:'',ghost:'',html:`
   </div>
 `});
 
-// ---- render ----
-const deck=document.getElementById('deck');
-deck.innerHTML=S.map((s,i)=>`<div class="slide ${s.theme}" data-i="${i+1}">
+    // ---- render ----
+    const deck = document.getElementById('deck');
+    deck.innerHTML = S.map((s, i) => `<div class="slide ${s.theme}" data-i="${i + 1}">
   <div class="grid"></div><div class="scan"></div>
-  ${s.ghost?`<div class="ghost" style="font-size:560px;bottom:-130px;right:-40px;">${s.ghost}</div>`:''}
+  ${s.ghost ? `<div class="ghost" style="font-size:560px;bottom:-130px;right:-40px;">${s.ghost}</div>` : ''}
   ${CROSSES}
   ${s.html}
   <div class="grain"></div>
 </div>`).join('');
 
-const sp=new URLSearchParams(location.search);
-if(sp.has('s')){const n=parseInt(sp.get('s'),10);document.body.classList.add('single');const el=deck.querySelector(`.slide[data-i="${n}"]`);if(el)el.classList.add('show');}
-</script>
+    const sp = new URLSearchParams(location.search);
+    if (sp.has('s')) { const n = parseInt(sp.get('s'), 10); document.body.classList.add('single'); const el = deck.querySelector(`.slide[data-i="${n}"]`); if (el) el.classList.add('show'); }
+  </script>
 </body>
+
 </html>

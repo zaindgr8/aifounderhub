@@ -189,7 +189,7 @@ alter table webhook_events        enable row level security;
 -- ----------------------------------------------------------------------------
 insert into mentors (slug, name, role, price_fils, currency, timezone, session_minutes) values
   ('ahmed', 'Ahmed Al Kindi', 'Cofounder, Growth & Systems', 109800, 'AED', 'Asia/Dubai', 60),
-  ('zain',  'Zain Ul Abaideen', 'Cofounder & CTO',            109800, 'AED', 'Asia/Dubai', 60);
+  ('zain',  'Zain Ul Abaideen', 'Founder & CEO',            109800, 'AED', 'Asia/Dubai', 60);
 
 -- Default weekly availability: Sun-Thu (UAE work week), 17:00-21:00 local.
 insert into availability_rules (mentor_id, weekday, start_min, end_min)

@@ -32,12 +32,12 @@ export default function App() {
         <Hero onOpenModal={setActiveModal} />
         <ToolsMarquee />
         <TerminalShowcase />
-        <StatsBand />
+        {/* <StatsBand /> */}
         <CircuitDivider />
         <Workshops />
         <Membership />
-        <Agenda />
-        <Pathways />
+        {/* <Agenda /> */}
+        {/* <Pathways /> */}
         <CircuitDivider flip />
         <Mentors />
         <Testimonials />

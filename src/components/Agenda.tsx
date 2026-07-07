@@ -395,7 +395,6 @@ export function Agenda() {
 
   return (
     <div id="curriculum" className="scroll-mt-20">
-      <TimezoneStrip />
 
       <section className="relative mt-16 overflow-hidden bg-paper py-16 text-ink sm:py-20">
         <div className="pointer-events-none absolute inset-0 bg-grid-paper opacity-50" />

@@ -62,7 +62,7 @@ doesn't flag repetition. Always in the first comment, not the caption.
 
 > Every Friday. Live. Free. No replays-for-sale games, the live room costs nothing.
 >
-> 🗓 Jun 26: Claude MasterClass
+> 🗓 Jun 26: Claude Blueprint
 > 🗓 Jul 03: OpenClaw Agents MasterClass
 > 🗓 Jul 10: Build Apps Using AI
 > 🗓 Jul 17 to 19: the free 3-day Build Summit

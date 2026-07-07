@@ -36,12 +36,12 @@ export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") 
           </a>
         </div>
 
-        <div className="max-w-4xl border-t border-white/5 pt-8 text-center text-[10px] font-medium uppercase leading-relaxed tracking-wider text-zinc-600">
+        {/* <div className="max-w-4xl border-t border-white/5 pt-8 text-center text-[10px] font-medium uppercase leading-relaxed tracking-wider text-zinc-600">
           Disclaimer: This is a free educational event. Results mentioned are not typical and your results may vary.
           Building a successful app requires effort, dedication, and the application of the strategies taught. This
           training shows what's possible with AI-powered app development; success depends on individual implementation
           and market conditions.
-        </div>
+        </div> */}
 
         <p className="text-xs font-semibold text-zinc-500">© 2026 AI Founder Hub. All rights reserved.</p>
       </div>

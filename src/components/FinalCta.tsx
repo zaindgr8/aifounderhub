@@ -24,23 +24,22 @@ export function FinalCta() {
       <div className="relative z-10 mx-auto max-w-3xl px-5 text-center">
         <Reveal>
           <span className="font-mono text-[11px] font-bold uppercase tracking-[0.35em] text-volt">
-            Final boarding call · {EVENT.shortRange}
+            START BUILDING TODAY · FOR FREE
           </span>
         </Reveal>
         <Reveal delay={0.08}>
           <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
-            In 3 days you'll either have
+            YOUR IDEA IS EITHER
             <br />
-            <span className="font-serif italic font-normal normal-case text-volt">a working app</span>
+            <span className="font-serif italic font-normal normal-case text-volt">going to ship</span>
             <br />
-            or the same idea in your notes.
+            OR STAY IN YOUR NOTES FOREVER.
           </h2>
         </Reveal>
         <Reveal delay={0.16}>
           <p className="mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-zinc-400">
-            The summit runs once, July 17 to 19, and one free signup covers everything: the summit, every weekly
-            masterclass after it, and your pathway match. Register today and your workbook, prompt templates and
-            calendar invite are in your inbox before Day 1.
+            AI Founder Hub gives you everything you need to go from idea to live product — at whatever pace works for you. Start free with weekly masterclasses taught by active builders. Go deeper with the flagship course — full-stack, zero code, from idea to income. Move faster with a private 1:1 session directly with a founder who's shipping daily.
+Free to start. Powerful enough to launch. Personal enough to scale.
           </p>
         </Reveal>
         <Reveal delay={0.24}>
@@ -51,7 +50,7 @@ export function FinalCta() {
                 className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-volt px-10 py-5 font-display text-base font-extrabold uppercase tracking-wide text-void shadow-[0_0_60px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_90px_rgba(204,242,68,0.55)] sm:text-lg cursor-pointer"
               >
                 <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                <span className="relative">Join the 3-day summit, free</span>
+                <span className="relative">GET FREE MASTERCLASS ACCESS </span>
                 <ArrowRight className="relative h-5 w-5 transition-transform duration-300 group-hover:translate-x-1.5" />
               </button>
             </Magnetic>
@@ -62,7 +61,7 @@ export function FinalCta() {
               onClick={() => document.getElementById("membership")?.scrollIntoView({ behavior: "smooth" })}
               className="text-[12px] font-semibold text-zinc-500 transition-colors hover:text-volt cursor-pointer"
             >
-              Rather start learning tonight? <span className="font-bold text-volt underline decoration-volt/40 underline-offset-2">Get the membership, $49.99/mo</span>
+              Rather start learning tonight? <span className="font-bold text-volt underline decoration-volt/40 underline-offset-2">Get the membership for $159</span>
             </button>
           </div>
         </Reveal>

@@ -7,52 +7,32 @@ const FAQ_LIST = [
   {
     question: "What do I actually get for free?",
     answer:
-      "A lot: weekly live masterclasses (Claude, OpenClaw, app building, automations), the 3-day flagship build summit, the community itself, and free Dubai build nights. One signup adds you to the list, and every upcoming workshop invite lands in your inbox automatically.",
-  },
-  {
-    question: "How is the $249 bootcamp different from the free workshops?",
-    answer:
-      "Workshops teach a skill in one session; the bootcamp ships a result. You pick a goal-based pathway (launch a startup, go freelance, scale your business, or build an automation agency) and follow a 4-week plan with live labs, 1:1 checkpoints, templates and a demo day. You graduate with deliverables, not certificates of attendance.",
-  },
-  {
-    question: "How do the courses membership and 1:1 sessions work?",
-    answer:
-      "The courses membership is $49.99 per month: the full course library, every masterclass and summit replay, the template vault, and members-only channels. Cancel anytime. Private 1:1 sessions with Ahmed (business) or Zain (AI engineering) are 60 minutes at $299 per session, booked whenever you need a targeted unblock. No monthly commitment.",
-  },
-  {
-    question: "Are sessions in person or online?",
-    answer:
-      "Virtual-first, so you can join from anywhere. We also run regular in-person sessions in Dubai: free community build nights and paid hands-on intensives. Members get first access to in-person seats.",
-  },
-  {
-    question: "Do I need a fully formed app idea before I join?",
-    answer:
-      "Absolutely not. Many of our most successful graduates started completely blank. During the Day 1 masterclass we run live brainstorming frameworks and workbook blueprints that extract high-demand micro-SaaS opportunities straight out of your daily routines.",
+      "A free seat gives you access to live workshops— no card required, nothing auto-upgrades. Every upcoming event invite lands in your inbox automatically after you claim your seat.",
   },
   {
     question: "Do I need any coding or technical skills?",
     answer:
-      "No experience required whatsoever. If you can type a message or make a slide, you have 100% of the skills needed. We use natural, conversational prompting: the AI writes the code architecture live on screen while you direct it.",
+      "Zero. If you can type a message, you have every skill you need. We use conversational AI prompting — Claude, Codex, and the latest models write the architecture live on screen while you direct it. No syntax, no terminal, no prior experience required.",
   },
   {
-    question: "How advanced do I need to be with AI?",
+    question: "Do I need a startup idea before I join?",
     answer:
-      "Whether you prompt daily or have never opened an AI tool in your life, the curriculum starts from absolute ground level and builds clearly from basic inputs to advanced API connectors. Nobody gets left behind.",
+      "Not at all. Many of the builders who've shipped real products started completely blank. In the first session we run live brainstorming frameworks that pull high-demand micro-SaaS ideas straight out of your daily routines and industry — you'll leave Day 1 with a validated direction.",
   },
   {
-    question: "Will this help if I'm a coach or consultant?",
+    question: "How do the 1:1 sessions with the founders work?",
     answer:
-      "Heavily. In 2026, the fastest way to stand out from generic competitors and win high-paying clients is shipping custom digital toolkits (diagnostic calculators, client dashboards, automated intake apps) that deliver immediate, tangible value.",
+      "Each private session is 60 minutes at $299. Ahmed focuses on business strategy, scaling, and GCC market positioning. Zain Ul Abideen covers AI engineering, Micro-SaaS building, and agency operations.",
   },
   {
-    question: "Do I need a specific tech stack or expensive hardware?",
+    question: "Is this in person or online?",
     answer:
-      "No. Everything we demonstrate runs in a single browser tab. We even cover zero-cost hosting and one-click deploy platforms so you can publish your prototype for free.",
+      "Virtual-first — join from anywhere in the world. We also run regular in-person build nights and intensives in Dubai for the GCC community. Members always get first access to in-person seats.",
   },
   {
-    question: "What if I already have an app?",
+    question: "What if I already have a business or an existing app?",
     answer:
-      "Perfect. This is your catalyst to level it up. We'll show you how to safely add AI features (summaries, generation, recommendations), wire in server-side model APIs, and refactor for dramatically lower upkeep costs.",
+      "Even better. The course and workshops are built to work at every stage. If you have a business, we help you add AI-powered features, cut operational costs, and open new revenue streams. If you already have an app, we show you how to integrate Claude, Codex, and live model APIs to take it to the next level.",
   },
 ];
 
@@ -66,18 +46,20 @@ export function Faq() {
           {/* left intro */}
           <div className="space-y-5 lg:col-span-5">
             <Reveal>
-              <SectionTag index="07" label="Still unsure?" />
+              <SectionTag index="05" label="Got questions?" />
             </Reveal>
             <Reveal delay={0.08}>
               <h3 className="font-display text-5xl font-extrabold uppercase leading-none tracking-tight text-white sm:text-6xl">
-                Quick
+                Every
                 <br />
-                <span className="font-serif italic font-normal normal-case text-lilac">answers.</span>
+                question.
+                <br />
+                <span className="font-serif italic font-normal normal-case text-lilac">straight answer.</span>
               </h3>
             </Reveal>
             <Reveal delay={0.14}>
               <p className="max-w-md pt-1 text-sm font-medium leading-relaxed text-zinc-400">
-                The questions every founder asks right before they grab a seat. Answered straight, no fine print.
+                No fluff, no fine print. The things real builders ask before they claim their free seat — answered.
               </p>
             </Reveal>
 
@@ -85,12 +67,11 @@ export function Faq() {
               <div className="max-w-sm space-y-4 border-t border-edge pt-6">
                 <div className="flex items-start gap-3 text-xs font-semibold text-zinc-300">
                   <ShieldCheck className="mt-0.5 h-5 w-5 flex-shrink-0 text-volt" />
-                  100% free virtual ticket. No card needed, and nothing ever auto-upgrades you to a paid plan.
-                  Upgrades are always your call.
+                  Free seat — no card, no auto-upgrade, ever. Paid options exist but are always your choice.
                 </div>
                 <div className="flex items-start gap-3 text-xs font-semibold text-zinc-300">
                   <HelpCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-lilac" />
-                  Interactive workbook download available immediately after registration.
+                  1:1 sessions with active founders — not coaches.
                 </div>
               </div>
             </Reveal>

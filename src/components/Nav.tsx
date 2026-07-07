@@ -4,11 +4,11 @@ import { ArrowUpRight } from "lucide-react";
 import { Wordmark, scrollToRegister } from "./shared";
 
 const LINKS = [
-  { label: "Workshops", target: "workshops" },
-  { label: "Membership", target: "membership" },
-  { label: "Summit", target: "curriculum" },
-  { label: "Bootcamp", target: "bootcamp" },
-  { label: "Mentors", target: "mentors" },
+  { label: "FREE MASTERCLASS", target: "workshops" },
+  { label: "COURSE", target: "membership" },
+  // { label: "Summit", target: "curriculum" },
+  // { label: "Bootcamp", target: "bootcamp" },
+  { label: "1:1 Session", target: "mentors" },
   { label: "FAQ", target: "faq" },
 ];
 
@@ -66,7 +66,7 @@ export function Nav() {
         <div className="flex items-center gap-3">
           <div className="hidden sm:flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-zinc-500 uppercase">
             <span className="pulse-glow-dot inline-block h-1.5 w-1.5 rounded-full bg-volt" />
-            <span>Next free workshop · Jun 26</span>
+         
           </div>
           <button
             onClick={scrollToRegister}
