@@ -20,6 +20,16 @@ export function scrollToRegister() {
   document.getElementById("register")?.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
+// "Claim Free Seat" → Section 01: Free Workshops / Masterclass
+export function scrollToWorkshops() {
+  document.getElementById("workshops")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+// "Start My AI Journey" → Section 02: Membership / Course
+export function scrollToMembership() {
+  document.getElementById("membership")?.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 /* ————————————————————————————————————————————————
    Reveal — fade/slide-in when scrolled into view
 ———————————————————————————————————————————————— */

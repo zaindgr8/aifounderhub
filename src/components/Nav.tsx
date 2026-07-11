@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
-import { Wordmark, scrollToRegister } from "./shared";
+import { Wordmark, scrollToWorkshops } from "./shared";
 
 const LINKS = [
   { label: "FREE MASTERCLASS", target: "workshops" },
@@ -69,7 +69,7 @@ export function Nav() {
          
           </div>
           <button
-            onClick={scrollToRegister}
+            onClick={scrollToWorkshops}
             className="group flex items-center gap-1.5 rounded-full bg-volt px-4.5 py-2 font-display text-[12px] font-extrabold uppercase tracking-wide text-void transition-all duration-300 hover:shadow-[0_0_28px_rgba(204,242,68,0.45)] active:scale-95 cursor-pointer"
           >
             Claim Free Seat

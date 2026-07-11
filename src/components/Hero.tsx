@@ -19,7 +19,7 @@ import {
   Share2,
   Sparkles,
 } from "lucide-react";
-import { EVENT, Magnetic, OrbitRing, Squiggle, scrollToRegister } from "./shared";
+import { EVENT, Magnetic, OrbitRing, Squiggle, scrollToRegister, scrollToMembership } from "./shared";
 import { captureLead } from "../lib/api";
 
 /* ————————————————— country data ————————————————— */
@@ -452,7 +452,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
           >
             <Magnetic>
               <button
-                onClick={scrollToRegister}
+                onClick={scrollToMembership}
                 className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.25)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.5)] cursor-pointer"
               >
                 <span className="absolute inset-0 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%] w-1/2" />
