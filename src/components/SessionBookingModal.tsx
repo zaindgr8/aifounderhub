@@ -114,7 +114,7 @@ export function SessionBookingModal({ advisor, onClose }: SessionBookingModalPro
         fullName: fullName.trim(),
         email: email.trim(),
         amount: 29900,   // $299 in cents
-        message: `AI Founder Hub — Private 1:1 Session with ${advisor?.fullName} (60 min)`,
+        message: `1:1 Session with ${advisor?.name}`,
         cancelPath: "/#mentors",
         advisorName: advisor?.fullName,
       });
