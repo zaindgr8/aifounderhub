@@ -223,9 +223,14 @@ export async function confirmPayment(req, res) {
     confirmedIds.add(paymentIntentId);
 
     // 3. Retrieve customer details
-    const session = sessionStore.get(paymentIntentId);
-    const fullName = session?.fullName ?? 'Valued Customer';
-    const email    = session?.email;
+    const session      = sessionStore.get(paymentIntentId);
+    const fullName     = session?.fullName     ?? 'Valued Customer';
+    const email        = session?.email;
+    const advisorName  = session?.advisorName; // present for session bookings
+    const isSession    = !!advisorName;
+    const productLabel = isSession
+      ? `Private 1:1 Session with ${advisorName}`
+      : 'Idea to Live Product Course';
 
     const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
     const FROM_EMAIL  = process.env.FROM_EMAIL   || 'AI Founder Hub <hello@aifounderhub.com>';
@@ -238,7 +243,9 @@ export async function confirmPayment(req, res) {
         getResend().emails.send({
           from:    FROM_EMAIL,
           to:      [email],
-          subject: '🎉 Payment Confirmed — AI Founder Hub Course Access',
+          subject: isSession
+            ? `🗓️ Session Booked — 1:1 with ${advisorName} · AI Founder Hub`
+            : '🎉 Payment Confirmed — AI Founder Hub Course Access',
           html:    buildConfirmationEmail({ fullName, email, paymentIntentId }),
         }),
       );
@@ -249,12 +256,28 @@ export async function confirmPayment(req, res) {
       getResend().emails.send({
         from:    FROM_EMAIL,
         to:      [OWNER_EMAIL],
-        subject: `💰 New Purchase: ${fullName} — $${(amount / 100).toFixed(2)} ${currency_code}`,
-        html:    `<p><b>New course purchase!</b></p>
-                  <p>Name: ${fullName}</p>
-                  <p>Email: ${email ?? '(not captured)'}</p>
-                  <p>Amount: $${(amount / 100).toFixed(2)} ${currency_code}</p>
-                  <p>Payment ID: ${paymentIntentId}</p>`,
+        subject: isSession
+          ? `🗓️ Session Booked: ${fullName} — 1:1 with ${advisorName} · $${(amount / 100).toFixed(2)} ${currency_code}`
+          : `💰 New Purchase: ${fullName} — ${productLabel} · $${(amount / 100).toFixed(2)} ${currency_code}`,
+        html: `<div style="font-family:Inter,Arial,sans-serif;background:#07070b;color:#e4e4e7;padding:32px;border-radius:16px;max-width:520px;">
+  <p style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ccf244;text-transform:uppercase;margin:0 0 8px;">⚡ AI Founder Hub</p>
+  <h2 style="margin:0 0 20px;font-size:22px;font-weight:900;color:#ffffff;">${isSession ? '🗓️ New Session Booked!' : '💰 New Purchase!'}</h2>
+  <table style="width:100%;border-collapse:collapse;">
+    <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Product</td>
+        <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-weight:700;color:#ccf244;">${productLabel}</td></tr>
+    <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Amount</td>
+        <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-weight:800;color:#ffffff;font-size:18px;">$${(amount / 100).toFixed(2)} ${currency_code}</td></tr>
+    <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Customer</td>
+        <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-weight:700;color:#ffffff;">${fullName}</td></tr>
+    <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Email</td>
+        <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;"><a href="mailto:${email}" style="color:#ccf244;">${email ?? '—'}</a></td></tr>
+    ${advisorName ? `<tr><td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Session With</td>
+        <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-weight:700;color:#b5a1ff;">${advisorName}</td></tr>` : ''}
+    <tr><td style="padding:10px 0;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Payment ID</td>
+        <td style="padding:10px 0;font-family:'Courier New',monospace;font-size:11px;color:#52525b;">${paymentIntentId}</td></tr>
+  </table>
+  ${isSession ? '<p style="margin-top:20px;font-size:13px;color:#71717a;">📌 Arrange the session time with the customer via email or WhatsApp.</p>' : ''}
+</div>`,
       }),
     );
 

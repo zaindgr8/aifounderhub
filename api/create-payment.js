@@ -1,11 +1,11 @@
 /**
  * POST /api/create-payment
  *
- * Creates a Ziina Payment Intent for the $159 AI Founder Hub course.
- * Returns { ok, redirect_url } so the frontend can redirect the user to
- * Ziina's hosted checkout page.
+ * Creates a Ziina Payment Intent — supports multiple products:
+ *   • $159 AI Founder Hub Course (default)
+ *   • $299 Private 1:1 Session (pass amount + message in body)
  *
- * Body: { fullName: string, email: string }
+ * Body: { fullName, email, amount?, message?, cancelPath?, advisorName? }
  */
 
 import { sessionStore } from './payment-store.js';
@@ -24,7 +24,13 @@ export async function createPayment(req, res) {
   if (req.method === 'OPTIONS') return res.status(204).end();
 
   try {
-    const { fullName, email } = req.body ?? {};
+    const {
+      fullName, email,
+      amount     = 15900,            // cents — default $159
+      message    = 'AI Founder Hub — Idea to Live Product Course',
+      cancelPath = '/#membership',
+      advisorName,
+    } = req.body ?? {};
     if (!fullName || !email) {
       return res.status(400).json({ ok: false, error: 'fullName and email are required' });
     }
@@ -40,17 +46,17 @@ export async function createPayment(req, res) {
 
     // Build the Payment Intent request
     const payload = {
-      amount: 15900,                           // $159.00 in cents
+      amount,
       currency_code: 'USD',
-      message: 'AI Founder Hub — Idea to Live Product Course',
+      message,
       success_url: `${appUrl}/payment-success`,
-      cancel_url:  `${appUrl}/#membership`,
+      cancel_url:  `${appUrl}${cancelPath}`,
       failure_url: `${appUrl}/payment-failed`,
       allow_tips:  false,
       test: testMode,
     };
 
-    console.log('[Ziina] Creating payment intent', { email, testMode, amount: payload.amount });
+    console.log('[Ziina] Creating payment intent', { email, testMode, amount });
 
     const ziinaRes = await fetch(`${ZIINA_API}/payment_intent`, {
       method: 'POST',
@@ -72,7 +78,7 @@ export async function createPayment(req, res) {
     console.log('[Ziina] Payment intent created', { paymentIntentId, redirect_url });
 
     // Persist user details so confirm-payment can send the email
-    sessionStore.set(paymentIntentId, { fullName, email, createdAt: Date.now() });
+    sessionStore.set(paymentIntentId, { fullName, email, advisorName, amount, message, createdAt: Date.now() });
 
     return res.status(200).json({ ok: true, redirect_url, paymentIntentId });
   } catch (err) {

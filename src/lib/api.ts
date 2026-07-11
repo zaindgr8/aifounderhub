@@ -83,6 +83,14 @@ export interface VerifyResult {
 export interface ZiinaPaymentInput {
   fullName: string;
   email: string;
+  /** Amount in cents. Defaults to 15900 ($159) on the server. */
+  amount?: number;
+  /** Description shown on Ziina checkout. */
+  message?: string;
+  /** Cancel redirect path e.g. '/#mentors'. Defaults to '/#membership'. */
+  cancelPath?: string;
+  /** For session bookings — included in session store for email context. */
+  advisorName?: string;
 }
 
 export interface ZiinaPaymentResult {
