@@ -20,7 +20,7 @@ const COURSE_CARDS = [
   { title: "Private Community Access", rotate: 8, x: 32 },
 ];
 
-export function Membership() {
+export function Membership({ onPay }: { onPay?: () => void }) {
   return (
     <section
       id="membership"
@@ -99,8 +99,9 @@ export function Membership() {
             <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
               <Magnetic strength={0.2}>
                 <button
-                  onClick={scrollToRegister}
+                  onClick={onPay ?? scrollToRegister}
                   className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] cursor-pointer"
+                  id="membership-pay-btn"
                 >
                   <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
                   <span className="relative">GET INSTANT ACCESS for $159</span>

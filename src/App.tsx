@@ -12,14 +12,27 @@ import { Faq } from "./components/Faq";
 import { FinalCta } from "./components/FinalCta";
 import { Footer } from "./components/Footer";
 import { PolicyModal, ModalKind } from "./components/PolicyModal";
+import { PaymentModal } from "./components/PaymentModal";
 import { BackToTop, CircuitDivider } from "./components/shared";
+import { PaymentSuccess } from "./pages/PaymentSuccess";
 
-// NOTE: Payment (Ziina) and the automated booking flow are intentionally not
-// wired into the live site yet. Bookings/payments are handled manually for now;
-// the backend scaffolding for them lives in supabase/functions for Zain to
-// finish later. The CRM lead capture (Hero form -> capture-lead) is active.
+// Simple path-based routing — no router lib needed
+function useRoute() {
+  const path = window.location.pathname;
+  if (path === "/payment-success") return "payment-success";
+  if (path === "/payment-failed") return "payment-failed";
+  return "home";
+}
+
 export default function App() {
+  const route = useRoute();
   const [activeModal, setActiveModal] = useState<ModalKind>(null);
+  const [paymentOpen, setPaymentOpen] = useState(false);
+
+  // Dedicated pages
+  if (route === "payment-success" || route === "payment-failed") {
+    return <PaymentSuccess />;
+  }
 
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-void font-sans text-zinc-100">
@@ -35,7 +48,7 @@ export default function App() {
         {/* <StatsBand /> */}
         <CircuitDivider />
         <Workshops />
-        <Membership />
+        <Membership onPay={() => setPaymentOpen(true)} />
         {/* <Agenda /> */}
         {/* <Pathways /> */}
         <CircuitDivider flip />
@@ -49,6 +62,7 @@ export default function App() {
 
       <BackToTop />
       <PolicyModal active={activeModal} onClose={() => setActiveModal(null)} />
+      <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} />
     </div>
   );
 }

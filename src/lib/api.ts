@@ -76,6 +76,43 @@ export async function createPayment(input: CreatePaymentInput): Promise<{ ok: bo
 export interface VerifyResult {
   ok: boolean; status: string; purpose: string; amount: string; customerName?: string;
 }
-export async function verifyPayment(paymentId: string): Promise<VerifyResult> {
-  return call("verify-payment", { method: "GET", query: { p: paymentId } });
+// ---- Ziina Payment (live integration) ----
+// These call our Express backend which proxies to the Ziina API.
+// Works in both dev (localhost:3001 proxied via Vite) and Vercel (serverless).
+
+export interface ZiinaPaymentInput {
+  fullName: string;
+  email: string;
+}
+
+export interface ZiinaPaymentResult {
+  ok: boolean;
+  redirect_url?: string;
+  paymentIntentId?: string;
+  error?: string;
+}
+
+export async function initiateZiinaPayment(input: ZiinaPaymentInput): Promise<ZiinaPaymentResult> {
+  const res = await fetch('/api/create-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(input),
+  });
+  return res.json().catch(() => ({ ok: false, error: 'Network error' }));
+}
+
+export interface ZiinaConfirmResult {
+  ok: boolean;
+  status?: string;
+  alreadySent?: boolean;
+  error?: string;
+}
+
+export async function confirmZiinaPayment(paymentIntentId: string): Promise<ZiinaConfirmResult> {
+  const res = await fetch('/api/confirm-payment', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentIntentId }),
+  });
+  return res.json().catch(() => ({ ok: false, error: 'Network error' }));
 }
