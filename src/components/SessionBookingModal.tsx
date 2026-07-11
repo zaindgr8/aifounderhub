@@ -38,6 +38,7 @@ export interface SessionAdvisor {
   slug: string;
   fullName: string;
   initials: string;
+  photo?: string;
   role: string;
   avatarClass: string;
 }
@@ -191,8 +192,18 @@ export function SessionBookingModal({ advisor, onClose }: SessionBookingModalPro
 
                 {/* Advisor avatar */}
                 <div className="mb-4 flex items-center gap-3.5">
-                  <div className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br font-display text-lg font-extrabold shadow-lg ${advisor?.avatarClass}`}>
-                    {advisor?.initials}
+                  <div className="relative h-14 w-14 flex-shrink-0">
+                    {advisor?.photo ? (
+                      <img
+                        src={advisor.photo}
+                        alt={advisor.fullName}
+                        className="h-14 w-14 rounded-2xl object-cover object-top shadow-lg border border-white/10"
+                      />
+                    ) : (
+                      <div className={`flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br font-display text-lg font-extrabold shadow-lg ${advisor?.avatarClass}`}>
+                        {advisor?.initials}
+                      </div>
+                    )}
                   </div>
                   <div>
                     <p className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-lilac">

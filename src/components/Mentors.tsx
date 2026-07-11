@@ -21,12 +21,14 @@ const ADVISORS: (SessionAdvisor & {
   icon: React.ElementType;
   socials: { platform: string; url: string; icon: React.ElementType }[];
   sessionMin: string;
+  photo?: string;
 })[] = [
   {
     name: "Ahmed",
     slug: "ahmed",
     fullName: "Ahmed Al Kindi",
     initials: "AH",
+    photo: "/ay2.png",
     role: "COFOUNDER · STRATEGIST · AUTHOR",
     avatarClass: "from-volt to-emerald-400 text-void",
     bio: "Omani entrepreneur, strategist, and published author. Named in GCC Top 20 Entrepreneur. Featured on Gulf News, Times of Oman, Oman TV, and Smashi TV Dubai. Ahmed doesn't teach motivation — he builds systems. Born deaf, he developed a rare ability to see patterns, structure, and architecture where others see chaos. In this session you will be able to learn the exact architecture behind businesses that grow without burning out.",
@@ -43,6 +45,7 @@ const ADVISORS: (SessionAdvisor & {
     slug: "zain",
     fullName: "Zain Ul Abaideen",
     initials: "ZA",
+    photo: "/me.svg",
     role: "Founder & CEO · AI FOUNDER HUB | DEVMATE SOLUTIONS",
     avatarClass: "from-lilac to-sky-400 text-void",
     bio: "Running an AI-powered software agency operating across UAE, Oman, and the USA— with clients spanning GCC, Europe, and the United States. Has worked with 40+ global brands & 25+ industries Since 2019. He doesn't just teach — he builds daily. Whether you want to launch a Micro-SaaS, build an AI Automation Agency, grow a startup from scratch, or explore B2B collaboration — one session can give you a real roadmap, not theory.",
@@ -99,9 +102,20 @@ export function Mentors() {
                   <div>
                     {/* Avatar + name */}
                     <div className="flex items-center gap-4">
-                      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br font-display text-xl font-extrabold shadow-lg ${a.avatarClass}`}>
-                        {a.initials}
-                      </div>
+                      {/* Avatar — real photo if available, initials fallback */}
+                    <div className="relative h-16 w-16 flex-shrink-0">
+                      {a.photo ? (
+                        <img
+                          src={a.photo}
+                          alt={a.fullName}
+                          className="h-16 w-16 rounded-2xl object-cover object-top shadow-lg border border-white/10"
+                        />
+                      ) : (
+                        <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br font-display text-xl font-extrabold shadow-lg ${a.avatarClass}`}>
+                          {a.initials}
+                        </div>
+                      )}
+                    </div>
                       <div>
                         <h3 className="font-display text-xl font-extrabold uppercase tracking-tight text-white">
                           {a.fullName}
