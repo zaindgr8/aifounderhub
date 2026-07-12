@@ -43,7 +43,7 @@ const ADVISORS: (SessionAdvisor & {
   {
     name: "Zain",
     slug: "zain",
-    fullName: "Zain Ul Abaideen",
+    fullName: "Zain Ul Abideen",
     initials: "ZA",
     photo: "/me.svg",
     role: "Founder & CEO · AI FOUNDER HUB | DEVMATE SOLUTIONS",

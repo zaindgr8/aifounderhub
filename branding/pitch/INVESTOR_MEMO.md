@@ -176,7 +176,7 @@ identity, and building yourself like a system. Recognised as a GCC Top 20 Entrep
 and featured across regional media. He works with founders across the Gulf, turning
 chaos into structure.
 
-**Zain Ul Abaideen, Cofounder and CTO.** Cofounder and Chief Technology Officer of
+**Zain Ul Abideen, Cofounder and CTO.** Cofounder and Chief Technology Officer of
 Devmate Solutions, leading the technical architecture behind its AI systems. Based in
 Dubai, he specialises in AI infrastructure, platform engineering, and system design,
 turning ideas into products that work in the real world. He is the engineer behind this

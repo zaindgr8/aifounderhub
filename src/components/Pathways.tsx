@@ -216,7 +216,7 @@ export function Pathways() {
           </Reveal>
           <Reveal delay={0.19}>
             <p className="mx-auto mt-3 font-mono text-[11px] font-bold uppercase tracking-wider text-volt/80">
-              Led by founders Ahmed Al Kindi &amp; Zain Ul Abaideen
+              Led by founders Ahmed Al Kindi &amp; Zain Ul Abideen
             </p>
           </Reveal>
           <Reveal delay={0.22}>

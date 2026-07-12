@@ -10,6 +10,7 @@ const LINKS = [
   // { label: "Bootcamp", target: "bootcamp" },
   { label: "1:1 Session", target: "mentors" },
   { label: "FAQ", target: "faq" },
+  { label: "CONTACT US", target: "contact" },
 ];
 
 export function Nav() {
@@ -35,6 +36,11 @@ export function Nav() {
           : "bg-transparent border-b border-transparent"
       }`}
     >
+      {/* Waitlist Banner */}
+      <div className="bg-volt px-4 py-2 text-center text-[10px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5">
+        <span>⚡ First session launching soon! All bookings will join our priority waitlist & be notified shortly.</span>
+      </div>
+
       {/* scroll progress hairline */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-volt via-lilac to-volt"
