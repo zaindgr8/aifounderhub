@@ -6,6 +6,7 @@ import { Workshops } from "./components/Workshops";
 import { Membership } from "./components/Membership";
 import { Pathways } from "./components/Pathways";
 import { Mentors } from "./components/Mentors";
+import { Team } from "./components/Team";
 import { Agenda } from "./components/Agenda";
 import { Testimonials } from "./components/Testimonials";
 import { Faq } from "./components/Faq";
@@ -52,6 +53,8 @@ export default function App() {
         {/* <Agenda /> */}
         {/* <Pathways /> */}
         <CircuitDivider flip />
+        <Team />
+        <CircuitDivider />
         <Mentors />
         <Testimonials />
         <Faq />
