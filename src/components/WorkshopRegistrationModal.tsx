@@ -259,9 +259,26 @@ export function WorkshopRegistrationModal({
                       </div>
                     </div>
 
+                    <div className="w-full rounded-xl border border-emerald-500/25 bg-emerald-950/30 p-3.5 text-center">
+                      <p className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">
+                        💬 VIP Community Access
+                      </p>
+                      <p className="mt-1 text-xs text-zinc-300">
+                        You qualify to join our official AI Founder Hub WhatsApp community group!
+                      </p>
+                      <a
+                        href="https://chat.whatsapp.com/JorMU8jZSDdDTBokqBFBsW"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-black uppercase tracking-wider transition hover:bg-[#20bd5a] hover:shadow-[0_0_20px_rgba(37,211,102,0.4)]"
+                      >
+                        Join WhatsApp Community →
+                      </a>
+                    </div>
+
                     <button
                       onClick={onClose}
-                      className="w-full rounded-full bg-volt py-3 font-display text-sm font-extrabold uppercase tracking-wide text-void transition-all hover:opacity-90 cursor-pointer"
+                      className="w-full rounded-full border border-zinc-700 bg-zinc-900 py-2.5 font-display text-xs font-bold uppercase tracking-wide text-zinc-300 transition-all hover:bg-zinc-800 hover:text-white cursor-pointer"
                     >
                       Done
                     </button>

@@ -13,7 +13,11 @@ const LINKS = [
   { label: "CONTACT US", target: "contact" },
 ];
 
-export function Nav() {
+interface NavProps {
+  onOpenClaudeModal?: () => void;
+}
+
+export function Nav({ onOpenClaudeModal }: NavProps) {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.3 });
   const [scrolled, setScrolled] = useState(false);
@@ -24,6 +28,14 @@ export function Nav() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  const handleClaimFreeSeat = () => {
+    if (onOpenClaudeModal) {
+      onOpenClaudeModal();
+    } else {
+      scrollToWorkshops();
+    }
+  };
 
   return (
     <motion.header
@@ -36,9 +48,12 @@ export function Nav() {
           : "bg-transparent border-b border-transparent"
       }`}
     >
-      {/* Waitlist Banner */}
-      <div className="bg-volt px-4 py-2 text-center text-[10px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5">
-        <span>⚡ First session launching soon! All bookings will join our priority waitlist & be notified shortly.</span>
+      {/* Announcement Banner */}
+      <div 
+        onClick={handleClaimFreeSeat}
+        className="bg-volt px-4 py-2 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5 cursor-pointer hover:bg-opacity-95 transition-colors"
+      >
+        <span>⚡ Next Class This Saturday (Limited Seats) • You're Using 10% of Claude — Master the 100% • Click "Claim Free Seat" to Register Now</span>
       </div>
 
       {/* scroll progress hairline */}
@@ -75,7 +90,7 @@ export function Nav() {
          
           </div>
           <button
-            onClick={scrollToWorkshops}
+            onClick={handleClaimFreeSeat}
             className="group flex items-center gap-1.5 rounded-full bg-volt px-4.5 py-2 font-display text-[12px] font-extrabold uppercase tracking-wide text-void transition-all duration-300 hover:shadow-[0_0_28px_rgba(204,242,68,0.45)] active:scale-95 cursor-pointer"
           >
             Claim Free Seat

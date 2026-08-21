@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { ToolsMarquee, TerminalShowcase, StatsBand } from "./components/TerminalShowcase";
@@ -14,6 +14,7 @@ import { FinalCta } from "./components/FinalCta";
 import { Footer } from "./components/Footer";
 import { PolicyModal, ModalKind } from "./components/PolicyModal";
 import { PaymentModal } from "./components/PaymentModal";
+import { ClaudeMasterclassPopupModal } from "./components/ClaudeMasterclassPopupModal";
 import { BackToTop, CircuitDivider } from "./components/shared";
 import { PaymentSuccess } from "./pages/PaymentSuccess";
 
@@ -29,6 +30,19 @@ export default function App() {
   const route = useRoute();
   const [activeModal, setActiveModal] = useState<ModalKind>(null);
   const [paymentOpen, setPaymentOpen] = useState(false);
+  const [claudePopupOpen, setClaudePopupOpen] = useState(false);
+
+  // Trigger Claude masterclass popup after 4 seconds on the site
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const dismissed = sessionStorage.getItem("claude_popup_dismissed");
+      if (!dismissed) {
+        setClaudePopupOpen(true);
+      }
+    }, 4000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   // Dedicated pages
   if (route === "payment-success" || route === "payment-failed") {
@@ -40,7 +54,7 @@ export default function App() {
       {/* fixed film-grain texture over everything */}
       <div className="grain" aria-hidden="true" />
 
-      <Nav />
+      <Nav onOpenClaudeModal={() => setClaudePopupOpen(true)} />
 
       <main>
         <Hero onOpenModal={setActiveModal} />
@@ -66,6 +80,18 @@ export default function App() {
       <BackToTop />
       <PolicyModal active={activeModal} onClose={() => setActiveModal(null)} />
       <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} />
+      <ClaudeMasterclassPopupModal
+        open={claudePopupOpen}
+        onClose={() => {
+          setClaudePopupOpen(false);
+          try {
+            sessionStorage.setItem("claude_popup_dismissed", "true");
+          } catch {
+            // ignore
+          }
+        }}
+      />
     </div>
   );
 }
+

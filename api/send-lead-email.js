@@ -239,6 +239,28 @@ export async function sendLeadEmail(req, res) {
                 </tr>
                 <tr><td style="border-top:1px solid #1e1e2a;padding-bottom:20px;"></td></tr>
 
+                <!-- VIP WhatsApp Community Invite -->
+                <tr>
+                  <td style="padding-bottom:24px;">
+                    <div style="background:linear-gradient(135deg,#061a0e 0%,#0d2e1b 100%);border:1px solid #1f7a43;border-radius:16px;padding:24px 20px;text-align:center;">
+                      <span style="display:inline-block;background:#25D366;color:#041a0d;font-family:'Courier New',monospace;font-size:10px;font-weight:900;letter-spacing:0.2em;padding:5px 14px;border-radius:100px;text-transform:uppercase;margin-bottom:12px;">
+                        💬 VIP Community Access
+                      </span>
+                      <h3 style="margin:0 0 8px;font-size:18px;font-weight:800;color:#ffffff;line-height:1.3;">
+                        You Qualify to Join the AI Founder Hub Community! 🚀
+                      </h3>
+                      <p style="margin:0 0 18px;font-size:13px;color:#a7f3d0;line-height:1.6;">
+                        You are officially invited to join our private WhatsApp group for masterclass attendees, founders, and AI builders. Join below to get live class updates, ask questions, and network:
+                      </p>
+                      <a href="https://chat.whatsapp.com/JorMU8jZSDdDTBokqBFBsW" style="display:inline-block;background:#25D366;color:#041a0d;font-size:13px;font-weight:900;text-decoration:none;padding:13px 30px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;box-shadow:0 6px 20px rgba(37,211,102,0.35);">
+                        👉 Join WhatsApp Community Now
+                      </a>
+                    </div>
+                  </td>
+                </tr>
+
+                <tr><td style="border-top:1px solid #1e1e2a;padding-bottom:20px;"></td></tr>
+
                 <!-- What's inside -->
                 <tr>
                   <td>
