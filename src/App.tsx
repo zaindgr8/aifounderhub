@@ -18,13 +18,15 @@ import { ClaudeMasterclassPopupModal } from "./components/ClaudeMasterclassPopup
 import { BackToTop, CircuitDivider } from "./components/shared";
 import { PaymentSuccess } from "./pages/PaymentSuccess";
 import { ProgressPage } from "./pages/ProgressPage";
+import { FreeMasterclassPage } from "./pages/FreeMasterclassPage";
 
 // Simple path-based routing — no router lib needed
 function useRoute() {
-  const path = window.location.pathname;
+  const path = window.location.pathname.toLowerCase().replace(/\/$/, "");
   if (path === "/payment-success") return "payment-success";
   if (path === "/payment-failed") return "payment-failed";
-  if (path === "/progress" || path === "/progress/") return "progress";
+  if (path === "/progress") return "progress";
+  if (path === "/freemasterclass") return "freemasterclass";
   return "home";
 }
 
@@ -34,8 +36,9 @@ export default function App() {
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [claudePopupOpen, setClaudePopupOpen] = useState(false);
 
-  // Trigger Claude masterclass popup after 4 seconds on the site
+  // Trigger Claude masterclass popup after 4 seconds on the site (only on home page)
   useEffect(() => {
+    if (route !== "home") return;
     const timer = setTimeout(() => {
       const dismissed = sessionStorage.getItem("claude_popup_dismissed");
       if (!dismissed) {
@@ -44,7 +47,7 @@ export default function App() {
     }, 4000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [route]);
 
   // Dedicated pages
   if (route === "payment-success" || route === "payment-failed") {
@@ -53,6 +56,10 @@ export default function App() {
 
   if (route === "progress") {
     return <ProgressPage />;
+  }
+
+  if (route === "freemasterclass") {
+    return <FreeMasterclassPage />;
   }
 
   return (
