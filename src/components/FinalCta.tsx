@@ -13,7 +13,7 @@ const FREE_MASTERCLASS = {
 
 export function FinalCta() {
   const [modalOpen, setModalOpen] = useState(false);
-  const ghost = Array.from({ length: 8 }, () => "SHIP IT ▸ ");
+  const ghost = Array.from({ length: 8 }, () => "BUILD & SELL AI ▸ ");
 
   return (
     <>
@@ -41,19 +41,18 @@ export function FinalCta() {
           </Reveal>
           <Reveal delay={0.08}>
             <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
-              YOUR IDEA IS EITHER
+              YOUR FIRST $2,000 AI CLIENT
               <br />
-              <span className="font-serif italic font-normal normal-case text-volt">going to ship</span>
+              <span className="font-serif italic font-normal normal-case text-volt">is one system away</span>
               <br />
-              OR STAY IN YOUR NOTES FOREVER.
+              — OR IT STAYS JUST AN IDEA.
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mx-auto mt-6 max-w-lg text-[15px] leading-relaxed text-zinc-400">
-              AI Founder Hub gives you everything you need to go from idea to live product — at whatever pace works for you.
-              Start free with weekly masterclasses taught by active builders. Go deeper with the flagship course — full-stack,
-              zero code, from idea to income. Move faster with a private 1:1 session directly with a founder who's shipping
-              daily. Free to start. Powerful enough to launch. Personal enough to scale.
+              AI Founder Hub gives you everything you need to build and sell AI Lead Management Systems — the core product of every successful AI Automation Agency.
+              Start free with weekly masterclasses where you build live. Go deeper with the AAA Accelerator — 90 days to your first $2K client.
+              Move faster with a private 1:1 session directly with a founder who's closing AI deals daily.
             </p>
           </Reveal>
           <Reveal delay={0.24}>
@@ -76,10 +75,11 @@ export function FinalCta() {
                 onClick={() => document.getElementById("membership")?.scrollIntoView({ behavior: "smooth" })}
                 className="text-[12px] font-semibold text-zinc-500 transition-colors hover:text-volt cursor-pointer"
               >
-                Rather start learning tonight?{" "}
-                <span className="font-bold text-volt underline decoration-volt/40 underline-offset-2">
-                  Get the membership for $159
-                </span>
+                Rather start this week?
+              {" "}
+              <span className="font-bold text-volt underline decoration-volt/40 underline-offset-2">
+                Join the AAA Accelerator for $159/mo
+              </span>
               </button>
             </div>
           </Reveal>

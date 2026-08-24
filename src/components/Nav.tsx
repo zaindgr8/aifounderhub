@@ -5,7 +5,7 @@ import { Wordmark, scrollToWorkshops } from "./shared";
 
 const LINKS = [
   { label: "FREE MASTERCLASS", target: "workshops" },
-  { label: "COURSE", target: "membership" },
+  { label: "ACCELERATOR", target: "membership" },
   // { label: "Summit", target: "curriculum" },
   // { label: "Bootcamp", target: "bootcamp" },
   { label: "1:1 Session", target: "mentors" },
@@ -53,7 +53,7 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
         onClick={handleClaimFreeSeat}
         className="bg-volt px-4 py-2 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5 cursor-pointer hover:bg-opacity-95 transition-colors"
       >
-        <span>⚡ Next Class This Saturday (Limited Seats) • You're Using 10% of Claude — Master the 100% • Click "Claim Free Seat" to Register Now</span>
+        <span>⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "CLAIM FREE SEAT"</span>
       </div>
 
       {/* scroll progress hairline */}
@@ -85,10 +85,16 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
         </nav>
 
         <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 font-mono text-[10px] font-bold tracking-widest text-zinc-500 uppercase">
-            <span className="pulse-glow-dot inline-block h-1.5 w-1.5 rounded-full bg-volt" />
-         
-          </div>
+          {/* Roadmap Page CTA */}
+          <a
+            href="/progress"
+            className="group hidden sm:flex items-center gap-1.5 rounded-full border border-volt/40 bg-void px-4 py-2 font-display text-[11px] font-extrabold uppercase tracking-wide text-volt transition-all duration-300 hover:bg-volt hover:text-void hover:border-volt hover:shadow-[0_0_25px_rgba(204,242,68,0.4)] active:scale-95"
+          >
+            <span className="text-[10px] mr-0.5">🗺️</span>
+            Roadmap To $50K/Mo
+            <ArrowUpRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </a>
+
           <button
             onClick={handleClaimFreeSeat}
             className="group flex items-center gap-1.5 rounded-full bg-volt px-4.5 py-2 font-display text-[12px] font-extrabold uppercase tracking-wide text-void transition-all duration-300 hover:shadow-[0_0_28px_rgba(204,242,68,0.45)] active:scale-95 cursor-pointer"

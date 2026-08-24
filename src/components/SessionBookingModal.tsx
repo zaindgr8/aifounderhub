@@ -109,11 +109,11 @@ export function SessionBookingModal({ advisor, onClose }: SessionBookingModalPro
     setFormState("loading");
 
     try {
-      // 1. Create Ziina payment intent for $299 session
+      // 1. Create Ziina payment intent for $599 session
       const result = await initiateZiinaPayment({
         fullName: fullName.trim(),
         email: email.trim(),
-        amount: 29900,   // $299 in cents
+        amount: 59900,   // $599 in cents
         message: `1:1 Session with ${advisor?.name}`,
         cancelPath: "/#mentors",
         advisorName: advisor?.fullName,
@@ -227,7 +227,7 @@ export function SessionBookingModal({ advisor, onClose }: SessionBookingModalPro
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="font-display text-xl font-black text-volt">$299</span>
+                    <span className="font-display text-xl font-black text-volt">$599</span>
                     <span className="font-mono text-[9px] text-zinc-500">/session</span>
                   </div>
                 </div>
@@ -349,7 +349,7 @@ export function SessionBookingModal({ advisor, onClose }: SessionBookingModalPro
                   <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
                   {formState === "idle" ? (
                     <>
-                      <span className="relative">Pay $299 · Book My Session</span>
+                      <span className="relative">Pay $599 · Book My Session</span>
                       <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </>
                   ) : formState === "loading" ? (

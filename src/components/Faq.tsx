@@ -5,36 +5,47 @@ import { Reveal, SectionTag } from "./shared";
 
 const FAQ_LIST = [
   {
-    question: "What do I actually get for free?",
+    question: "What exactly is an AI Lead Management System?",
     answer:
-      "A free seat gives you access to live workshops— no card required, nothing auto-upgrades. Every upcoming event invite lands in your inbox automatically after you claim your seat.",
+      "It's the core product you build and sell as an AAA (AI Automation Agency). It captures leads from multiple channels, scores them with AI, sends automated follow-up sequences, and syncs everything to a CRM — so your client's sales team only talks to qualified prospects. Businesses in real estate, clinics, gyms, and e-commerce pay $1,500–$5,000/month for this.",
   },
   {
-    question: "Do I need any coding or technical skills?",
+    question: "Do I need coding or technical experience?",
     answer:
-      "Zero. If you can type a message, you have every skill you need. We use conversational AI prompting — Claude, Codex, and the latest models write the architecture live on screen while you direct it. No syntax, no terminal, no prior experience required.",
+      "None at all. We use AI tools like Claude, n8n, and voice agent platforms that let you build and deploy full systems through configuration and prompting — not code. If you can use WhatsApp, you can follow the sessions. We've had members with zero tech background close their first client within 30 days.",
   },
   {
-    question: "Do I need a startup idea before I join?",
+    question: "What do I actually get from the free weekly masterclass?",
     answer:
-      "Not at all. Many of the builders who've shipped real products started completely blank. In the first session we run live brainstorming frameworks that pull high-demand micro-SaaS ideas straight out of your daily routines and industry — you'll leave Day 1 with a validated direction.",
+      "Every week you join a live, hands-on session where we build something real on screen — an AI Call Assistant, a lead capture system, an outbound sequence. You follow along, ask questions, and walk away with a working demo you can show prospects. No pitch, no slides-only webinar. Just building.",
+  },
+  {
+    question: "What's included in the paid AAA Accelerator ($159/month)?",
+    answer:
+      "Weekly live classes focused on building and selling AI Lead Management Systems. Access to all session replays. A private community of AAA founders. Sales scripts, outreach templates, and proposal frameworks. Plus direct access to the founders in group calls. Everything you need to land your first $2K client and keep growing from there.",
   },
   {
     question: "How do the 1:1 sessions with the founders work?",
     answer:
-      "Each private session is 60 minutes at $299. Ahmed focuses on business strategy, scaling, and GCC market positioning. Zain Ul Abideen covers AI engineering, Micro-SaaS building, and agency operations.",
+      "Private 60-minute sessions — you book directly with Ahmed or Zain. Ahmed covers business strategy, pricing, client acquisition, and GCC market positioning. Zain covers AI system building, agency operations, and tech stack decisions. These aren't coaching calls — they're working sessions where we dig into your specific situation.",
   },
   {
-    question: "Is this in person or online?",
+    question: "How realistic is landing a client in 90 days?",
     answer:
-      "Virtual-first — join from anywhere in the world. We also run regular in-person build nights and intensives in Dubai for the GCC community. Members always get first access to in-person seats.",
+      "Very — if you show up to the classes and do the outreach. Members who follow the program build a working demo in week one, start sending it to prospects in week two, and typically have their first discovery call by week three. The system works because you're selling something businesses already understand the value of — better lead management.",
   },
   {
-    question: "What if I already have a business or an existing app?",
+    question: "Is this online or in person?",
     answer:
-      "Even better. The course and workshops are built to work at every stage. If you have a business, we help you add AI-powered features, cut operational costs, and open new revenue streams. If you already have an app, we show you how to integrate Claude, Codex, and live model APIs to take it to the next level.",
+      "All live classes are online — join from anywhere in the world. We also run regular in-person build nights in Dubai for the GCC community. Paid members always get first access to in-person sessions.",
+  },
+  {
+    question: "Can I cancel the paid membership anytime?",
+    answer:
+      "Yes — cancel anytime, no questions asked. There's also a 7-day money-back guarantee if you join and feel it's not the right fit. No lock-ins, no annual commitments.",
   },
 ];
+
 
 export function Faq() {
   const [activeFaq, setActiveFaq] = useState<number | null>(0);

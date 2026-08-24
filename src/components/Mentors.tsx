@@ -163,7 +163,7 @@ export function Mentors() {
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="font-display text-2xl font-extrabold text-volt">$299</span>
+                        <span className="font-display text-2xl font-extrabold text-volt">$599</span>
                         <span className="font-mono text-[10px] font-bold text-zinc-500">/session</span>
                       </div>
                     </div>
@@ -190,7 +190,7 @@ export function Mentors() {
                     >
                       <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/25 [transform:skewX(-25deg)] transition-transform duration-700 group-hover/btn:translate-x-[250%]" />
                       <CalendarClock className="relative h-4 w-4 transition-transform group-hover/btn:scale-110" />
-                      <span className="relative">Book 1:1 with {a.name} — $299</span>
+                      <span className="relative">Book 1:1 with {a.name} — $599</span>
                       <ArrowRight className="relative h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-1" />
                     </button>
                   </div>

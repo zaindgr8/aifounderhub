@@ -1,23 +1,40 @@
 import React from "react";
 import { motion } from "motion/react";
-import { ArrowRight, Check, PlayCircle, ShieldCheck } from "lucide-react";
+import { ArrowRight, Check, ShieldCheck, TrendingUp, Globe2, Users } from "lucide-react";
 import { Magnetic, Reveal, SectionTag, scrollToRegister } from "./shared";
 
 const VALUE_STACK = [
-  { item: "Private Community Access — Online & In-Person Dubai Meetups with AI Builders." },
-  { item: "Claude, Codex & Latest AI Models — What Top Builders Actually Ship With." },
-  { item: "Full-Stack Live Builds — Frontend, Backend, Database from Scratch." },
-  { item: "From Code to Live — GitHub, Vercel, App Store & Play Store" },
-  { item: "Growth & Marketing Roadmap — Step-by-Step to Your First 50 Paying Users." },
+  // { item: "AI Lead Management System — Built, Deployed & Ready to Sell." },
+  { item: "AI Lead Management System — Handles Calls, Qualifies Leads & Books Appointments." },
+  { item: "AAA Agency Setup — Niche, Offer, Outreach & First Client Playbook." },
+  { item: "Private Builders Community — Online & In-Person Dubai Meetups." },
+  { item: "Sales Playbook — Scripts, Proposals & Close Your First $2K Client." },
+];
 
+const MARKET_FACTS = [
+  {
+    icon: TrendingUp,
+    title: "$50B Agency Market by 2033",
+    desc: "The AI Automation Agency market is growing at ~25% CAGR as businesses outsource automation builds.",
+  },
+  {
+    icon: Globe2,
+    title: "3–5x Global Arbitrage",
+    desc: "US & European clients pay 3–5x for equivalent workflows — giving Dubai & remote agencies a massive edge.",
+  },
+  {
+    icon: Users,
+    title: "48% Talent Shortage",
+    desc: "Middle East organizations cite lack of AI talent as their #1 barrier — forcing them to hire outside agencies.",
+  },
 ];
 
 const COURSE_CARDS = [
-  { title: "Marketing Roadmap & First 50 Users", rotate: -7, x: -28 },
-  { title: "Claude, Codex & Latest AI Models", rotate: -2, x: -8 },
-  { title: "Full-Stack Live Builds", rotate: 3, x: 12 },
-  { title: "From Code to Live", rotate: 8, x: 32 },
-  { title: "Private Community Access", rotate: 8, x: 32 },
+  { title: "AI Lead Management System", rotate: -7, x: -28 },
+  { title: "AI Call Assistant Build", rotate: -2, x: -8 },
+  { title: "AAA Agency Launch", rotate: 3, x: 12 },
+  { title: "Sales & Client Closing", rotate: 8, x: 32 },
+  { title: "Private Builders Community", rotate: 8, x: 32 },
 ];
 
 export function Membership({ onPay }: { onPay?: () => void }) {
@@ -27,7 +44,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
       className="relative overflow-hidden border-y border-volt/25 scroll-mt-20"
       aria-label="Courses membership offer"
     >
-      {/* attention-grabbing volt wash, distinct from every other section */}
+      {/* attention-grabbing volt wash */}
       <div className="absolute inset-0 bg-gradient-to-br from-volt/[0.07] via-void to-void" />
       <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-40" />
       <div
@@ -40,28 +57,28 @@ export function Membership({ onPay }: { onPay?: () => void }) {
         <div>
           <Reveal>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
-              <SectionTag index="02" label="Idea → MVP → Launch" />
+              <SectionTag index="02" label="AAA Accelerator" />
               <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/20 bg-volt/5 px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-volt/90">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-volt"></span>
                 </span>
-                Complete Playbook | Original Price $549
+                Land Your First $2K Client in 90 Days
               </span>
             </div>
           </Reveal>
 
           <Reveal delay={0.08}>
             <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">
-              THE ONLY COURSE THAT TAKES YOU FROM
+              THE ONLY PROGRAM THAT TAKES YOU FROM
               <br />
-              <span className="font-serif italic font-normal normal-case text-volt">IDEA TO LIVE PRODUCT</span>
+              <span className="font-serif italic font-normal normal-case text-volt">Zero to First $2,000 AI Client</span>
             </h2>
           </Reveal>
 
           <Reveal delay={0.14}>
             <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-300">
-              The Global Software Market is $41 Trillion — and AI just unlocked the door for anyone to walk in. — This course will take you from— no code, no idea, no experience — to a Live, Production-Grade Micro-SaaS, Web App, or Startup. No fluff, no theory — just the exact AI stack & playbook to build, launch, and land your first 50 paying users.
+              The AI Automation Agency (AAA) market is exploding toward <strong>$50 Billion</strong> — and <strong>74% of businesses</strong> are looking for external help to deploy AI that makes revenue. This program takes you from zero to running a live AAA: you'll build the system, package the offer, and land your first $2,000 paying client in 90 days.
             </p>
           </Reveal>
 
@@ -76,23 +93,10 @@ export function Membership({ onPay }: { onPay?: () => void }) {
                     </span>
                     {row.item}
                   </span>
-                  <span className="flex-shrink-0 font-mono text-[9.5px] font-bold uppercase tracking-wider text-volt/80">
-                    {row.value}
-                  </span>
                 </div>
               </Reveal>
             ))}
           </div>
-
-          {/* price anchor */}
-          {/* <Reveal delay={0.3}>
-            <p className="mt-6 max-w-xl text-[13.5px] leading-relaxed text-zinc-400">
-              For context: one 1:1 hour costs <span className="font-bold text-zinc-200">$299</span>. The bootcamp is{" "}
-              <span className="font-bold text-zinc-200">$249</span>. The membership is{" "}
-              <span className="font-bold text-volt">$49.99 a month</span> for everything we have ever recorded.
-              That's $1.64 a day.
-            </p>
-          </Reveal> */}
 
           {/* CTA */}
           <Reveal delay={0.36}>
@@ -104,7 +108,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
                   id="membership-pay-btn"
                 >
                   <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                  <span className="relative">GET INSTANT ACCESS for $159</span>
+                  <span className="relative">GET ACCESS $159/mo</span>
                   <ArrowRight className="relative h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
                 </button>
               </Magnetic>
@@ -113,79 +117,67 @@ export function Membership({ onPay }: { onPay?: () => void }) {
                 Cancel anytime · 7-day money-back
               </div>
             </div>
-            {/* <p className="mt-3 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-              Step 1 is your free account. Your member upgrade link arrives in the welcome email.
-            </p> */}
           </Reveal>
         </div>
 
-        {/* ——— RIGHT: fanned course-card stack ——— */}
-        <div className="relative mx-auto hidden w-full max-w-md items-center justify-center lg:flex" aria-hidden="true">
-          <div className="relative h-[360px] w-full">
-            {COURSE_CARDS.map((card, i) => (
-              <motion.div
-                key={card.title}
-                initial={{ y: 60, opacity: 0, rotate: 0 }}
-                whileInView={{ y: 0, opacity: 1, rotate: card.rotate, x: card.x }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ delay: 0.15 + i * 0.12, type: "spring", stiffness: 120, damping: 16 }}
-                whileHover={{ y: -12, rotate: 0, zIndex: 30, transition: { duration: 0.25 } }}
-                className={`absolute left-1/2 top-1/2 h-56 w-64 -translate-x-1/2 -translate-y-1/2 cursor-default rounded-2xl border p-5 shadow-[0_24px_60px_rgba(0,0,0,0.55)] backdrop-blur-sm ${i === COURSE_CARDS.length - 1
-                  ? "border-volt/50 bg-gradient-to-br from-volt/15 to-panel"
-                  : "border-edge bg-panel/95"
-                  }`}
-                style={{ zIndex: i }}
-              >
-                <div className="flex h-full flex-col justify-between">
-                  <div>
-                    {card.badge && (
-                      <span className="mb-2 inline-block rounded bg-volt/20 px-2 py-0.5 font-mono text-[8.5px] font-black uppercase tracking-wider text-volt">
-                        {card.badge}
-                      </span>
-                    )}
-                    <h3 className="font-display text-lg font-extrabold uppercase leading-tight tracking-tight text-white">
-                      {card.title}
-                    </h3>
-                    <p className="mt-1.5 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                      {card.lessons} · {card.time}
-                    </p>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    {/* <span className="flex items-center gap-1.5 text-[11px] font-bold text-zinc-300">
-                      <PlayCircle className="h-4 w-4 text-volt" /> Stream instantly
-                    </span> */}
-                    {/* <span className="rounded-md bg-void/80 px-2 py-1 font-mono text-[9px] font-bold uppercase text-volt">
-                      Included
-                    </span> */}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
+        {/* ——— RIGHT: Market Advantage Box & Stack ——— */}
+        <div className="relative mx-auto w-full max-w-lg space-y-4">
+          <Reveal delay={0.2}>
+            <div className="rounded-2xl border border-volt/20 bg-void/90 p-6 shadow-2xl backdrop-blur-md">
+              <div className="flex items-center gap-2 mb-4">
+                <TrendingUp className="h-4 w-4 text-volt" />
+                <span className="font-mono text-[10.5px] font-bold uppercase tracking-widest text-volt">
+                  The Market Arbitrage — Why Now?
+                </span>
+              </div>
 
-            {/* floating member proof */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.75 }}
-              className="absolute -bottom-4 left-1/2 z-30 flex -translate-x-1/2 items-center gap-2.5 whitespace-nowrap rounded-full border border-edge bg-void/95 px-4 py-2 shadow-xl"
-              style={{ animation: "float-y 5s ease-in-out infinite" }}
-            >
-              <div className="flex -space-x-2">
-                {["bg-volt text-void", "bg-lilac text-void", "bg-orange-400 text-void"].map((cls, i) => (
-                  <span
-                    key={i}
-                    className={`flex h-6 w-6 items-center justify-center rounded-full border-2 border-void text-[8px] font-black ${cls}`}
-                  >
-                    {["SA", "MJ", "DK"][i]}
-                  </span>
+              <div className="space-y-3.5">
+                {MARKET_FACTS.map((fact) => (
+                  <div key={fact.title} className="flex items-start gap-3 rounded-xl border border-white/5 bg-panel/60 p-3.5">
+                    <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-volt/10 text-volt">
+                      <fact.icon className="h-4 w-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-display text-[13px] font-bold uppercase text-white leading-tight">
+                        {fact.title}
+                      </h4>
+                      <p className="text-[12px] text-zinc-400 mt-1 leading-relaxed">
+                        {fact.desc}
+                      </p>
+                    </div>
+                  </div>
                 ))}
               </div>
-              <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-300">
-                A GROWING COMMUNITY OF AI BUILDERS
-              </span>
-            </motion.div>
-          </div>
+
+              <div className="mt-4 pt-3.5 border-t border-white/5 flex items-center justify-between text-zinc-400 font-mono text-[10px]">
+                <span>North America &amp; Europe hold &gt;60% market share</span>
+                <span className="text-volt font-bold">Sell Globally</span>
+              </div>
+            </div>
+          </Reveal>
+
+          {/* floating member proof */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.4 }}
+            className="flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full border border-edge bg-panel/90 px-4 py-2 shadow-xl mx-auto w-fit"
+          >
+            <div className="flex -space-x-2">
+              {["bg-volt text-void", "bg-lilac text-void", "bg-orange-400 text-void"].map((cls, i) => (
+                <span
+                  key={i}
+                  className={`flex h-5 w-5 items-center justify-center rounded-full border-2 border-void text-[8px] font-black ${cls}`}
+                >
+                  {["DXB", "RUH", "LON"][i]}
+                </span>
+              ))}
+            </div>
+            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-300">
+              COMMUNITY OF ACTIVE AAA BUILDERS
+            </span>
+          </motion.div>
         </div>
       </div>
     </section>

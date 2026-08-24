@@ -173,15 +173,15 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
               <div className="mx-7 mt-5 flex items-center justify-between rounded-xl border border-volt/20 bg-volt/5 px-4 py-3">
                 <div>
                   <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-                    Idea to Live Product Course
+                    AAA Accelerator — AI Lead Management System
                   </p>
                   <p className="mt-0.5 text-sm font-semibold text-zinc-200">
-                    Lifetime access · Private community · All modules
+                    Weekly live classes · Private community · 1:1 access
                   </p>
                 </div>
                 <div className="text-right">
                   <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">$549</p>
-                  <p className="font-display text-2xl font-black text-volt">$159</p>
+                  <p className="font-display text-2xl font-black text-volt">$159/mo</p>
                 </div>
               </div>
 

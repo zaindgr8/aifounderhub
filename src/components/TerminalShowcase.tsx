@@ -8,7 +8,7 @@ import { Reveal, SectionTag, CountUp } from "./shared";
 ———————————————————————————————————————————————— */
 
 const STACK = [
-  "CLAUDE", "GPT-5", "GEMINI","FABLE 5" ,"CURSOR", "LOVABLE", "REPLIT", "V0", "BOLT", "VERCEL", "SUPABASE", "STRIPE", "WINDSURF",
+  "N8N", "RETELL AI", "VAPI", "MAKE.COM", "VOICEFLOW", "CLAUDE", "OPENAI", "ZAPIER", "CLAY", "CAL.COM", "TWILIO", "GOHIGHLEVEL",
 ];
 
 export function ToolsMarquee() {
@@ -16,7 +16,7 @@ export function ToolsMarquee() {
   return (
     <section className="relative border-y border-edge bg-panel/40 py-7 overflow-hidden marquee-paused">
       <p className="mb-5 text-center font-mono text-[10px] font-bold uppercase tracking-[0.35em] text-zinc-500">
-        The 2026 AI builder stack: every tool covered live
+        The 2026 AI automation stack: every tool covered live
       </p>
       <div className="relative" style={{ maskImage: "linear-gradient(90deg, transparent, black 12%, black 88%, transparent)" }}>
         <div className="marquee-track items-center gap-12 px-6">
@@ -47,41 +47,41 @@ interface Scenario {
 
 const SCENARIOS: Scenario[] = [
   {
-    prompt: "Build a booking app for my barbershop with payments",
-    appName: "sharpcuts.app",
+    prompt: "Build an AI Lead Management System for a real estate agency",
+    appName: "leadflow.ai",
     lines: [
-      { text: "// generating BookingFlow.tsx", tone: "cm" },
-      { text: "export function BookingFlow() {", tone: "kw" },
-      { text: "  const slots = useAvailability(barber)", tone: "fn" },
-      { text: "  const checkout = useStripe()", tone: "fn" },
-      { text: "  return <Calendar onPick={checkout.pay} />", tone: "str" },
+      { text: "// generating LeadCapture.tsx", tone: "cm" },
+      { text: "export function LeadCapture() {", tone: "kw" },
+      { text: "  const lead = useAIScoring(form)", tone: "fn" },
+      { text: "  const crm = useCRMSync('hubspot')", tone: "fn" },
+      { text: "  return <LeadForm onSubmit={crm.push} />", tone: "str" },
       { text: "}", tone: "kw" },
-      { text: "payments wired · SMS reminders added", tone: "plain" },
+      { text: "CRM synced · AI scoring active · follow-up live", tone: "plain" },
     ],
   },
   {
-    prompt: "Make a meal-plan generator I can sell as a subscription",
-    appName: "platefuel.io",
+    prompt: "Add an AI Call Assistant that qualifies leads and books appointments",
+    appName: "callbot.io",
     lines: [
-      { text: "// generating PlanEngine.ts", tone: "cm" },
-      { text: "const plan = await ai.generate({", tone: "kw" },
-      { text: "  goal: user.macros,", tone: "fn" },
-      { text: "  allergies: user.profile.allergies,", tone: "fn" },
+      { text: "// generating VoiceAgent.ts", tone: "cm" },
+      { text: "const agent = await ai.voice({", tone: "kw" },
+      { text: "  role: 'lead_qualifier',", tone: "fn" },
+      { text: "  script: qualificationScript,", tone: "fn" },
       { text: "})", tone: "kw" },
-      { text: "gate(plan, { tier: 'pro', price: 9.99 })", tone: "str" },
-      { text: "paywall live · 7-day trial enabled", tone: "plain" },
+      { text: "agent.on('qualified', bookCalendly)", tone: "str" },
+      { text: "calling leads · booking appointments 24/7", tone: "plain" },
     ],
   },
   {
-    prompt: "Create a quiz maker for teachers with auto-grading",
-    appName: "quizforge.app",
+    prompt: "Set up automated follow-up sequences for cold leads",
+    appName: "nurture.agency",
     lines: [
-      { text: "// generating GradeBot.tsx", tone: "cm" },
-      { text: "export async function grade(answers) {", tone: "kw" },
-      { text: "  const rubric = await ai.rubric(quiz)", tone: "fn" },
-      { text: "  return rubric.score(answers)", tone: "fn" },
+      { text: "// generating FollowUp.ts", tone: "cm" },
+      { text: "export async function nurtureLead(lead) {", tone: "kw" },
+      { text: "  const seq = await ai.sequence(lead)", tone: "fn" },
+      { text: "  return seq.send({ channels: ['email','sms'] })", tone: "fn" },
       { text: "}", tone: "kw" },
-      { text: "CSV export ready · parent reports on", tone: "plain" },
+      { text: "3-touch sequence live · open rate 47%", tone: "plain" },
     ],
   },
 ];
@@ -325,9 +325,9 @@ export function TerminalShowcase() {
 
 const STATS = [
   { value: 4281, suffix: "+", label: "Founders registered", note: "this cohort" },
-  { value: 317, suffix: "", label: "Apps shipped live", note: "by past attendees" },
-  { value: 3, suffix: "", label: "Days, idea to launch", note: "Fri -> Sun" },
-  { value: 0, suffix: "", label: "Lines you'll hand-write", note: "AI types, you direct", prefix: "" },
+  { value: 127, suffix: "+", label: "AI systems shipped", note: "by past members" },
+  { value: 2000, suffix: "+", label: "First client value", note: "avg. AAA retainer", prefix: "$" },
+  { value: 90, suffix: "", label: "Days to first client", note: "our 90-day guarantee" },
 ];
 
 export function StatsBand() {

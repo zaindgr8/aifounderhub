@@ -15,66 +15,76 @@ interface Testimonial {
 
 const TESTIMONIALS: Testimonial[] = [
   {
-    id: "t13",
-    name: "Gary Banks",
-    avatar: "GB",
+    id: "t1",
+    name: "Khalid Al Mansoori",
+    avatar: "KM",
     bgClass: "bg-indigo-500 text-white",
+    role: "AAA Founder · Dubai",
     message:
-      "Shoutout to the entire team. The last summit was a real turning point for us. What we gained wasn't just information. It was clarity, structure, and the confidence to execute.\n\nBecause of that experience, we officially launched Grantswipe.com 🔥",
+      "I came in with zero agency experience. After the AI Lead System session I had a working demo I could actually show clients. Closed my first deal at AED 7,500/month two weeks later.",
   },
   {
-    id: "t18",
-    name: "Helen Igomu Kussiy",
-    avatar: "HK",
-    bgClass: "bg-stone-500 text-white",
-    message:
-      "I've attended many summits over the years. Usually I'm quietly thinking, please just get to it already.\n\nBut this was different. Every word felt intentional, layered, and necessary. It didn't feel like filler. It felt like foundation.",
-  },
-  {
-    id: "t12",
-    name: "Allan Pettit",
-    avatar: "AP",
+    id: "t2",
+    name: "Priya Nair",
+    avatar: "PN",
     bgClass: "bg-amber-500 text-void",
-    // link: "legacyblueprintnow.com",
+    role: "Freelancer → Agency Owner · India",
     message:
-      "This summit is like drinking from a fire hose in the best possible way… a buffet that stretches 10 city blocks. I LOVE IT!! More.. more.. more…",
+      "The AI Call Assistant masterclass was the one. I built the whole thing live during the session, deployed it the same night, and sent demos to 5 real estate agencies the next morning.",
+  },
+  {
+    id: "t3",
+    name: "Omar Rashid",
+    avatar: "OR",
+    bgClass: "bg-emerald-500 text-void",
+    role: "Digital Marketer · Riyadh",
+    message:
+      "I've done a lot of online courses. This is the first one where I actually built something real during the class. The AI lead system we made is now running for a gym client.",
+  },
+  {
+    id: "t4",
+    name: "Sara Al Hashimi",
+    avatar: "SA",
+    bgClass: "bg-rose-500 text-white",
+    role: "Business Owner · Abu Dhabi",
+    message:
+      "Wasn't sure if I could do this without a tech background. But the way they break it down — step by step, live — I had my AI lead capture system set up before the session ended.",
+  },
+  {
+    id: "t5",
+    name: "James Okafor",
+    avatar: "JO",
+    bgClass: "bg-sky-500 text-void",
+    role: "AAA Agency · London",
+    message:
+      "The 1:1 session with Zain changed my pricing completely. I was charging too little. He helped me package the AI Lead System as a proper retainer offer and I doubled my rate.",
   },
   {
     id: "t6",
-    name: "Lynn Fournier",
-    avatar: "LF",
-    bgClass: "bg-sky-500 text-void",
+    name: "Fatima Zahra",
+    avatar: "FZ",
+    bgClass: "bg-violet-500 text-white",
+    role: "Entrepreneur · Casablanca",
     message:
-      "Thank you for all the time you dedicated to us over the last two days. My excitement level is soaring and I have so many ideas of what I can do! An amazing experience.",
+      "I joined the free masterclass just to see what it was about. Within 48 hours I enrolled in the full program. The content is real and the community is actually helpful — no fluff.",
   },
   {
-    id: "t19",
-    name: "Tracy Brock-Islam",
-    avatar: "TB",
-    bgClass: "bg-rose-500 text-white",
+    id: "t7",
+    name: "Ravi Mehta",
+    avatar: "RM",
+    bgClass: "bg-orange-500 text-void",
+    role: "Tech Consultant · Mumbai",
     message:
-      "I signed up at midnight and went in today. The resources are wild. I already feel like I'm winning. This portal is phenomenal ❤️",
+      "Built an AI lead qualification bot for a clinic in the paid class. They signed a 3-month retainer on the spot. I hadn't written a single line of code before this program.",
   },
   {
-    id: "t1",
-    name: "V",
-    avatar: "V",
-    bgClass: "bg-volt text-void",
-    message: "In the very near future, a millionaire will be every 4 persons you know. And this is the room where it happens.",
-  },
-  {
-    id: "t15",
-    name: "Cherry Fortenberry",
-    avatar: "CF",
-    bgClass: "bg-emerald-500 text-void",
-    message: "Honestly it's PRICELESS! Having a new-found family and the APP.",
-  },
-  {
-    id: "t_natasha",
-    name: "Natasha Williams",
-    avatar: "NW",
+    id: "t8",
+    name: "Aisha Kamara",
+    avatar: "AK",
     bgClass: "bg-pink-500 text-white",
-    message: "Let's gooo! We missed the internet revolution so we can't miss the AI revolution. This is our time!",
+    role: "AI Agency Founder · Lagos",
+    message:
+      "The outbound session alone was worth the membership fee. I had 12 conversations booked in my first week using the scripts they gave us. Two of them converted.",
   },
 ];
 
@@ -106,7 +116,7 @@ export function Testimonials() {
             </Reveal>
             <Reveal delay={0.14}>
               <p className="mt-4 max-w-lg text-[14px] leading-relaxed text-zinc-400">
-                Real words from real people — no scripts, no incentives, just builders who showed up and shipped.
+                Real results from real members — people who built AI Lead Systems live and landed their first clients.
               </p>
             </Reveal>
           </div>

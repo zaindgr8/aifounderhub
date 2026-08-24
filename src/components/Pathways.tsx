@@ -33,6 +33,41 @@ interface Pathway {
 
 const PATHWAYS: Pathway[] = [
   {
+    id: "agency",
+    name: "AAA Agency Launch",
+    icon: Bot,
+    tagline: "Build, run & sell AI Lead Management Systems",
+    audience:
+      "Builders who want to start an AI Automation Agency — offering AI Lead Management Systems to real businesses and charging $1,500–$5,000/month in retainers.",
+    weeks: [
+      {
+        title: "Build the Product",
+        focus: "Build a complete AI Lead Management System live — multi-channel lead capture, AI scoring, automated follow-up, and CRM integration. This is what you sell.",
+        materials: ["AI LMS build blueprint", "Lead capture templates", "CRM integration guide"],
+        outcome: "A fully working AI Lead Management System deployed and demo-ready",
+      },
+      {
+        title: "AI Call Assistant",
+        focus: "Add an AI Call Assistant to your system — it answers calls, qualifies leads, handles objections and books appointments. The premium add-on clients love.",
+        materials: ["Voice agent setup guide", "Call script templates", "Integration playbook"],
+        outcome: "A live AI voice agent ready to demo to prospects",
+      },
+      {
+        title: "Agency Setup & Sales",
+        focus: "Name your agency, build your offer, pick your niche (real estate, gyms, clinics), and start outreach. Discovery call scripts, pricing, and proposal templates.",
+        materials: ["Agency brand kit", "Niche selector scorecard", "Outbound sequence pack"],
+        outcome: "Agency live + 20 outbound conversations started",
+      },
+      {
+        title: "Close & Fulfill",
+        focus: "Discovery call frameworks, closing retainers without being salesy, onboarding new clients, and running the agency so it scales past your own hours.",
+        materials: ["Discovery call scripts", "Proposal & close templates", "Client onboarding kit"],
+        outcome: "First paid client onboarded + 90-day agency scale plan",
+      },
+    ],
+    deliverables: ["Working AI Lead Management System", "Live AI Call Assistant", "Agency brand & site", "Productized retainer offer", "First $2K client closed"],
+  },
+  {
     id: "founder",
     name: "Founder Launch",
     icon: Rocket,
@@ -77,7 +112,7 @@ const PATHWAYS: Pathway[] = [
     weeks: [
       {
         title: "Pick Your Lane",
-        focus: "Choose a productized AI service (app builds, chatbots, automations) and position yourself to charge premium rates.",
+        focus: "Choose a productized AI service (AI agents, lead systems, automations) and position yourself to charge premium rates.",
         materials: ["Niche selector matrix", "Service menu templates", "Rate card builder"],
         outcome: "A defined offer + AI-built portfolio site live",
       },
@@ -118,7 +153,7 @@ const PATHWAYS: Pathway[] = [
       },
       {
         title: "Automate Operations",
-        focus: "Support bots, CRM hygiene, document processing and back-office automation with n8n + LLM APIs.",
+        focus: "AI Lead Systems, support bots, CRM hygiene, document processing and back-office automation with n8n + LLM APIs.",
         materials: ["12 plug-and-play automation templates", "Integration setup guides", "Cost-per-task calculator"],
         outcome: "Your first 3 automations running in production",
       },
@@ -137,41 +172,6 @@ const PATHWAYS: Pathway[] = [
     ],
     deliverables: ["Automation ROI roadmap", "3 production automations", "AI marketing engine", "Team AI playbook & SOPs", "90-day scale roadmap"],
   },
-  {
-    id: "agency",
-    name: "Automation Agency",
-    icon: Bot,
-    tagline: "Sell AI automations as a recurring-revenue service",
-    audience:
-      "Builders who want an agency-style business: productized AI services, monthly retainers, and systems that scale past their own hours.",
-    weeks: [
-      {
-        title: "Niche & Offer",
-        focus: "Pick a vertical, design retainer packages, and build a brand that sounds expensive because it is.",
-        materials: ["Vertical selection scorecard", "Retainer package builder", "Agency brand kit prompts"],
-        outcome: "Signature offer defined + agency site live",
-      },
-      {
-        title: "The Delivery Stack",
-        focus: "Reusable agent and automation templates (OpenClaw, n8n, LLM APIs) so every client build takes days, not weeks.",
-        materials: ["Agent template vault", "Build-system SOPs", "Client environment checklist"],
-        outcome: "A deliver-in-one-week fulfillment stack",
-      },
-      {
-        title: "The Sales Engine",
-        focus: "AI-assisted outbound, call booking, discovery frameworks and closing retainers without being salesy.",
-        materials: ["Outbound sequence pack", "Discovery call framework", "Proposal & close templates"],
-        outcome: "20 outbound conversations + booked discovery calls",
-      },
-      {
-        title: "Fulfill & Scale",
-        focus: "QA systems, subcontracting, upsells and account management: running the agency, not just the builds.",
-        materials: ["QA checklist library", "Subcontractor onboarding kit", "Upsell map template"],
-        outcome: "Retainer pipeline + a 90-day scale plan",
-      },
-    ],
-    deliverables: ["Agency brand & site live", "Productized retainer offer", "Reusable delivery stack", "Outbound sales engine", "90-day agency scale plan"],
-  },
 ];
 
 const INCLUDED = [
@@ -182,7 +182,7 @@ const INCLUDED = [
 ];
 
 export function Pathways() {
-  const [activeId, setActiveId] = useState("founder");
+  const [activeId, setActiveId] = useState("agency");
   const active = PATHWAYS.find((p) => p.id === activeId)!;
 
   return (
@@ -205,13 +205,13 @@ export function Pathways() {
             <h2 className="mx-auto mt-6 max-w-3xl font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl lg:text-6xl">
               One goal.
               <br />
-              <span className="font-serif italic font-normal normal-case text-volt">One pathway.</span> One month.
+              <span className="font-serif italic font-normal normal-case text-volt">Build & sell AI.</span> 90 days.
             </h2>
           </Reveal>
           <Reveal delay={0.16}>
             <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed text-zinc-400">
               The bootcamp isn't a course you watch. It's a result you ship. Pick the pathway that matches your goal
-              and follow a 4-week build plan with live labs, 1:1 checkpoints, and a demo day at the end.
+              and follow a 4-week build plan focused on AI Lead Management Systems, agency building, and landing real clients.
             </p>
           </Reveal>
           <Reveal delay={0.19}>

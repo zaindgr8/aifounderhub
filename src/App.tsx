@@ -17,12 +17,14 @@ import { PaymentModal } from "./components/PaymentModal";
 import { ClaudeMasterclassPopupModal } from "./components/ClaudeMasterclassPopupModal";
 import { BackToTop, CircuitDivider } from "./components/shared";
 import { PaymentSuccess } from "./pages/PaymentSuccess";
+import { ProgressPage } from "./pages/ProgressPage";
 
 // Simple path-based routing — no router lib needed
 function useRoute() {
   const path = window.location.pathname;
   if (path === "/payment-success") return "payment-success";
   if (path === "/payment-failed") return "payment-failed";
+  if (path === "/progress" || path === "/progress/") return "progress";
   return "home";
 }
 
@@ -47,6 +49,10 @@ export default function App() {
   // Dedicated pages
   if (route === "payment-success" || route === "payment-failed") {
     return <PaymentSuccess />;
+  }
+
+  if (route === "progress") {
+    return <ProgressPage />;
   }
 
   return (

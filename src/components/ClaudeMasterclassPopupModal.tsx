@@ -133,7 +133,7 @@ export function ClaudeMasterclassPopupModal({
           countryCode:     country.code,
           fullPhoneNumber,
           goal:            "workshop",
-          workshopTitle:   "Become a Claude Expert — Master 100%",
+          workshopTitle:   "AI Call Assistant Masterclass — Build & Sell For $2,000+",
           source:          "timed-popup-modal",
           submittedAt:     new Date().toISOString(),
           ticketNumber:    generatedTicket,
@@ -262,15 +262,15 @@ export function ClaudeMasterclassPopupModal({
                   {/* Top Badge */}
                   <div className="inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase text-volt mb-3">
                     <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
-                    <span>Next Class: Coming Saturday (Limited Seats)</span>
+                    <span>Next Live Class: Coming Saturday (Limited Seats)</span>
                   </div>
 
                   {/* Title & Core Hook */}
                   <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                    Become a <span className="text-volt">Claude Expert</span> &amp; Use 100%
+                    Build An <span className="text-volt">AI Call Assistant</span> &amp; Sell For $2,000+
                   </h2>
                   <p className="mt-1.5 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                    You are currently using only <strong className="text-white">10%</strong> of Claude. Join our live hands-on session this Saturday and learn to master the full <strong className="text-volt font-bold">100%</strong> to build and launch AI apps fast.
+                    Join our free live masterclass this Saturday. Watch us build a working voice agent on Retell AI, connect Cal.com for 24/7 booking, and learn how to sell it to real businesses for <strong className="text-volt font-bold">$2,000+</strong>.
                   </p>
 
                   {/* Highlights bar */}

@@ -47,10 +47,10 @@ const COUNTRIES: Country[] = [
 
 /* goal → pathway routing (feeds the CRM segmentation) */
 const GOALS = [
+  { id: "agency", label: "Start an AI Automation Agency (AAA)", pathway: "AAA Agency Launch" },
+  { id: "freelancer", label: "Freelance with AI skills", pathway: "Freelance Pro" },
   { id: "founder", label: "Launch a startup", pathway: "Founder Launch" },
-  { id: "freelancer", label: "Become an AI freelancer", pathway: "Freelance Pro" },
   { id: "scaleup", label: "Scale my existing business", pathway: "Business Scale-Up" },
-  { id: "agency", label: "Start an automation agency", pathway: "Automation Agency" },
   { id: "explore", label: "Just exploring AI", pathway: "Explorer (we'll guide you)" },
 ];
 
@@ -116,12 +116,12 @@ function TiltCard({ children }: { children: React.ReactNode }) {
 
 /* rotating community-activity toast (placeholder names, like the testimonial wall) */
 const TICKER = [
-  { flag: "🇦🇪", text: "Sara from Dubai claimed a free seat" },
-  { flag: "🇸🇦", text: "Omar matched to the Founder Launch pathway" },
-  { flag: "🇮🇳", text: "Priya unlocked the courses membership" },
+  { flag: "🇦🇪", text: "Sara from Dubai landed her first $2K AI client" },
+  { flag: "🇸🇦", text: "Omar built his AI Lead System live in class" },
+  { flag: "🇮🇳", text: "Priya enrolled in the AAA Accelerator" },
   { flag: "🇬🇧", text: "James booked a 1:1 with Zain" },
-  { flag: "🇦🇪", text: "Fatima joined Dubai Build Night" },
-  { flag: "🇺🇸", text: "Maya claimed a free summit seat" },
+  { flag: "🇦🇪", text: "Fatima closed her first AI automation retainer" },
+  { flag: "🇺🇸", text: "Maya claimed her free masterclass seat" },
 ];
 
 function JoinTicker() {
@@ -395,34 +395,70 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-volt opacity-70" />
               <span className="pulse-glow-dot relative inline-flex h-2 w-2 rounded-full bg-volt" />
             </span>
-            Start Building Today — FOR FREE 🚀
+            Free Weekly Masterclass — Join Live 🚀
           </motion.div>
 
-          <h1 className="mt-7 font-display font-extrabold uppercase leading-[0.93] tracking-tight text-white text-[44px] sm:text-[64px] lg:text-[72px] xl:text-[82px]">
+          <h1 className="mt-7 font-display font-extrabold uppercase leading-[0.9] tracking-tight text-white text-[46px] sm:text-[62px] lg:text-[72px] xl:text-[80px]">
             <StaggerLine delay={0.35}>
-              <HoverWord>Learn it.</HoverWord> <HoverWord>Build it.</HoverWord>
+              <HoverWord>Your</HoverWord> <HoverWord>AI</HoverWord> <HoverWord>Automation</HoverWord> <HoverWord>Agency</HoverWord>
             </StaggerLine>
             <StaggerLine delay={0.45}>
               <motion.span
-                whileHover={{ scale: 1.04 }}
+                whileHover={{ scale: 1.03 }}
                 transition={{ type: "spring", stiffness: 300, damping: 14 }}
                 className="text-shimmer inline-block cursor-default"
               >
-                Get paid for it.
+                Starts Now.
               </motion.span>
             </StaggerLine>
-
           </h1>
+
+          {/* Proof Stats Row */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.65 }}
+            className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2"
+          >
+            {["First Client", "$15K Retainer", "90 Days"].map((stat, i) => (
+              <span key={i} className="flex items-center gap-2">
+                <span className="font-display text-[15px] sm:text-[17px] font-extrabold uppercase tracking-tight text-volt">
+                  {stat}
+                </span>
+                {i < 2 && <span className="h-1 w-1 rounded-full bg-zinc-600" />}
+              </span>
+            ))}
+          </motion.div>
 
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.8 }}
-            className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-zinc-400 lg:mx-0"
+            className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-zinc-300 lg:mx-0"
           >
-            AI Founder Hub is where builders — technical or not — go from idea to a live, production-ready AI Application.
-            Free weekly masterclasses. Premium courses. 1:1 mentorship. Start For Free Today.
+            The proven roadmap to launch and scale a high-margin <strong className="text-white">AI Automation Agency (AAA)</strong>. We train you to build production-grade <strong className="text-volt font-medium">AI Lead Management Systems &amp; Voice Assistants</strong>, package high-ticket offers, and land clients paying <strong className="text-white">$2,000–$5,000/month</strong> in recurring revenue.
           </motion.p>
+
+          {/* Market Potential $$$ Value Strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.88 }}
+            className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-2 sm:gap-2.5 lg:mx-0 lg:justify-start"
+          >
+            <div className="flex items-center gap-1.5 rounded-xl border border-volt/25 bg-volt/[0.06] px-3 py-1.5 font-mono text-[11px] text-zinc-200">
+              <span className="font-display text-xs sm:text-sm font-extrabold text-volt">$1.14T</span>
+              <span className="text-[10px] uppercase tracking-wider text-zinc-400">AI Market Wave</span>
+            </div>
+            <div className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] text-zinc-200">
+              <span className="font-display text-xs sm:text-sm font-extrabold text-white">$50B</span>
+              <span className="text-[10px] uppercase tracking-wider text-zinc-400">Agency Sector</span>
+            </div>
+            <div className="flex items-center gap-1.5 rounded-xl border border-emerald-500/25 bg-emerald-950/40 px-3 py-1.5 font-mono text-[11px] text-emerald-300">
+              <span className="font-display text-xs sm:text-sm font-extrabold text-emerald-400">$2K–$5K/mo</span>
+              <span className="text-[10px] uppercase tracking-wider text-emerald-400/80">Client Retainer</span>
+            </div>
+          </motion.div>
 
           <motion.ul
             initial={{ opacity: 0, y: 16 }}
@@ -431,15 +467,26 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
             className="mx-auto mt-7 flex max-w-xl flex-col gap-2.5 text-left lg:mx-0"
           >
             {[
-              "Free weekly masterclasses on Claude, OpenClaw, Micro-SaaS & more.",
-              "Premium courses to take you from idea to production-grade AI app.",
-              "Launch a live product with 1:1 mentorship guiding every step.",
-            ].map((line, i) => (
+              {
+                title: "Free Weekly Masterclasses",
+                desc: "Live interactive builds: AI Call Assistants, Lead Systems & backend automations on Retell AI & n8n.",
+              },
+              {
+                title: "AAA Accelerator",
+                desc: "The complete step-by-step blueprint to package, pitch, and close your first $2,000 client in 90 days.",
+              },
+              {
+                title: "1:1 Founder Mentorship",
+                desc: "Direct strategy sessions with active agency founders to review your client pitches and tech stack.",
+              },
+            ].map((item, i) => (
               <li key={i} className="flex items-start gap-3 text-[13.5px] font-medium text-zinc-300">
                 <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-md bg-volt/15 text-volt">
                   <Zap className="h-3 w-3" />
                 </span>
-                {line}
+                <span>
+                  <strong className="text-white font-semibold">{item.title}:</strong> {item.desc}
+                </span>
               </li>
             ))}
           </motion.ul>
@@ -456,7 +503,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                 className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.25)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.5)] cursor-pointer"
               >
                 <span className="absolute inset-0 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%] w-1/2" />
-                <span className="relative">START MY AI JOURNEY</span>
+                <span className="relative">START YOUR AI AGENCY</span>
                 <ArrowRight className="relative h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </Magnetic>
@@ -469,14 +516,14 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                       key={i}
                       className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-void text-[9px] font-black ${cls}`}
                     >
-                      {["MK", "JT", "+", "RS"][i]}
+                      {["DXB", "RUH", "LON", "+"][i]}
                     </div>
                   )
                 )}
               </div>
               <div className="text-left">
-                <span className="block text-xs font-bold text-zinc-200">Join the community</span>
-                <span className="block font-mono text-[10px] text-zinc-500">Of AI Builders</span>
+                <span className="block text-xs font-bold text-zinc-200">4,200+ Active Builders</span>
+                <span className="block font-mono text-[10px] text-zinc-500">Dubai &amp; Global Network</span>
               </div>
             </div>
           </motion.div>
@@ -495,8 +542,22 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
           <TiltCard>
             <div className="conic-frame shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
               <div className="relative rounded-[25px] bg-panel/95 p-6 sm:p-8 backdrop-blur-xl">
+                {/* Form Header */}
+                <div className="mb-5 pb-4 border-b border-white/8 text-left">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-2.5 py-0.5 font-mono text-[9.5px] font-bold uppercase tracking-wider text-volt mb-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
+                    <span>Free Live Masterclass · Every Saturday</span>
+                  </div>
+                  <h3 className="font-display text-lg sm:text-xl font-black uppercase text-white leading-tight">
+                    Build &amp; Sell Real AI Systems
+                  </h3>
+                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Live hands-on builds every week: AI Voice Agents, Chatbots, CRM Automations &amp; Lead Systems. 100% free.
+                  </p>
+                </div>
+
                 {!isSubmitted ? (
-                  <form onSubmit={handleRegister} className="space-y-5">
+                  <form onSubmit={handleRegister} className="space-y-4">
                     {/* full name */}
                     <div className="space-y-1.5">
                       <div className="relative">
@@ -768,8 +829,8 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         While you wait
                       </span>
                       <p className="mt-1.5 text-xs leading-relaxed text-zinc-300">
-                        Your workshop is days away. Members start tonight:{" "}
-                        <span className="font-bold text-white">every course, every replay, instantly.</span>
+                        Your masterclass is this week. AAA Accelerator members start tonight:{" "}
+                        <span className="font-bold text-white">full access, live builds, 1:1 support, instantly.</span>
                       </p>
                       <button
                         type="button"

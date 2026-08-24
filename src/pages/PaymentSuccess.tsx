@@ -146,11 +146,11 @@ export function PaymentSuccess() {
                   </p>
                   <div className="space-y-3">
                     {[
-                      "Private Community — Online & In-Person Dubai Meetups",
-                      "Claude, Codex & Latest AI Models",
-                      "Full-Stack Live Builds (Frontend · Backend · Database)",
-                      "From Code to Live — GitHub, Vercel, App Store & Play Store",
-                      "Growth & Marketing Roadmap to Your First 50 Paying Users",
+                      "AI Lead Management System — Complete Build & Setup Blueprint",
+                      "AI Call Assistant — Retell AI + Cal.com Voice Agent Suite",
+                      "AAA Agency Launch — Niche, Offer & Outreach Playbook",
+                      "Private Builders Community — Online & Dubai Meetups",
+                      "Sales & Closing Playbook — Scripts to Land Your First $2,000 Client",
                     ].map((item) => (
                       <div key={item} className="flex items-start gap-3">
                         <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-volt/20">
@@ -167,22 +167,31 @@ export function PaymentSuccess() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.45 }}
-                  className="flex flex-col items-center gap-4"
+                  className="flex flex-col items-center gap-4 w-full"
                 >
                   <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-600">
                     <ShieldCheck className="h-3.5 w-3.5 text-volt" />
                     Secured by Ziina · PCI Compliant
                   </div>
 
-                  <a
-                    href="/"
-                    id="payment-success-home-btn"
-                    className="group relative flex items-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] no-underline"
-                  >
-                    <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                    <span className="relative">Back to AI Founder Hub</span>
-                    <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-                  </a>
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
+                    <a
+                      href="/progress"
+                      id="payment-success-progress-btn"
+                      className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] no-underline w-full sm:w-auto cursor-pointer"
+                    >
+                      <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                      <span className="relative">Track My Progress Game →</span>
+                    </a>
+
+                    <a
+                      href="/"
+                      id="payment-success-home-btn"
+                      className="rounded-full border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-zinc-400 hover:bg-white/10 hover:text-white transition w-full sm:w-auto"
+                    >
+                      Return Home
+                    </a>
+                  </div>
                 </motion.div>
               </motion.div>
             )}
