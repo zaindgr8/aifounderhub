@@ -270,7 +270,7 @@ export function ClaudeMasterclassPopupModal({
                     Build An <span className="text-volt">AI Call Assistant</span> &amp; Sell For $2,000+
                   </h2>
                   <p className="mt-1.5 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                    Join our free live masterclass this Saturday. Watch us build a working voice agent on Retell AI, connect Cal.com for 24/7 booking, and learn how to sell it to real businesses for <strong className="text-volt font-bold">$2,000+</strong>.
+                    Join our free live masterclass this Saturday. Watch us build a working multilingual Voice AI Agent for 24/7 booking appointments, and learn how to sell it to real businesses for <strong className="text-volt font-bold">$2,000+</strong>.
                   </p>
 
                   {/* Highlights bar */}
