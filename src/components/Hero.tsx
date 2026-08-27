@@ -420,7 +420,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
             transition={{ duration: 0.6, delay: 0.65 }}
             className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2"
           >
-            {["First Client", "$15K Retainer", "90 Days"].map((stat, i) => (
+            {["First Client", "$15K Retainer", "90 Days Challenge"].map((stat, i) => (
               <span key={i} className="flex items-center gap-2">
                 <span className="font-display text-[15px] sm:text-[17px] font-extrabold uppercase tracking-tight text-volt">
                   {stat}
@@ -524,7 +524,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                 )}
               </div>
               <div className="text-left">
-                <span className="block text-xs font-bold text-zinc-200">4,200+ Active Builders</span>
+                <span className="block text-xs font-bold text-zinc-200">Growing Community of Active Builders</span>
                 <span className="block font-mono text-[10px] text-zinc-500">Dubai &amp; Global Network</span>
               </div>
             </div>
