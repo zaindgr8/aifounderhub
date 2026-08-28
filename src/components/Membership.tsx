@@ -58,12 +58,12 @@ export function Membership({ onPay }: { onPay?: () => void }) {
           <Reveal>
             <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
               <SectionTag index="02" label="AAA Accelerator" />
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/20 bg-volt/5 px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-volt/90">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-3 py-0.5 font-mono text-[9.5px] font-extrabold uppercase tracking-wider text-volt">
                 <span className="relative flex h-1.5 w-1.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-volt"></span>
                 </span>
-                Land Your First $2K Client in 90 Days
+                Next Cohort: Starts 20th September (Limited Seats)
               </span>
             </div>
           </Reveal>

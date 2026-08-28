@@ -34,11 +34,11 @@ export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") 
           </a>
           <span className="hidden sm:inline text-zinc-800">·</span>
           <a
-            href="mailto:contact@devmatesolutions.com"
+            href="mailto:announcements@aifounderhub.com"
             className="flex items-center gap-2 hover:text-volt transition-colors"
           >
             <Mail className="h-4 w-4 text-volt" />
-            <span>contact@devmatesolutions.com</span>
+            <span>announcements@aifounderhub.com</span>
           </a>
           <span className="hidden sm:inline text-zinc-800">·</span>
           <a

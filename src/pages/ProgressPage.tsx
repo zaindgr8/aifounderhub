@@ -22,6 +22,7 @@ import {
   Loader2,
   ShieldAlert,
   KeyRound,
+  LogIn,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
@@ -519,26 +520,81 @@ export function ProgressPage() {
         </div>
       </header>
 
-      {/* Main HUD Dashboard */}
-      <main className="relative z-10 mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
-        {/* Title & Introduction */}
-        <div className="mb-10 text-center max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 rounded-full border border-volt/30 bg-volt/[0.08] px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-volt mb-3"
-          >
-            <Trophy className="h-3.5 w-3.5" />
-            <span>Paid Member Progress Tracker</span>
-          </motion.div>
+      {/* Main HUD Dashboard or Login Gate */}
+      {!user ? (
+        <main className="relative z-10 mx-auto max-w-4xl px-5 pt-10 sm:px-8 sm:pt-16">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 rounded-full border border-volt/30 bg-volt/[0.08] px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-volt mb-4"
+            >
+              <KeyRound className="h-3.5 w-3.5" />
+              <span>Free &amp; Paid Member Access</span>
+            </motion.div>
 
-          <h1 className="font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-white leading-tight">
-            The AAA Roadmap: <span className="text-volt">Zero to $50,000/mo</span>
-          </h1>
-          <p className="mt-3 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl mx-auto">
-            Your gamified execution roadmap. Stage 1 is open for free preview. Unlock Stages 2–6 with your paid member access.
-          </p>
-        </div>
+            <h1 className="font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-white leading-tight">
+              Access Your <span className="text-volt">Roadmap Dashboard</span>
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-zinc-400 leading-relaxed">
+              Create a free account or sign in to track your XP, unlock Stage 1 Free Preview, and save your progress to the cloud.
+            </p>
+          </div>
+
+          {/* Inline Login / Sign-up Card */}
+          <div className="max-w-md mx-auto rounded-3xl border border-volt/25 bg-[#0e0e18]/95 p-6 sm:p-8 shadow-[0_0_80px_rgba(204,242,68,0.12)] relative overflow-hidden backdrop-blur-xl">
+            <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-volt/10 blur-[60px]" />
+
+            <div className="space-y-4">
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="group relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_25px_rgba(204,242,68,0.3)] hover:shadow-[0_0_40px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
+              >
+                <LogIn className="h-4 w-4" />
+                <span>Login or Sign Up with Google / Email →</span>
+              </button>
+
+              <div className="pt-4 border-t border-white/8 space-y-2.5">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400 text-center mb-3">
+                  ⚡ Included With Free Account:
+                </p>
+                <div className="flex items-center gap-2 text-xs text-zinc-300">
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-volt/15 text-volt font-bold text-[10px]">✓</div>
+                  <span>Full Stage 1 Free Preview (Niche &amp; AI Sandboxes)</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-zinc-300">
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-volt/15 text-volt font-bold text-[10px]">✓</div>
+                  <span>Cloud XP &amp; Checklist Progress Sync</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-zinc-300">
+                  <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-volt/15 text-volt font-bold text-[10px]">✓</div>
+                  <span>Gamified Agency Rank progression from Novice to Tycoon</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : (
+        /* Main HUD Dashboard for Authenticated Users */
+        <main className="relative z-10 mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
+          {/* Title & Introduction */}
+          <div className="mb-10 text-center max-w-3xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="inline-flex items-center gap-2 rounded-full border border-volt/30 bg-volt/[0.08] px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-widest text-volt mb-3"
+            >
+              <Trophy className="h-3.5 w-3.5" />
+              <span>Paid Member Progress Tracker</span>
+            </motion.div>
+
+            <h1 className="font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-white leading-tight">
+              The AAA Roadmap: <span className="text-volt">Zero to $50,000/mo</span>
+            </h1>
+            <p className="mt-3 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl mx-auto">
+              Your gamified execution roadmap. Stage 1 is open for free preview. Unlock Stages 2–6 with your paid member access.
+            </p>
+          </div>
 
         {/* Player Stats Bar (HUD) */}
         <div className="mb-12 rounded-3xl border border-volt/25 bg-[#0e0e18]/90 p-6 sm:p-8 shadow-2xl backdrop-blur-md relative overflow-hidden">
@@ -865,6 +921,7 @@ export function ProgressPage() {
           })}
         </AnimatePresence>
       </main>
+      )}
 
       {/* Member Auth Modal (Supabase Google OAuth + Email) */}
       <AuthModal

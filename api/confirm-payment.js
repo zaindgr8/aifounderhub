@@ -132,8 +132,8 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
           <tr>
             <td style="background:linear-gradient(135deg,#0d0d14 0%,#12121c 100%);padding:40px 40px 32px;border-bottom:1px solid #1e1e2a;text-align:center;">
               <span style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ccf244;text-transform:uppercase;">⚡ AI Founder Hub</span>
-              <h1 style="margin:16px 0 8px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;line-height:1.2;">Payment Confirmed! 🎉</h1>
-              <p style="margin:0;font-size:15px;color:#71717a;line-height:1.6;">You now have full access to the <strong style="color:#ccf244;">Idea to Live Product</strong> course.</p>
+              <h1 style="margin:16px 0 8px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;line-height:1.2;">Welcome to AAA Accelerator! 🎉</h1>
+              <p style="margin:0;font-size:15px;color:#a1a1aa;line-height:1.6;">You are enrolled in the upcoming <strong style="color:#ccf244;">20th September Cohort</strong>.</p>
             </td>
           </tr>
 
@@ -144,22 +144,22 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
 
                 <tr>
                   <td style="padding-bottom:20px;">
-                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Purchased By</p>
+                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Enrolled Member</p>
                     <p style="margin:0;font-size:18px;font-weight:700;color:#ffffff;">${fullName}</p>
                   </td>
                 </tr>
 
                 <tr>
                   <td style="padding-bottom:20px;">
-                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Confirmation Email</p>
+                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Registered Email</p>
                     <p style="margin:0;font-size:14px;font-weight:600;color:#ccf244;">${email}</p>
                   </td>
                 </tr>
 
                 <tr>
                   <td style="padding-bottom:20px;">
-                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Transaction Date</p>
-                    <p style="margin:0;font-size:13px;font-weight:500;color:#a1a1aa;">${dateStr} (Dubai time)</p>
+                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Cohort Kick-off Date</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#ffffff;">20th September 2026</p>
                   </td>
                 </tr>
 
@@ -170,7 +170,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                       <table width="100%" cellpadding="0" cellspacing="0">
                         <tr>
                           <td style="padding-bottom:12px;border-bottom:1px solid #1e1e2a;">
-                            <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:#52525b;">Order Summary</p>
+                            <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.25em;text-transform:uppercase;color:#52525b;">Membership Summary</p>
                           </td>
                         </tr>
                         <tr>
@@ -178,8 +178,8 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                             <table width="100%" cellpadding="0" cellspacing="0">
                               <tr>
                                 <td>
-                                  <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">AI Founder Hub — Idea to Live Product Course</p>
-                                  <p style="margin:4px 0 0;font-size:11px;color:#52525b;">Lifetime access · Private community · All modules</p>
+                                  <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">AAA Accelerator — 20th September Cohort</p>
+                                  <p style="margin:4px 0 0;font-size:11px;color:#52525b;">All 6-Stage Blueprints · Private Community · Weekly Live Builds</p>
                                 </td>
                                 <td align="right">
                                   <p style="margin:0;font-size:15px;font-weight:800;color:#ccf244;">$159.00</p>
@@ -193,7 +193,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                             <table width="100%" cellpadding="0" cellspacing="0">
                               <tr>
                                 <td><p style="margin:0;font-size:12px;font-weight:700;color:#71717a;">TOTAL PAID</p></td>
-                                <td align="right"><p style="margin:0;font-size:18px;font-weight:900;color:#ffffff;">$159.00 USD</p></td>
+                                <td align="right"><p style="margin:0;font-size:18px;font-weight:900;color:#ffffff;">$159.00 USD / mo</p></td>
                               </tr>
                             </table>
                           </td>
@@ -210,14 +210,15 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
           <!-- What's inside -->
           <tr>
             <td style="background:#0d0d14;padding:0 40px 32px;">
-              <p style="margin:0 0 14px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">What's Included</p>
+              <p style="margin:0 0 14px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">What's Unlocked In Your Membership</p>
               <table width="100%" cellpadding="0" cellspacing="0">
                 ${[
-    ['⚡', 'Private Community Access — Online & In-Person Dubai Meetups with AI Builders'],
-    ['🤖', 'Claude, Codex & Latest AI Models — What Top Builders Actually Ship With'],
-    ['🏗️', 'Full-Stack Live Builds — Frontend, Backend, Database from Scratch'],
-    ['🚀', 'From Code to Live — GitHub, Vercel, App Store & Play Store'],
-    ['📈', 'Growth & Marketing Roadmap — Step-by-Step to Your First 50 Paying Users'],
+    ['🤖', 'Production AI Lead Management System & Retell / Vapi Voice Prompts'],
+    ['📦', 'Complete n8n & Make.com CRM Synchronization Workflows'],
+    ['🎯', 'High-Converting Cold Outreach Campaigns & Email Templates'],
+    ['📑', 'The Exact $2,000 Setup + $600/mo Retainer Contract Templates'],
+    ['👥', 'Private Builders Community & Weekly Live Build Office Hours'],
+    ['🏆', 'Full 6-Stage Gamified Game Map Dashboard Access (Zero to $50K/mo)'],
   ].map(([icon, text]) => `
                 <tr>
                   <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;">
@@ -231,8 +232,8 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
           <!-- CTA -->
           <tr>
             <td style="background:#0a0a10;padding:28px 40px;border-top:1px solid #1e1e2a;text-align:center;">
-              <p style="margin:0 0 20px;font-size:14px;color:#a1a1aa;line-height:1.7;">We'll send your access link within 24 hours.<br/>In the meantime, explore at AI Founder Hub.</p>
-              <a href="https://aifounderhub.com" style="display:inline-block;background:#ccf244;color:#07070b;font-size:13px;font-weight:800;text-decoration:none;padding:13px 32px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;">Visit AI Founder Hub →</a>
+              <p style="margin:0 0 20px;font-size:14px;color:#a1a1aa;line-height:1.7;">Your member dashboard is ready with all stages unlocked.<br/>Log in using your registered email address.</p>
+              <a href="https://aifounderhub.com/progress" style="display:inline-block;background:#ccf244;color:#07070b;font-size:13px;font-weight:800;text-decoration:none;padding:14px 34px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;">Access Member Dashboard →</a>
             </td>
           </tr>
 

@@ -8,10 +8,9 @@ import { AuthModal } from "./AuthModal";
 const LINKS = [
   { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
-  { label: "1:1 SESSIONS", target: "mentors" },
+  { label: "FOUNDERS", target: "mentors" },
+  { label: "TEAM", target: "team" },
   { label: "ROADMAP", href: "/progress", isBadge: true },
-  { label: "FAQ", target: "faq" },
-  { label: "CONTACT", target: "contact" },
 ];
 
 interface NavProps {
@@ -52,12 +51,32 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
             : "bg-transparent border-b border-transparent"
         }`}
       >
-        {/* Announcement Banner */}
+        {/* Banner 1: Free Masterclass */}
         <div 
           onClick={handleClaimFreeSeat}
-          className="bg-volt px-4 py-1.5 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5 cursor-pointer hover:bg-opacity-95 transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
+          className="bg-volt px-4 py-1.5 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/10 cursor-pointer hover:bg-opacity-95 transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
         >
           <span className="truncate">⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "CLAIM FREE SEAT"</span>
+        </div>
+
+        {/* Banner 2: Next Cohort Starting 20th September */}
+        <div 
+          onClick={() => {
+            const el = document.getElementById("membership");
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="bg-[#0f0f18] border-b border-volt/25 px-4 py-1.5 text-center text-[10px] md:text-[11px] font-mono font-bold uppercase tracking-wider text-zinc-300 flex items-center justify-center gap-2 relative z-10 cursor-pointer hover:text-white transition-colors whitespace-nowrap overflow-hidden text-ellipsis shadow-inner"
+        >
+          <span className="inline-flex items-center gap-1.5 text-volt font-black">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-volt"></span>
+            </span>
+            NEXT COHORT:
+          </span>
+          <span className="truncate">
+            STARTS 20TH SEPTEMBER • ENROLL IN AAA ACCELERATOR TO LAUNCH YOUR AGENCY • LIMITED SEATS • ENROLL NOW →
+          </span>
         </div>
 
         {/* scroll progress hairline */}

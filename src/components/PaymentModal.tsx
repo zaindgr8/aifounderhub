@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ArrowRight, ShieldCheck, Lock, Zap, AlertCircle, Loader2, User, Mail, Phone, ChevronDown } from "lucide-react";
+import { X, ArrowRight, ShieldCheck, Lock, Zap, AlertCircle, Loader2, User, Mail, Phone, ChevronDown, CheckCircle2 } from "lucide-react";
 import { initiateZiinaPayment } from "../lib/api";
+import { useAuth } from "../hooks/useAuth";
 
 interface Country {
   name: string;
@@ -39,6 +40,7 @@ interface PaymentModalProps {
 }
 
 export function PaymentModal({ open, onClose }: PaymentModalProps) {
+  const { user } = useAuth();
   const [fullName, setFullName]     = useState("");
   const [email, setEmail]           = useState("");
   const [phone, setPhone]           = useState("");
@@ -49,15 +51,36 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
   const nameRef    = useRef<HTMLInputElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Focus name field when modal opens
+  // Pre-fill fields on modal open
   useEffect(() => {
     if (open) {
       setError(null);
-      setFullName(""); setEmail(""); setPhone("");
-      setCountry(COUNTRIES[0]); setDropdownOpen(false);
-      setTimeout(() => nameRef.current?.focus(), 120);
+      setDropdownOpen(false);
+
+      let savedName = "";
+      let savedPhone = "";
+      let savedEmail = "";
+      try {
+        savedName = localStorage.getItem("afh_customer_name") || "";
+        savedPhone = localStorage.getItem("afh_customer_phone") || "";
+        savedEmail = localStorage.getItem("afh_customer_email") || "";
+      } catch { /* ignore */ }
+
+      const authEmail = user?.email || savedEmail;
+      const authName = (user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || savedName;
+
+      setEmail(authEmail);
+      setFullName(authName);
+      if (savedPhone) setPhone(savedPhone);
+
+      // Focus first empty field
+      setTimeout(() => {
+        if (!authName) {
+          nameRef.current?.focus();
+        }
+      }, 120);
     }
-  }, [open]);
+  }, [open, user]);
 
   // Close on Escape
   useEffect(() => {
@@ -101,6 +124,13 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
       setError("Please enter your phone number.");
       return;
     }
+
+    // Persist details in memory
+    try {
+      localStorage.setItem("afh_customer_name", fullName.trim());
+      localStorage.setItem("afh_customer_email", email.trim());
+      localStorage.setItem("afh_customer_phone", phone.trim());
+    } catch { /* ignore */ }
 
     setError(null);
     setLoading(true);
@@ -169,19 +199,43 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                 </p>
               </div>
 
-              {/* Price badge */}
-              <div className="mx-7 mt-5 flex items-center justify-between rounded-xl border border-volt/20 bg-volt/5 px-4 py-3">
-                <div>
-                  <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500">
-                    AAA Accelerator — AI Lead Management System
-                  </p>
-                  <p className="mt-0.5 text-sm font-semibold text-zinc-200">
-                    Weekly live classes · Private community · 1:1 access
-                  </p>
+              {/* Cohort & Price badge */}
+              <div className="mx-7 mt-5 rounded-xl border border-volt/25 bg-volt/[0.06] p-4">
+                <div className="flex items-start justify-between border-b border-volt/15 pb-3 mb-3">
+                  <div>
+                    <span className="inline-flex items-center gap-1.5 rounded-md bg-volt/20 border border-volt/30 px-2 py-0.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
+                      🔥 Next Cohort: 20th September
+                    </span>
+                    <h3 className="font-display text-base font-black uppercase text-white mt-1.5">
+                      AAA Accelerator Program
+                    </h3>
+                    <p className="font-mono text-[10px] text-zinc-400">
+                      Limited seats available for upcoming cohort
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">$549</p>
+                    <p className="font-display text-2xl font-black text-volt">$159/mo</p>
+                  </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">$549</p>
-                  <p className="font-display text-2xl font-black text-volt">$159/mo</p>
+
+                <div className="space-y-1.5 font-mono text-[10.5px] text-zinc-300">
+                  <div className="flex items-center gap-2">
+                    <span className="text-volt font-bold text-xs">✓</span>
+                    <span>AI Lead Management & Voice Agent Blueprints</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-volt font-bold text-xs">✓</span>
+                    <span>First $2,000 Client Closing Sales Playbook</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-volt font-bold text-xs">✓</span>
+                    <span>Weekly Live Build Sessions & Private Community</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-volt font-bold text-xs">✓</span>
+                    <span>Full 6-Stage Cloud Roadmap Dashboard Access</span>
+                  </div>
                 </div>
               </div>
 
@@ -208,9 +262,17 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
 
                   {/* Email */}
                   <div>
-                    <label htmlFor="payment-email" className="mb-1.5 block font-mono text-[9.5px] font-bold uppercase tracking-wider text-zinc-500">
-                      Email Address
-                    </label>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label htmlFor="payment-email" className="block font-mono text-[9.5px] font-bold uppercase tracking-wider text-zinc-500">
+                        Email Address
+                      </label>
+                      {user && (
+                        <span className="font-mono text-[9px] text-emerald-400 font-bold flex items-center gap-1">
+                          <CheckCircle2 className="h-3 w-3" />
+                          Auto-linked
+                        </span>
+                      )}
+                    </div>
                     <div className="relative">
                       <Mail className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-zinc-600" />
                       <input
