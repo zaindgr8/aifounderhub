@@ -1,7 +1,7 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import {defineConfig} from 'vite';
+import { defineConfig } from 'vite';
 
 export default defineConfig(() => {
   return {
@@ -11,12 +11,26 @@ export default defineConfig(() => {
         '@': path.resolve(__dirname, '.'),
       },
     },
+    build: {
+      target: 'es2020',
+      minify: 'esbuild',
+      cssCodeSplit: true,
+      chunkSizeWarningLimit: 600,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'vendor-react': ['react', 'react-dom'],
+            'vendor-motion': ['motion'],
+            'vendor-supabase': ['@supabase/supabase-js'],
+            'vendor-icons': ['lucide-react'],
+          },
+        },
+      },
+    },
     server: {
-      // Always enable HMR and file watching so live edits reflect in the browser immediately.
       hmr: true,
       watch: {},
       proxy: {
-        // Forward all /api/* requests to the Express API server
         '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true,
@@ -25,3 +39,4 @@ export default defineConfig(() => {
     },
   };
 });
+
