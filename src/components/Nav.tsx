@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { motion, useScroll, useSpring } from "motion/react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, LogIn, LayoutDashboard, Sparkles } from "lucide-react";
 import { Wordmark, scrollToWorkshops } from "./shared";
+import { useAuth } from "../hooks/useAuth";
+import { AuthModal } from "./AuthModal";
 
 const LINKS = [
-  { label: "FREE MASTERCLASS", target: "workshops" },
+  { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
-  // { label: "Summit", target: "curriculum" },
-  // { label: "Bootcamp", target: "bootcamp" },
-  { label: "1:1 Session", target: "mentors" },
+  { label: "1:1 SESSIONS", target: "mentors" },
+  { label: "ROADMAP", href: "/progress", isBadge: true },
   { label: "FAQ", target: "faq" },
-  { label: "CONTACT US", target: "contact" },
+  { label: "CONTACT", target: "contact" },
 ];
 
 interface NavProps {
@@ -21,6 +22,8 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.3 });
   const [scrolled, setScrolled] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
+  const { user, hasAccess } = useAuth();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -38,72 +41,118 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
   };
 
   return (
-    <motion.header
-      initial={{ y: -80, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled
-          ? "bg-void/80 backdrop-blur-xl border-b border-edge shadow-[0_8px_40px_rgba(0,0,0,0.5)]"
-          : "bg-transparent border-b border-transparent"
-      }`}
-    >
-      {/* Announcement Banner */}
-      <div 
-        onClick={handleClaimFreeSeat}
-        className="bg-volt px-4 py-2 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5 cursor-pointer hover:bg-opacity-95 transition-colors"
+    <>
+      <motion.header
+        initial={{ y: -80, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled
+            ? "bg-void/90 backdrop-blur-xl border-b border-edge shadow-[0_8px_40px_rgba(0,0,0,0.6)]"
+            : "bg-transparent border-b border-transparent"
+        }`}
       >
-        <span>⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "CLAIM FREE SEAT"</span>
-      </div>
-
-      {/* scroll progress hairline */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-volt via-lilac to-volt"
-        style={{ scaleX: progress }}
-      />
-
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3.5 md:px-10">
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="cursor-pointer"
-          aria-label="Back to top"
+        {/* Announcement Banner */}
+        <div 
+          onClick={handleClaimFreeSeat}
+          className="bg-volt px-4 py-1.5 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/5 cursor-pointer hover:bg-opacity-95 transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
         >
-          <Wordmark />
-        </button>
-
-        <nav className="hidden lg:flex items-center gap-8">
-          {LINKS.map((link) => (
-            <button
-              key={link.target}
-              onClick={() => document.getElementById(link.target)?.scrollIntoView({ behavior: "smooth" })}
-              className="group relative font-mono text-[11px] font-bold uppercase tracking-[0.22em] text-zinc-400 transition-colors hover:text-white cursor-pointer"
-            >
-              {link.label}
-              <span className="absolute -bottom-1.5 left-0 h-px w-0 bg-volt transition-all duration-300 group-hover:w-full" />
-            </button>
-          ))}
-        </nav>
-
-        <div className="flex items-center gap-3">
-          {/* Roadmap Page CTA */}
-          <a
-            href="/progress"
-            className="group hidden sm:flex items-center gap-1.5 rounded-full border border-volt/40 bg-void px-4 py-2 font-display text-[11px] font-extrabold uppercase tracking-wide text-volt transition-all duration-300 hover:bg-volt hover:text-void hover:border-volt hover:shadow-[0_0_25px_rgba(204,242,68,0.4)] active:scale-95"
-          >
-            <span className="text-[10px] mr-0.5">🗺️</span>
-            Roadmap To $50K/Mo
-            <ArrowUpRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </a>
-
-          <button
-            onClick={handleClaimFreeSeat}
-            className="group flex items-center gap-1.5 rounded-full bg-volt px-4.5 py-2 font-display text-[12px] font-extrabold uppercase tracking-wide text-void transition-all duration-300 hover:shadow-[0_0_28px_rgba(204,242,68,0.45)] active:scale-95 cursor-pointer"
-          >
-            Claim Free Seat
-            <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </button>
+          <span className="truncate">⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "CLAIM FREE SEAT"</span>
         </div>
-      </div>
-    </motion.header>
+
+        {/* scroll progress hairline */}
+        <motion.div
+          className="absolute bottom-0 left-0 right-0 h-[2px] origin-left bg-gradient-to-r from-volt via-lilac to-volt"
+          style={{ scaleX: progress }}
+        />
+
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 md:px-8">
+          {/* Logo */}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+            className="cursor-pointer flex-shrink-0"
+            aria-label="Back to top"
+          >
+            <Wordmark />
+          </button>
+
+          {/* Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 flex-shrink-0">
+            {LINKS.map((link) => {
+              if (link.href) {
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    className="group relative flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400 transition-colors hover:text-white whitespace-nowrap cursor-pointer"
+                  >
+                    <span>{link.label}</span>
+                    <span className="rounded-full bg-volt/15 border border-volt/30 px-1.5 py-0.2 text-[9px] font-extrabold text-volt">
+                      $50K
+                    </span>
+                    <span className="absolute -bottom-1 left-0 h-px w-0 bg-volt transition-all duration-300 group-hover:w-full" />
+                  </a>
+                );
+              }
+
+              return (
+                <button
+                  key={link.target}
+                  onClick={() => document.getElementById(link.target!)?.scrollIntoView({ behavior: "smooth" })}
+                  className="group relative font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400 transition-colors hover:text-white whitespace-nowrap cursor-pointer"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 h-px w-0 bg-volt transition-all duration-300 group-hover:w-full" />
+                </button>
+              );
+            })}
+          </nav>
+
+          {/* Action Buttons */}
+          <div className="flex items-center gap-2.5 flex-shrink-0">
+            {user ? (
+              <a
+                href="/progress"
+                className="group flex items-center gap-1.5 rounded-full border border-volt/40 bg-volt/10 px-3.5 py-1.5 font-display text-[11px] font-extrabold uppercase tracking-wider text-volt transition-all duration-300 hover:bg-volt hover:text-void hover:shadow-[0_0_20px_rgba(204,242,68,0.35)] whitespace-nowrap active:scale-95"
+              >
+                <LayoutDashboard className="h-3.5 w-3.5" />
+                <span>Dashboard</span>
+                {hasAccess && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.9)] ml-0.5" />
+                )}
+              </a>
+            ) : (
+              <button
+                onClick={() => setAuthOpen(true)}
+                className="group flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-3.5 py-1.5 font-display text-[11px] font-extrabold uppercase tracking-wider text-zinc-300 transition-all duration-300 hover:border-volt/50 hover:bg-volt/10 hover:text-volt whitespace-nowrap active:scale-95 cursor-pointer"
+              >
+                <LogIn className="h-3.5 w-3.5" />
+                <span>Login</span>
+              </button>
+            )}
+
+            <button
+              onClick={handleClaimFreeSeat}
+              className="group flex items-center gap-1.5 rounded-full bg-volt px-4 py-1.5 font-display text-[11px] md:text-[11.5px] font-extrabold uppercase tracking-wider text-void transition-all duration-300 hover:shadow-[0_0_24px_rgba(204,242,68,0.45)] whitespace-nowrap active:scale-95 cursor-pointer"
+            >
+              <span>Claim Free Seat</span>
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button>
+          </div>
+        </div>
+      </motion.header>
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={authOpen}
+        onClose={() => setAuthOpen(false)}
+        onSuccess={() => {
+          setAuthOpen(false);
+          window.location.href = "/progress";
+        }}
+      />
+    </>
   );
 }
+
+

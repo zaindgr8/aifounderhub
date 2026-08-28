@@ -380,10 +380,18 @@ export function ProgressPage() {
 
   // ─── Task Toggle ────────────────────────────────────────────────────────────
   const toggleTask = (id: string, stageId: number) => {
+    // If not authenticated, require email / Google login even for Stage 1 free preview
+    if (!user) {
+      setAuthModalOpen(true);
+      return;
+    }
+
+    // If attempting Stage 2-6 without paid membership
     if (stageId > 1 && !isUnlocked) {
       setAuthModalOpen(true);
       return;
     }
+
     setCompletedTasks((prev) => {
       const isChecking = !prev[id];
       const next = { ...prev, [id]: isChecking };
@@ -663,11 +671,11 @@ export function ProgressPage() {
                 transition={{ duration: 0.25 }}
                 className="relative rounded-3xl border border-white/10 bg-[#0c0c16]/90 p-6 sm:p-10 shadow-2xl backdrop-blur-md overflow-hidden"
               >
-                {/* Locked Stage Overlay State */}
+                {/* Locked Stage Overlay State (Stages 2-6) */}
                 {isStageLocked && (
-                  <div className="absolute inset-0 z-30 bg-[#07070c]/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
+                  <div className="absolute inset-0 z-30 bg-[#07070c]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
                     <motion.div
-                      initial={{ scale: 0.8, opacity: 0 }}
+                      initial={{ scale: 0.85, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       className="max-w-md space-y-4"
                     >
@@ -676,28 +684,67 @@ export function ProgressPage() {
                       </div>
                       <div>
                         <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-volt">
-                          Stage {stage.id} · Locked Milestone
+                          Stage {stage.id} · Paid Milestone
                         </span>
                         <h3 className="font-display text-2xl font-black uppercase text-white mt-1">
                           Paid Member Roadmap Access
                         </h3>
                         <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                          Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks. Enter your member credentials to unlock full access.
+                          {user ? (
+                            <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks. Upgrade to unlock full access.</>
+                          ) : (
+                            <>Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks. Log in with your paid account or enroll to unlock.</>
+                          )}
                         </p>
                       </div>
 
-                      <button
-                        onClick={() => setAuthModalOpen(true)}
-                        className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
-                      >
-                        <KeyRound className="h-4 w-4" />
-                        <span>Unlock With Member Login</span>
-                      </button>
-
-                      <p className="font-mono text-[9.5px] text-zinc-500 uppercase tracking-wider">
-                        Not a paid member yet? <a href="/#membership" className="text-volt underline">Enroll in AAA Accelerator</a>
-                      </p>
+                      {user ? (
+                        <a
+                          href="/#membership"
+                          className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
+                        >
+                          <Zap className="h-4 w-4 fill-current" />
+                          <span>Enroll in AAA Accelerator ($159/mo) →</span>
+                        </a>
+                      ) : (
+                        <div className="space-y-2.5">
+                          <button
+                            onClick={() => setAuthModalOpen(true)}
+                            className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
+                          >
+                            <KeyRound className="h-4 w-4" />
+                            <span>Member Login / Sign Up</span>
+                          </button>
+                          <a
+                            href="/#membership"
+                            className="block font-mono text-[10px] text-zinc-400 hover:text-volt transition underline underline-offset-2"
+                          >
+                            Not a member yet? Enroll in AAA Accelerator ($159/mo)
+                          </a>
+                        </div>
+                      )}
                     </motion.div>
+                  </div>
+                )}
+
+                {/* Free Preview Banner for Stage 1 if not logged in */}
+                {stage.id === 1 && !user && (
+                  <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-volt/30 bg-volt/[0.06] p-4 text-xs">
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-volt/10 text-volt border border-volt/20">
+                        <Sparkles className="h-4 w-4" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-white uppercase font-display tracking-tight">Free Preview Mode</p>
+                        <p className="text-zinc-400 text-[11.5px]">Enter your email to unlock Stage 1 tasks, track XP, and save progress.</p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setAuthModalOpen(true)}
+                      className="rounded-xl bg-volt px-4 py-2 font-display text-[11px] font-extrabold uppercase text-void hover:bg-[#d4fa4c] transition cursor-pointer shrink-0 active:scale-95"
+                    >
+                      Enter Email to Save Progress →
+                    </button>
                   </div>
                 )}
 
