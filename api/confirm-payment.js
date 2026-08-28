@@ -3,14 +3,87 @@
  *
  * 1. Verifies a Ziina Payment Intent is "completed"
  * 2. Looks up the customer (fullName, email) from the session store
- * 3. Sends a purchase-confirmation email via Resend
- * 4. Returns { ok, status, alreadySent }
+ * 3. Upserts a member record in Supabase (granting /progress access)
+ * 4. Sends a Supabase magic-link email so the customer can set their password
+ * 5. Sends a purchase-confirmation email via Resend
+ * 6. Returns { ok, status, alreadySent }
  *
  * Body: { paymentIntentId: string }
  */
 
 import { Resend } from 'resend';
 import { sessionStore } from './payment-store.js';
+
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SERVICE_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+/**
+ * Upsert a row in the `members` table using the Supabase REST API.
+ * Gives the email 31 days of active access.
+ */
+async function upsertMember(email) {
+  if (!SUPABASE_URL || !SERVICE_KEY) {
+    console.warn('[Supabase] upsertMember: missing env vars, skipping');
+    return;
+  }
+  const expiresAt = new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
+      method: 'POST',
+      headers: {
+        apikey:         SERVICE_KEY,
+        Authorization:  `Bearer ${SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer:         'resolution=merge-duplicates,return=minimal',
+      },
+      body: JSON.stringify({
+        email:      email.toLowerCase(),
+        status:     'active',
+        started_at: new Date().toISOString(),
+        expires_at: expiresAt,
+      }),
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('[Supabase] upsertMember failed:', res.status, err);
+    } else {
+      console.log('[Supabase] Member upserted for:', email);
+    }
+  } catch (err) {
+    console.error('[Supabase] upsertMember error:', err);
+  }
+}
+
+/**
+ * Send a Supabase magic-link invite so the customer can set their password
+ * and access /progress without needing to remember anything.
+ */
+async function inviteSupabaseUser(email, fullName) {
+  if (!SUPABASE_URL || !SERVICE_KEY) return;
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/invite`, {
+      method: 'POST',
+      headers: {
+        apikey:         SERVICE_KEY,
+        Authorization:  `Bearer ${SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        data: { full_name: fullName },
+        redirect_to: `${process.env.APP_URL || 'https://aifounderhub.com'}/progress`,
+      }),
+    });
+    const body = await res.json().catch(() => ({}));
+    if (!res.ok && body?.msg !== 'A user with this email address has already been registered') {
+      console.warn('[Supabase] inviteSupabaseUser failed:', res.status, body);
+    } else {
+      console.log('[Supabase] Invite sent (or user already exists) for:', email);
+    }
+  } catch (err) {
+    console.error('[Supabase] inviteSupabaseUser error:', err);
+  }
+}
 
 const ZIINA_API = 'https://api-v2.ziina.com/api';
 
@@ -230,7 +303,15 @@ export async function confirmPayment(req, res) {
     const isSession    = !!advisorName;
     const productLabel = isSession
       ? `Private 1:1 Session with ${advisorName}`
-      : 'Idea to Live Product Course';
+      : 'AAA Accelerator Membership';
+
+    // 4a. Grant member access in Supabase (all purchases get /progress access)
+    if (email) {
+      await Promise.allSettled([
+        upsertMember(email),
+        inviteSupabaseUser(email, fullName),
+      ]);
+    }
 
     const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
     const FROM_EMAIL  = process.env.FROM_EMAIL   || 'AI Founder Hub <hello@aifounderhub.com>';

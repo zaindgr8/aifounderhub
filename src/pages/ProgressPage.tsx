@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import {
   Trophy,
@@ -18,11 +18,16 @@ import {
   Workflow,
   DollarSign,
   Rocket,
-  AlertCircle,
-  KeyRound,
   LogOut,
+  Loader2,
+  ShieldAlert,
+  KeyRound,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
+import { AuthModal } from "../components/AuthModal";
+import { useAuth } from "../hooks/useAuth";
+import { signOut } from "../lib/auth";
+import { supabase } from "../lib/supabase";
 
 interface QuestTask {
   id: string;
@@ -277,21 +282,17 @@ const RANKS = [
 ];
 
 export function ProgressPage() {
-  // Authentication / Unlock State
-  const [isUnlocked, setIsUnlocked] = useState<boolean>(() => {
-    try {
-      return localStorage.getItem("afh_aaa_unlocked") === "true";
-    } catch {
-      return false;
-    }
-  });
+  // ─── Supabase Auth ──────────────────────────────────────────────────────────
+  const { user, loading: authLoading, hasAccess, accessLoading } = useAuth();
+  const isUnlocked = hasAccess;
 
-  const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [usernameInput, setUsernameInput] = useState("");
-  const [passwordInput, setPasswordInput] = useState("");
-  const [authError, setAuthError] = useState<string | null>(null);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [activeLevelTab, setActiveLevelTab] = useState<number>(1);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [progressSyncing, setProgressSyncing] = useState(false);
 
-  // Load completed tasks from localStorage
+  // ─── Progress State ─────────────────────────────────────────────────────────
+  // Starts from localStorage for instant render; syncs with Supabase when authed
   const [completedTasks, setCompletedTasks] = useState<Record<string, boolean>>(() => {
     try {
       const saved = localStorage.getItem("afh_aaa_progress");
@@ -301,68 +302,74 @@ export function ProgressPage() {
     }
   });
 
-  const [activeLevelTab, setActiveLevelTab] = useState<number>(1);
-  const [showCelebration, setShowCelebration] = useState(false);
-
-  // Save progress to localStorage
+  // Mirror to localStorage always
   useEffect(() => {
     try {
       localStorage.setItem("afh_aaa_progress", JSON.stringify(completedTasks));
-    } catch {
-      // ignore
-    }
+    } catch { /* ignore */ }
   }, [completedTasks]);
 
-  // Handle Login Authentication
-  const handleLoginSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (usernameInput.trim() === "aifounderhub" && passwordInput === "Wegrowtogether@yo1") {
-      setIsUnlocked(true);
+  // ─── Cloud Progress Sync ────────────────────────────────────────────────────
+  // Load cloud progress when user logs in
+  useEffect(() => {
+    if (!user) return;
+    let cancelled = false;
+    (async () => {
       try {
-        localStorage.setItem("afh_aaa_unlocked", "true");
-      } catch {
-        // ignore
-      }
-      setLoginModalOpen(false);
-      setAuthError(null);
-      setShowCelebration(true);
-      setTimeout(() => setShowCelebration(false), 3000);
-    } else {
-      setAuthError("Invalid username or password. Please try again.");
+        const { data, error } = await supabase
+          .from('user_progress')
+          .select('task_id, completed')
+          .eq('user_id', user.id);
+        if (error || cancelled) return;
+        if (data && data.length > 0) {
+          const cloudTasks: Record<string, boolean> = {};
+          data.forEach((row: { task_id: string; completed: boolean }) => {
+            cloudTasks[row.task_id] = row.completed;
+          });
+          setCompletedTasks(cloudTasks);
+        }
+      } catch { /* ignore */ }
+    })();
+    return () => { cancelled = true; };
+  }, [user?.id]);
+
+  // Save a single task toggle to Supabase
+  const saveTaskToCloud = useCallback(async (taskId: string, completed: boolean) => {
+    if (!user) return;
+    try {
+      await supabase.from('user_progress').upsert(
+        { user_id: user.id, task_id: taskId, completed },
+        { onConflict: 'user_id,task_id' }
+      );
+    } catch { /* ignore — localStorage is the fallback */ }
+  }, [user]);
+
+  // ─── Auth Actions ───────────────────────────────────────────────────────────
+  const handleLogout = async () => {
+    if (window.confirm("Sign out and lock member stages?")) {
+      await signOut();
+      if (activeLevelTab > 1) setActiveLevelTab(1);
     }
   };
 
-  const handleLogout = () => {
-    if (window.confirm("Lock member stages again?")) {
-      setIsUnlocked(false);
-      try {
-        localStorage.removeItem("afh_aaa_unlocked");
-      } catch {
-        // ignore
-      }
-      if (activeLevelTab > 1) {
-        setActiveLevelTab(1);
-      }
-    }
+  const handleAuthSuccess = () => {
+    setAuthModalOpen(false);
+    setShowCelebration(true);
+    setTimeout(() => setShowCelebration(false), 3000);
   };
 
-  // Calculate stats
+  // ─── Stats ──────────────────────────────────────────────────────────────────
   const allTasks = ROADMAP_LEVELS.flatMap((lvl) => lvl.tasks);
   const totalTasksCount = allTasks.length;
   const completedCount = Object.values(completedTasks).filter(Boolean).length;
   const progressPercent = Math.round((completedCount / totalTasksCount) * 100) || 0;
 
-  // Calculate XP
   const currentXP = allTasks.reduce((sum, task) => {
     return completedTasks[task.id] ? sum + task.xp : sum;
   }, 0);
-
   const totalPossibleXP = allTasks.reduce((sum, task) => sum + task.xp, 0);
-
-  // Calculate current rank
   const currentRank = [...RANKS].reverse().find((r) => currentXP >= r.minXP) || RANKS[0];
 
-  // Estimated MRR calculation
   const getEstimatedMRR = () => {
     if (completedTasks["t6_3"]) return "$50,000 / mo";
     if (completedTasks["t5_3"]) return "$10,000 / mo";
@@ -371,12 +378,12 @@ export function ProgressPage() {
     return "$0 / mo";
   };
 
+  // ─── Task Toggle ────────────────────────────────────────────────────────────
   const toggleTask = (id: string, stageId: number) => {
     if (stageId > 1 && !isUnlocked) {
-      setLoginModalOpen(true);
+      setAuthModalOpen(true);
       return;
     }
-
     setCompletedTasks((prev) => {
       const isChecking = !prev[id];
       const next = { ...prev, [id]: isChecking };
@@ -384,15 +391,33 @@ export function ProgressPage() {
         setShowCelebration(true);
         setTimeout(() => setShowCelebration(false), 2500);
       }
+      saveTaskToCloud(id, isChecking);
       return next;
     });
   };
 
-  const resetProgress = () => {
+  const resetProgress = async () => {
     if (window.confirm("Are you sure you want to reset your progress checklist?")) {
       setCompletedTasks({});
+      if (user) {
+        try {
+          await supabase.from('user_progress').delete().eq('user_id', user.id);
+        } catch { /* ignore */ }
+      }
     }
   };
+
+  // ─── Loading screen ─────────────────────────────────────────────────────────
+  if (authLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#07070c]">
+        <div className="flex flex-col items-center gap-4 text-zinc-400">
+          <Loader2 className="h-8 w-8 animate-spin text-volt" />
+          <span className="font-mono text-xs uppercase tracking-widest">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative min-h-screen bg-[#07070c] text-zinc-100 font-sans selection:bg-volt selection:text-void pb-24">
@@ -422,21 +447,36 @@ export function ProgressPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {isUnlocked ? (
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-950/40 px-3 py-2 font-mono text-xs font-bold text-emerald-400 transition hover:bg-emerald-900/50 cursor-pointer"
-              >
-                <Unlock className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Member Access Active</span>
-                <span className="text-zinc-400 hover:text-white ml-1">· Logout</span>
-              </button>
+            {user ? (
+              <>
+                {/* User email badge */}
+                <div className="hidden sm:flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-950/30 px-3 py-2">
+                  <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
+                  <span className="font-mono text-[10px] font-bold text-emerald-400 max-w-[140px] truncate">
+                    {user.email}
+                  </span>
+                  {accessLoading && <Loader2 className="h-3 w-3 animate-spin text-zinc-500" />}
+                </div>
+                {isUnlocked && (
+                  <div className="hidden sm:flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-950/40 px-3 py-2 font-mono text-xs font-bold text-emerald-400">
+                    <Unlock className="h-3.5 w-3.5" />
+                    <span>Member Access Active</span>
+                  </div>
+                )}
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 font-mono text-xs font-semibold text-zinc-400 transition hover:bg-white/10 hover:text-white cursor-pointer"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              </>
             ) : (
               <button
-                onClick={() => setLoginModalOpen(true)}
+                onClick={() => setAuthModalOpen(true)}
                 className="flex items-center gap-1.5 rounded-xl border border-volt/30 bg-volt px-3.5 py-2 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:shadow-[0_0_35px_rgba(204,242,68,0.5)] transition cursor-pointer"
               >
-                <KeyRound className="h-3.5 w-3.5" />
+                <ShieldAlert className="h-3.5 w-3.5" />
                 <span>Member Login</span>
               </button>
             )}
@@ -647,7 +687,7 @@ export function ProgressPage() {
                       </div>
 
                       <button
-                        onClick={() => setLoginModalOpen(true)}
+                        onClick={() => setAuthModalOpen(true)}
                         className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
                       >
                         <KeyRound className="h-4 w-4" />
@@ -785,109 +825,12 @@ export function ProgressPage() {
         </AnimatePresence>
       </main>
 
-      {/* Member Login Modal for Unlocking Stages 2-6 */}
-      <AnimatePresence>
-        {loginModalOpen && (
-          <>
-            <motion.div
-              key="login-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[80] bg-black/80 backdrop-blur-md"
-              onClick={() => setLoginModalOpen(false)}
-            />
-
-            <div className="fixed inset-0 z-[90] flex items-center justify-center p-4">
-              <motion.div
-                key="login-box"
-                initial={{ opacity: 0, scale: 0.94, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.94, y: 20 }}
-                className="relative w-full max-w-md rounded-3xl border border-volt/30 bg-[#0e0e18] p-7 shadow-2xl overflow-hidden"
-              >
-                <div className="pointer-events-none absolute -top-20 -right-20 h-48 w-48 rounded-full bg-volt/10 blur-[60px]" />
-
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-volt/10 border border-volt/20 text-volt">
-                    <KeyRound className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-volt">
-                      Member Authentication
-                    </span>
-                    <h3 className="font-display text-xl font-extrabold uppercase text-white">
-                      Unlock All Stages
-                    </h3>
-                  </div>
-                </div>
-
-                <p className="text-xs text-zinc-400 mb-5 leading-relaxed">
-                  Enter your credentials to unlock Stages 2 through 6 of the AAA Accelerator execution game.
-                </p>
-
-                {authError && (
-                  <div className="mb-4 flex items-center gap-2 rounded-xl border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-400">
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    <span>{authError}</span>
-                  </div>
-                )}
-
-                <form onSubmit={handleLoginSubmit} className="space-y-4">
-                  <div>
-                    <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                      Username
-                    </label>
-                    <input
-                      type="text"
-                      value={usernameInput}
-                      onChange={(e) => {
-                        setUsernameInput(e.target.value);
-                        setAuthError(null);
-                      }}
-                      placeholder="Username"
-                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-zinc-600 outline-none transition focus:border-volt/50 focus:bg-white/8"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      value={passwordInput}
-                      onChange={(e) => {
-                        setPasswordInput(e.target.value);
-                        setAuthError(null);
-                      }}
-                      placeholder="Password"
-                      className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white placeholder-zinc-600 outline-none transition focus:border-volt/50 focus:bg-white/8"
-                      required
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_25px_rgba(204,242,68,0.3)] hover:shadow-[0_0_40px_rgba(204,242,68,0.5)] transition active:scale-95 cursor-pointer mt-2"
-                  >
-                    Unlock Stages 2–6 →
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setLoginModalOpen(false)}
-                    className="w-full text-center font-mono text-xs text-zinc-500 hover:text-zinc-300 transition mt-2 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                </form>
-              </motion.div>
-            </div>
-          </>
-        )}
-      </AnimatePresence>
+      {/* Member Auth Modal (Supabase Google OAuth + Email) */}
+      <AuthModal
+        open={authModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+        onSuccess={handleAuthSuccess}
+      />
 
       {/* Celebration Notification Toast */}
       <AnimatePresence>

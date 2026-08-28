@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import { sendLeadEmail } from './api/send-lead-email.js';
 import { createPayment } from './api/create-payment.js';
 import { confirmPayment } from './api/confirm-payment.js';
+import checkMember from './api/check-member.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use((req, res, next) => {
 app.post('/api/send-lead-email', sendLeadEmail);
 app.post('/api/create-payment', createPayment);
 app.post('/api/confirm-payment', confirmPayment);
+app.post('/api/check-member', checkMember);
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ ok: true, ts: Date.now() }));
