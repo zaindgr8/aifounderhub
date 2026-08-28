@@ -1,4 +1,29 @@
+# Robots.txt for AI Founder Hub (https://aifounderhub.com)
+# User-agent rules for search engines and crawlers
+
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /payment-success
+Disallow: /payment-failed
 
+# Googlebot specific rules
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /payment-success
+Disallow: /payment-failed
+
+# Googlebot-Image (allow crawling all images, favicons, logos)
+User-agent: Googlebot-Image
+Allow: /
+
+# Bingbot
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /payment-success
+Disallow: /payment-failed
+
+# Sitemap location
 Sitemap: https://aifounderhub.com/sitemap.xml

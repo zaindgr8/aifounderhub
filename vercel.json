@@ -1,9 +1,33 @@
 {
   "buildCommand": "vite build",
   "outputDirectory": "dist",
-  "framework": null,
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/robots.txt",
+      "headers": [
+        { "key": "Content-Type", "value": "text/plain; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/sitemap.xml",
+      "headers": [
+        { "key": "Content-Type", "value": "application/xml; charset=utf-8" },
+        { "key": "Cache-Control", "value": "public, max-age=86400, s-maxage=86400" }
+      ]
+    },
+    {
+      "source": "/(.*)\\.(ico|png|svg|jpg|jpeg|webp|woff2|woff)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ],
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)",       "destination": "/index.html" }
+    { "source": "/robots.txt", "destination": "/robots.txt" },
+    { "source": "/sitemap.xml", "destination": "/sitemap.xml" },
+    { "source": "/((?!api|robots\\.txt|sitemap\\.xml|.*\\..*).*)", "destination": "/index.html" }
   ]
 }
