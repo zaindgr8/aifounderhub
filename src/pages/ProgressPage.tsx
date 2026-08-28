@@ -25,6 +25,8 @@ import {
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
+import { LockedStageModal } from "../components/LockedStageModal";
+import { PaymentModal } from "../components/PaymentModal";
 import { useAuth } from "../hooks/useAuth";
 import { signOut } from "../lib/auth";
 import { supabase } from "../lib/supabase";
@@ -277,7 +279,6 @@ const RANKS = [
   { minXP: 500, title: "System Architect", icon: Workflow, color: "text-lilac" },
   { minXP: 1200, title: "Outbound Hunter", icon: Target, color: "text-emerald-400" },
   { minXP: 2200, title: "Deal Closer ($2K Earned)", icon: DollarSign, color: "text-amber-400" },
-  { minXP: 3500, title: "Agency Operator ($10K MRR)", icon: TrendingUp, color: "text-cyan-400" },
   { minXP: 5000, title: "AAA Agency Tycoon ($50K MRR)", icon: Crown, color: "text-volt" },
 ];
 
@@ -287,6 +288,8 @@ export function ProgressPage() {
   const isUnlocked = hasAccess;
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [lockedModalOpen, setLockedModalOpen] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [activeLevelTab, setActiveLevelTab] = useState<number>(1);
   const [showCelebration, setShowCelebration] = useState(false);
   const [progressSyncing, setProgressSyncing] = useState(false);
@@ -358,6 +361,14 @@ export function ProgressPage() {
     setTimeout(() => setShowCelebration(false), 3000);
   };
 
+  // ─── Tab Selection & Gating ─────────────────────────────────────────────────
+  const handleSelectTab = (lvlId: number) => {
+    setActiveLevelTab(lvlId);
+    if (lvlId > 1 && !isUnlocked) {
+      setLockedModalOpen(true);
+    }
+  };
+
   // ─── Stats ──────────────────────────────────────────────────────────────────
   const allTasks = ROADMAP_LEVELS.flatMap((lvl) => lvl.tasks);
   const totalTasksCount = allTasks.length;
@@ -388,7 +399,7 @@ export function ProgressPage() {
 
     // If attempting Stage 2-6 without paid membership
     if (stageId > 1 && !isUnlocked) {
-      setAuthModalOpen(true);
+      setLockedModalOpen(true);
       return;
     }
 
@@ -426,6 +437,8 @@ export function ProgressPage() {
       </div>
     );
   }
+
+  const activeStageObj = ROADMAP_LEVELS.find((l) => l.id === activeLevelTab) || ROADMAP_LEVELS[0];
 
   return (
     <div className="relative min-h-screen bg-[#07070c] text-zinc-100 font-sans selection:bg-volt selection:text-void pb-24">
@@ -613,7 +626,7 @@ export function ProgressPage() {
             return (
               <button
                 key={lvl.id}
-                onClick={() => setActiveLevelTab(lvl.id)}
+                onClick={() => handleSelectTab(lvl.id)}
                 className={`relative flex flex-shrink-0 items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-all duration-300 cursor-pointer ${
                   isTabActive
                     ? "border-volt/50 bg-volt/10 text-white shadow-[0_0_30px_rgba(204,242,68,0.12)]"
@@ -671,62 +684,6 @@ export function ProgressPage() {
                 transition={{ duration: 0.25 }}
                 className="relative rounded-3xl border border-white/10 bg-[#0c0c16]/90 p-6 sm:p-10 shadow-2xl backdrop-blur-md overflow-hidden"
               >
-                {/* Locked Stage Overlay State (Stages 2-6) */}
-                {isStageLocked && (
-                  <div className="absolute inset-0 z-30 bg-[#07070c]/92 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center">
-                    <motion.div
-                      initial={{ scale: 0.85, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="max-w-md space-y-4"
-                    >
-                      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-volt/30 bg-volt/10 text-volt shadow-[0_0_40px_rgba(204,242,68,0.2)]">
-                        <Lock className="h-8 w-8" />
-                      </div>
-                      <div>
-                        <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-volt">
-                          Stage {stage.id} · Paid Milestone
-                        </span>
-                        <h3 className="font-display text-2xl font-black uppercase text-white mt-1">
-                          Paid Member Roadmap Access
-                        </h3>
-                        <p className="text-xs text-zinc-400 mt-1.5 leading-relaxed">
-                          {user ? (
-                            <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks. Upgrade to unlock full access.</>
-                          ) : (
-                            <>Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks. Log in with your paid account or enroll to unlock.</>
-                          )}
-                        </p>
-                      </div>
-
-                      {user ? (
-                        <a
-                          href="/#membership"
-                          className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
-                        >
-                          <Zap className="h-4 w-4 fill-current" />
-                          <span>Enroll in AAA Accelerator ($159/mo) →</span>
-                        </a>
-                      ) : (
-                        <div className="space-y-2.5">
-                          <button
-                            onClick={() => setAuthModalOpen(true)}
-                            className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 transition cursor-pointer"
-                          >
-                            <KeyRound className="h-4 w-4" />
-                            <span>Member Login / Sign Up</span>
-                          </button>
-                          <a
-                            href="/#membership"
-                            className="block font-mono text-[10px] text-zinc-400 hover:text-volt transition underline underline-offset-2"
-                          >
-                            Not a member yet? Enroll in AAA Accelerator ($159/mo)
-                          </a>
-                        </div>
-                      )}
-                    </motion.div>
-                  </div>
-                )}
-
                 {/* Free Preview Banner for Stage 1 if not logged in */}
                 {stage.id === 1 && !user && (
                   <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-volt/30 bg-volt/[0.06] p-4 text-xs">
@@ -773,81 +730,118 @@ export function ProgressPage() {
                   </div>
                 </div>
 
-                {/* Tasks List */}
-                <div className="space-y-4">
-                  {stage.tasks.map((task, idx) => {
-                    const isDone = !!completedTasks[task.id];
-
-                    return (
-                      <motion.div
-                        key={task.id}
-                        onClick={() => toggleTask(task.id, stage.id)}
-                        whileHover={{ scale: 1.008 }}
-                        whileTap={{ scale: 0.995 }}
-                        className={`group flex items-start sm:items-center justify-between gap-4 rounded-2xl border p-5 sm:p-6 transition-all duration-200 cursor-pointer ${
-                          isDone
-                            ? "border-emerald-500/40 bg-emerald-950/20 shadow-[0_0_20px_rgba(52,211,153,0.06)]"
-                            : "border-white/8 bg-panel/60 hover:border-white/20 hover:bg-panel"
-                        }`}
+                {/* Stage Content: If Locked, show sleek in-view preview card; If Unlocked, show full interactive tasks */}
+                {isStageLocked ? (
+                  <div className="rounded-2xl border border-volt/20 bg-volt/[0.03] p-8 sm:p-12 text-center max-w-xl mx-auto my-2 relative overflow-hidden">
+                    <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl border border-volt/30 bg-volt/10 text-volt shadow-[0_0_40px_rgba(204,242,68,0.25)] mb-4">
+                      <Lock className="h-7 w-7" />
+                    </div>
+                    <span className="font-mono text-[10px] font-extrabold uppercase tracking-widest text-volt">
+                      Stage {stage.id} · Paid Milestone
+                    </span>
+                    <h3 className="font-display text-2xl font-black uppercase text-white mt-1 mb-2">
+                      Paid Member Roadmap Access
+                    </h3>
+                    <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed mb-6">
+                      {user ? (
+                        <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks.</>
+                      ) : (
+                        <>Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks to reach $50,000/mo.</>
+                      )}
+                    </p>
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                      <button
+                        onClick={() => setPaymentModalOpen(true)}
+                        className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-volt px-6 py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.35)] hover:shadow-[0_0_50px_rgba(204,242,68,0.6)] active:scale-95 transition cursor-pointer"
                       >
-                        <div className="flex items-start sm:items-center gap-4 flex-1">
-                          {/* Interactive Checkbox */}
-                          <div
-                            className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-xl border transition-all duration-200 ${
-                              isDone
-                                ? "border-emerald-400 bg-emerald-400 text-void shadow-[0_0_15px_rgba(52,211,153,0.5)]"
-                                : "border-white/20 bg-void/80 group-hover:border-volt"
-                            }`}
-                          >
-                            {isDone && <Check className="h-4 w-4 stroke-[3]" />}
-                          </div>
+                        <Zap className="h-4 w-4 fill-current" />
+                        <span>Unlock All Stages ($159/mo) →</span>
+                      </button>
+                      <button
+                        onClick={() => setActiveLevelTab(1)}
+                        className="w-full sm:w-auto rounded-full border border-white/15 bg-white/5 px-5 py-3.5 font-display text-xs font-bold uppercase text-zinc-300 hover:text-white transition cursor-pointer"
+                      >
+                        ← View Free Stage 1
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Tasks List */
+                  <div className="space-y-4">
+                    {stage.tasks.map((task, idx) => {
+                      const isDone = !!completedTasks[task.id];
 
-                          <div className="space-y-1 flex-1">
-                            <div className="flex items-center gap-2.5 flex-wrap">
-                              <span className="font-mono text-xs font-bold text-zinc-500">0{idx + 1}.</span>
-                              <h4
-                                className={`font-display text-base font-bold uppercase tracking-tight transition-colors ${
-                                  isDone ? "text-emerald-300 line-through decoration-emerald-500/50" : "text-white"
-                                }`}
-                              >
-                                {task.title}
-                              </h4>
-                              <span className="rounded-md border border-volt/20 bg-volt/5 px-2 py-0.5 font-mono text-[10px] font-bold text-volt">
-                                +{task.xp} XP
-                              </span>
+                      return (
+                        <motion.div
+                          key={task.id}
+                          onClick={() => toggleTask(task.id, stage.id)}
+                          whileHover={{ scale: 1.008 }}
+                          whileTap={{ scale: 0.995 }}
+                          className={`group flex items-start sm:items-center justify-between gap-4 rounded-2xl border p-5 sm:p-6 transition-all duration-200 cursor-pointer ${
+                            isDone
+                              ? "border-emerald-500/40 bg-emerald-950/20 shadow-[0_0_20px_rgba(52,211,153,0.06)]"
+                              : "border-white/8 bg-panel/60 hover:border-white/20 hover:bg-panel"
+                          }`}
+                        >
+                          <div className="flex items-start sm:items-center gap-4 flex-1">
+                            {/* Interactive Checkbox */}
+                            <div
+                              className={`flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-xl border transition-all duration-200 ${
+                                isDone
+                                  ? "border-emerald-400 bg-emerald-400 text-void shadow-[0_0_15px_rgba(52,211,153,0.5)]"
+                                  : "border-white/20 bg-void/80 group-hover:border-volt"
+                              }`}
+                            >
+                              {isDone && <Check className="h-4 w-4 stroke-[3]" />}
                             </div>
-                            <p className="text-xs sm:text-[13px] text-zinc-400 leading-relaxed">
-                              {task.desc}
-                            </p>
 
-                            {task.tools && (
-                              <div className="mt-2.5 flex flex-wrap items-center gap-1.5 pt-1">
-                                {task.tools.map((tool) => (
-                                  <span
-                                    key={tool}
-                                    className="rounded bg-white/[0.04] border border-white/5 px-2 py-0.5 font-mono text-[9.5px] text-zinc-400"
-                                  >
-                                    {tool}
-                                  </span>
-                                ))}
+                            <div className="space-y-1 flex-1">
+                              <div className="flex items-center gap-2.5 flex-wrap">
+                                <span className="font-mono text-xs font-bold text-zinc-500">0{idx + 1}.</span>
+                                <h4
+                                  className={`font-display text-base font-bold uppercase tracking-tight transition-colors ${
+                                    isDone ? "text-emerald-300 line-through decoration-emerald-500/50" : "text-white"
+                                  }`}
+                                >
+                                  {task.title}
+                                </h4>
+                                <span className="rounded-md border border-volt/20 bg-volt/5 px-2 py-0.5 font-mono text-[10px] font-bold text-volt">
+                                  +{task.xp} XP
+                                </span>
                               </div>
-                            )}
-                          </div>
-                        </div>
+                              <p className="text-xs sm:text-[13px] text-zinc-400 leading-relaxed">
+                                {task.desc}
+                              </p>
 
-                        <div className="hidden sm:flex items-center gap-1 text-xs font-mono font-bold text-zinc-500 group-hover:text-volt transition-colors">
-                          <span>{isDone ? "Completed" : "Mark Done"}</span>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
-                </div>
+                              {task.tools && (
+                                <div className="mt-2.5 flex flex-wrap items-center gap-1.5 pt-1">
+                                  {task.tools.map((tool) => (
+                                    <span
+                                      key={tool}
+                                      className="rounded bg-white/[0.04] border border-white/5 px-2 py-0.5 font-mono text-[9.5px] text-zinc-400"
+                                    >
+                                      {tool}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+
+                          <div className="hidden sm:flex items-center gap-1 text-xs font-mono font-bold text-zinc-500 group-hover:text-volt transition-colors">
+                            <span>{isDone ? "Completed" : "Mark Done"}</span>
+                          </div>
+                        </motion.div>
+                      );
+                    })}
+                  </div>
+                )}
 
                 {/* Stage Navigation Footer */}
                 <div className="mt-8 pt-6 border-t border-white/10 flex items-center justify-between">
                   <button
                     disabled={stage.id === 1}
-                    onClick={() => setActiveLevelTab((prev) => Math.max(1, prev - 1))}
+                    onClick={() => handleSelectTab(Math.max(1, stage.id - 1))}
                     className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-mono font-semibold text-zinc-400 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 hover:text-white transition cursor-pointer"
                   >
                     ← Previous Stage
@@ -859,7 +853,7 @@ export function ProgressPage() {
 
                   <button
                     disabled={stage.id === ROADMAP_LEVELS.length}
-                    onClick={() => setActiveLevelTab((prev) => Math.min(ROADMAP_LEVELS.length, prev + 1))}
+                    onClick={() => handleSelectTab(Math.min(ROADMAP_LEVELS.length, stage.id + 1))}
                     className="flex items-center gap-2 rounded-xl bg-volt px-4 py-2 font-display text-xs font-extrabold uppercase tracking-wider text-void disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#d4fa4c] transition cursor-pointer"
                   >
                     <span>Next Stage</span>
@@ -877,6 +871,24 @@ export function ProgressPage() {
         open={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         onSuccess={handleAuthSuccess}
+      />
+
+      {/* Locked Stage Pop Up Modal */}
+      <LockedStageModal
+        open={lockedModalOpen}
+        onClose={() => setLockedModalOpen(false)}
+        stageNumber={activeStageObj.id}
+        stageTitle={activeStageObj.title}
+        stageTarget={activeStageObj.mrrTarget}
+        user={user}
+        onOpenAuth={() => setAuthModalOpen(true)}
+        onOpenPayment={() => setPaymentModalOpen(true)}
+      />
+
+      {/* Payment / Checkout Modal ($159/mo AAA Accelerator) */}
+      <PaymentModal
+        open={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
       />
 
       {/* Celebration Notification Toast */}
@@ -903,3 +915,4 @@ export function ProgressPage() {
     </div>
   );
 }
+
