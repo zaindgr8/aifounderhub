@@ -59,15 +59,13 @@ const GOALS = [
 /* ————————————————— headline word animation ————————————————— */
 
 function StaggerLine({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  const [done, setDone] = useState(false);
   return (
-    <span className={`block pb-1 ${done ? "overflow-visible" : "overflow-hidden"}`}>
+    <span className="block pb-1 overflow-hidden">
       <motion.span
-        className="block"
-        initial={{ y: "110%" }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-        onAnimationComplete={() => setDone(true)}
+        className="block will-change-transform"
+        initial={{ y: "30%", opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5, delay: Math.min(delay, 0.15), ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </motion.span>
@@ -80,13 +78,9 @@ function StaggerLine({ children, delay = 0 }: { children: React.ReactNode; delay
 /* headline words that spring toward volt on hover */
 function HoverWord({ children }: { children: React.ReactNode }) {
   return (
-    <motion.span
-      whileHover={{ scale: 1.06, rotate: -1.5, color: "#ccf244" }}
-      transition={{ type: "spring", stiffness: 320, damping: 12 }}
-      className="inline-block cursor-default will-change-transform"
-    >
+    <span className="inline-block cursor-default">
       {children}
-    </motion.span>
+    </span>
   );
 }
 
@@ -98,6 +92,7 @@ function TiltCard({ children }: { children: React.ReactNode }) {
     <motion.div
       style={{ rotateX: rx, rotateY: ry, transformPerspective: 1100 }}
       onMouseMove={(e) => {
+        if (typeof window !== "undefined" && window.innerWidth < 768) return;
         const rect = e.currentTarget.getBoundingClientRect();
         const px = (e.clientX - rect.left) / rect.width - 0.5;
         const py = (e.clientY - rect.top) / rect.height - 0.5;

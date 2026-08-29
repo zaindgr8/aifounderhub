@@ -41,11 +41,8 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
 
   return (
     <>
-      <motion.header
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.1 }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
             ? "bg-void/90 backdrop-blur-xl border-b border-edge shadow-[0_8px_40px_rgba(0,0,0,0.6)]"
             : "bg-transparent border-b border-transparent"
@@ -159,7 +156,7 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
             </button>
           </div>
         </div>
-      </motion.header>
+      </header>
 
       {/* Auth Modal */}
       <AuthModal

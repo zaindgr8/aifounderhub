@@ -36,7 +36,7 @@ export function scrollToMembership() {
 export function Reveal({
   children,
   delay = 0,
-  y = 28,
+  y = 16,
   className,
   once = true,
 }: {
@@ -51,8 +51,8 @@ export function Reveal({
       className={className}
       initial={{ opacity: 0, y }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once, margin: "-60px" }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      viewport={{ once, margin: "40px" }}
+      transition={{ duration: 0.5, delay: Math.min(delay, 0.25), ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
     </motion.div>

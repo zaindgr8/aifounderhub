@@ -108,6 +108,10 @@ export function Mentors() {
                         <img
                           src={a.photo}
                           alt={a.fullName}
+                          loading="lazy"
+                          decoding="async"
+                          width={64}
+                          height={64}
                           className="h-16 w-16 rounded-2xl object-cover object-top shadow-lg border border-white/10"
                         />
                       ) : (
