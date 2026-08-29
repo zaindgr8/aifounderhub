@@ -1,0 +1,6 @@
+# 1. Install Claude Code normally
+curl -fsSL https://claude.ai/install.sh | bash     # macOS/Linux/WSL
+# Windows PowerShell: irm https://claude.ai/install.ps1 | iex
+
+# 2. Open Antigravity's integrated terminal, cd to your project, run:
+claude

@@ -17,6 +17,7 @@ import { BackToTop, CircuitDivider } from "./components/shared";
 const ProgressPage = lazy(() => import("./pages/ProgressPage").then(m => ({ default: m.ProgressPage })));
 const FreeMasterclassPage = lazy(() => import("./pages/FreeMasterclassPage").then(m => ({ default: m.FreeMasterclassPage })));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess").then(m => ({ default: m.PaymentSuccess })));
+const ClaudeMasterPage = lazy(() => import("./pages/ClaudeMasterPage").then(m => ({ default: m.ClaudeMasterPage })));
 const PaymentModal = lazy(() => import("./components/PaymentModal").then(m => ({ default: m.PaymentModal })));
 const PolicyModal = lazy(() => import("./components/PolicyModal").then(m => ({ default: m.PolicyModal })));
 const ClaudeMasterclassPopupModal = lazy(() => import("./components/ClaudeMasterclassPopupModal").then(m => ({ default: m.ClaudeMasterclassPopupModal })));
@@ -40,6 +41,7 @@ function useRoute() {
   if (path === "/payment-failed") return "payment-failed";
   if (path === "/progress") return "progress";
   if (path === "/freemasterclass") return "freemasterclass";
+  if (path === "/claude-master-in-7-days") return "claude-master";
   return "home";
 }
 
@@ -83,6 +85,14 @@ export default function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <FreeMasterclassPage />
+      </Suspense>
+    );
+  }
+
+  if (route === "claude-master") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ClaudeMasterPage />
       </Suspense>
     );
   }
