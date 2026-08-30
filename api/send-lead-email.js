@@ -252,7 +252,7 @@ export async function sendLeadEmail(req, res) {
                       <p style="margin:0 0 18px;font-size:13px;color:#a7f3d0;line-height:1.6;">
                         You are officially invited to join our private WhatsApp group for masterclass attendees, founders, and AI builders. Join below to get live class updates, ask questions, and network:
                       </p>
-                      <a href="https://chat.whatsapp.com/JorMU8jZSDdDTBokqBFBsW" style="display:inline-block;background:#25D366;color:#041a0d;font-size:13px;font-weight:900;text-decoration:none;padding:13px 30px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;box-shadow:0 6px 20px rgba(37,211,102,0.35);">
+                      <a href="https://chat.whatsapp.com/FBrasZIfmvLAZxcR2Yjcho" style="display:inline-block;background:#25D366;color:#041a0d;font-size:13px;font-weight:900;text-decoration:none;padding:13px 30px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;box-shadow:0 6px 20px rgba(37,211,102,0.35);">
                         👉 Join WhatsApp Community Now
                       </a>
                     </div>

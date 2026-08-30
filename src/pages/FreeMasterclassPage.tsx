@@ -203,7 +203,7 @@ export function FreeMasterclassPage() {
                   Join the official AI Founder Hub WhatsApp community to get class reminders, templates & resources.
                 </p>
                 <a
-                  href="https://chat.whatsapp.com/JorMU8jZSDdDTBokqBFBsW"
+                  href="https://chat.whatsapp.com/FBrasZIfmvLAZxcR2Yjcho"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-4 py-3 text-xs font-bold text-black uppercase tracking-wider transition hover:bg-[#20bd5a] hover:shadow-[0_0_25px_rgba(37,211,102,0.45)]"

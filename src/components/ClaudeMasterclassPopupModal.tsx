@@ -238,7 +238,7 @@ export function ClaudeMasterclassPopupModal({
                       You qualify to join the official AI Founder Hub WhatsApp community.
                     </p>
                     <a
-                      href="https://chat.whatsapp.com/JorMU8jZSDdDTBokqBFBsW"
+                      href="https://chat.whatsapp.com/FBrasZIfmvLAZxcR2Yjcho"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-2.5 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-4 py-2.5 text-xs font-bold text-black uppercase tracking-wider transition hover:bg-[#20bd5a] hover:shadow-[0_0_20px_rgba(37,211,102,0.4)]"
