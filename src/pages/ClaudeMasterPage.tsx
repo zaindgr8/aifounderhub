@@ -604,20 +604,6 @@ export function ClaudeMasterPage() {
         </div>
       </section>
 
-      {/* ─────────── MYTH DECK ─────────── */}
-      <section className="relative z-10 mx-auto max-w-7xl px-4 py-12 sm:px-8">
-        <SectionHeading eyebrow="Credibility check" title="Nine things every other guide gets wrong" />
-        <p className="mb-6 max-w-2xl text-[14px] leading-relaxed text-zinc-400">
-          This tool changed enormously between 2025 and now. Most blog posts and videos you'll find are quietly out of
-          date, and following them will make you look like an amateur. Start here.
-        </p>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {MYTHS.map((m, i) => (
-            <MythCard key={i} i={i} stale={m.stale} truth={m.truth} />
-          ))}
-        </div>
-      </section>
-
       {/* ─────────── GAME ─────────── */}
       <div ref={gameRef} className="relative z-10 mx-auto max-w-7xl scroll-mt-20 px-4 pb-24 sm:px-8">
         <div className="grid gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
