@@ -6,7 +6,7 @@
 
 export interface CodeBlock {
   label?: string;
-  lang: "bash" | "md" | "json" | "text" | "yaml";
+  lang: "bash" | "md" | "json" | "text" | "yaml" | "prompt" | "ui";
   code: string;
 }
 
@@ -42,6 +42,22 @@ export interface Day {
 }
 
 /* ——— ranks ——— */
+export interface DayZeroSpec {
+  title: string;
+  tagline: string;
+  planHeading: string;
+  planIntro: string;
+  planNote: string;
+  plans: string[][];
+  planTableHead: string[];
+  installHeading: string;
+  blocks: CodeBlock[];
+  installTrap: Callout;
+  checks: string[];
+  nonNegotiable: { title: string; body: string };
+  ctaLabel: string;
+}
+
 export const RANKS = [
   { lvl: 0, name: "Civilian", min: 0, note: "you prompt, you pray" },
   { lvl: 1, name: "Recruit", min: 100, note: "" },
@@ -105,16 +121,22 @@ export const MYTHS: { stale: string; truth: string }[] = [
 ];
 
 /* ——— Day 0 ——— */
-export const DAY_ZERO = {
+export const DAY_ZERO: DayZeroSpec = {
   title: "Boot Camp",
   tagline:
     "Twenty minutes. Get the tool installed properly, on the right plan, with the right expectations. Skip this and every later day breaks in a way that's hard to diagnose.",
+  planHeading: "First: the plan question nobody tells you about",
+  planIntro: "Claude Code is free to install and not free to use. The free Claude.ai tier does not include it.",
+  planNote:
+    "Subscription plans have two stacked limits: a rolling five-hour window and a weekly cap, shared across the Claude apps and Claude Code together. Check yours any time with /usage.",
+  planTableHead: ["Plan", "Cost", "Verdict for this challenge"],
   plans: [
     ["Pro", "$20/mo", "The minimum. Fine for Days 1–5. You will feel the limits on Day 6."],
     ["Max 5×", "$100/mo", "The sweet spot if you're doing this seriously. Comfortable through all seven days."],
     ["Max 20×", "$200/mo", "For people running fleets of agents daily. Overkill for week one."],
     ["API key", "pay per token", "No session caps — you pay for what you burn. Best for headless work on Day 7."],
   ],
+  installHeading: "Install it — the current way",
   blocks: [
     {
       label: "macOS / Linux / WSL — native installer, no Node.js required",
@@ -142,12 +164,24 @@ export const DAY_ZERO = {
       code: "cd ~/your-real-project\nclaude\n\n# inside the session:\n/status     # version, model, auth, working directory\n/doctor     # diagnoses your install, and offers to fix what it finds\n/usage      # where you stand against your plan limits",
     },
   ],
+  installTrap: {
+    kind: "trap",
+    title: "Already installed via npm from an older guide?",
+    body:
+      "Migrate: run /migrate-installer inside Claude Code, then npm uninstall -g @anthropic-ai/claude-code and hash -r. Running both versions at once produces genuinely baffling bugs. On native Windows (not WSL), also install Git for Windows — without it, Claude's Bash tool doesn't work.",
+  },
   checks: [
     "claude launches inside a real project you care about",
     "/status shows you're authenticated on a paid plan",
     "/doctor reports no problems",
     "That project is a git repository with everything committed — git status is clean",
   ],
+  nonNegotiable: {
+    title: "Non-negotiable",
+    body:
+      "If your project is not in git with a clean working tree, stop and fix that now. Every safety mechanism in this guide — checkpoints, worktrees, review gates, rollbacks — assumes git underneath. Working with an autonomous agent on uncommitted code is the single most common way people lose work.",
+  },
+  ctaLabel: "Boot camp cleared — start Day 1",
 };
 
 /* ——— the seven days ——— */

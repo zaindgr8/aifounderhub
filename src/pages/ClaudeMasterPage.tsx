@@ -8,6 +8,7 @@ import {
   Check,
   ChevronRight,
   ClipboardList,
+  Compass,
   Copy,
   Crown,
   Eye,
@@ -16,8 +17,10 @@ import {
   Flame,
   GitBranch,
   GraduationCap,
+  Layers,
   Lightbulb,
   Lock,
+  MessageSquare,
   Play,
   RotateCcw,
   ScrollText,
@@ -30,6 +33,24 @@ import {
   Zap,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
+import {
+  COWORK_BRIEF_TEMPLATE,
+  NOCODE_ANTIPATTERNS,
+  NOCODE_DAYS,
+  NOCODE_DAY_ZERO,
+  NOCODE_EXAM,
+  NOCODE_LADDER,
+  NOCODE_LEVERS,
+  NOCODE_MAX_XP,
+  NOCODE_PROMPTS,
+  PROJECT_INSTRUCTIONS_TEMPLATE,
+  QUICK_PICKS,
+  SKILL_TEMPLATE,
+  SOP_TEMPLATE,
+  SURFACES,
+  UI_MAP,
+  WORKSPACE_TREE,
+} from "../data/claudeNoCode";
 import {
   AGENT_TEMPLATE,
   ANTIPATTERNS,
@@ -49,9 +70,35 @@ import {
   TICKET_TEMPLATE,
   type Callout,
   type Day,
+  type DayZeroSpec,
 } from "../data/claude7Days";
 
 const STORE_KEY = "afh_claude7_progress";
+const TRACK_STORE_KEY = "afh_claude7_track";
+
+type TrackKey = "code" | "nocode";
+
+/* ════════════════════════════════════════════════════════════════
+   Track configuration — the whole page is driven off this
+════════════════════════════════════════════════════════════════ */
+
+const TRACK_META: Record<
+  TrackKey,
+  { label: string; sub: string; icon: React.ElementType; protocol: string }
+> = {
+  nocode: {
+    label: "No-code track",
+    sub: "Claude app, web & Cowork",
+    icon: Layers,
+    protocol: "7-Day No-Code Protocol",
+  },
+  code: {
+    label: "Developer track",
+    sub: "Claude Code & the terminal",
+    icon: Terminal,
+    protocol: "7-Day Operator Protocol",
+  },
+};
 
 /* ════════════════════════════════════════════════════════════════
    Small primitives
@@ -83,12 +130,23 @@ function CopyButton({ text, className = "" }: { text: string; className?: string
   );
 }
 
+const BLOCK_ICONS: Record<CodeBlockType["lang"], React.ElementType> = {
+  bash: Terminal,
+  prompt: MessageSquare,
+  ui: Layers,
+  md: FileCode,
+  json: FileCode,
+  yaml: FileCode,
+  text: ScrollText,
+};
+
 function CodeBlock({ block }: { block: CodeBlockType }) {
+  const Icon = BLOCK_ICONS[block.lang] ?? Terminal;
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#08080e]">
       <div className="flex items-center justify-between gap-3 border-b border-white/[0.07] bg-white/[0.02] px-3.5 py-2">
         <div className="flex min-w-0 items-center gap-2">
-          <Terminal className="h-3 w-3 shrink-0 text-volt/70" />
+          <Icon className="h-3 w-3 shrink-0 text-volt/70" />
           <span className="truncate font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
             {block.label || block.lang}
           </span>
@@ -310,6 +368,52 @@ function Celebration({ payload, onClose }: { payload: { title: string; sub: stri
 
 type ViewKey = number | "cheatsheet" | "prompts" | "templates" | "antipatterns" | "exam" | "ladder";
 
+function TrackSwitch({
+  track,
+  onChange,
+  compact = false,
+}: {
+  track: TrackKey;
+  onChange: (t: TrackKey) => void;
+  compact?: boolean;
+}) {
+  return (
+    <div
+      className={`grid grid-cols-2 gap-1.5 rounded-2xl border border-white/10 bg-white/[0.03] p-1.5 ${
+        compact ? "" : "max-w-lg"
+      }`}
+    >
+      {(["nocode", "code"] as TrackKey[]).map((k) => {
+        const meta = TRACK_META[k];
+        const Icon = meta.icon;
+        const active = track === k;
+        return (
+          <button
+            key={k}
+            onClick={() => onChange(k)}
+            aria-pressed={active}
+            className={`flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-left transition cursor-pointer ${
+              active ? "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)]" : "text-zinc-400 hover:bg-white/5 hover:text-zinc-200"
+            }`}
+          >
+            <Icon className={`h-4 w-4 shrink-0 ${active ? "text-void" : "text-volt/70"}`} />
+            <span className="min-w-0">
+              <span className={`block truncate font-display text-[11.5px] font-extrabold uppercase tracking-wide ${active ? "text-void" : ""}`}>
+                {meta.label}
+              </span>
+              {!compact && (
+                <span className={`block truncate font-mono text-[9.5px] ${active ? "text-void/70" : "text-zinc-600"}`}>
+                  {meta.sub}
+                </span>
+              )}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 function SectionHeading({ eyebrow, title }: { eyebrow: string; title: string }) {
   return (
     <div className="mb-5">
@@ -332,6 +436,22 @@ export function ClaudeMasterPage() {
       return {};
     }
   });
+  const [track, setTrack] = useState<TrackKey>(() => {
+    try {
+      const saved = localStorage.getItem(TRACK_STORE_KEY);
+      if (saved === "code" || saved === "nocode") return saved;
+      /* no saved choice: anyone with existing developer-track progress goes
+         back to it; everyone else starts on the no-code track */
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        const keys = Object.keys(JSON.parse(raw) as Record<string, boolean>);
+        if (keys.some((k) => !k.startsWith("nc_"))) return "code";
+      }
+      return "nocode";
+    } catch {
+      return "nocode";
+    }
+  });
   const [view, setView] = useState<ViewKey>(1);
   const [peeked, setPeeked] = useState<Record<number, boolean>>({});
   const [celebration, setCelebration] = useState<{ title: string; sub: string; kind: "badge" | "rank" } | null>(null);
@@ -346,44 +466,65 @@ export function ClaudeMasterPage() {
     }
   }, [done]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(TRACK_STORE_KEY, track);
+    } catch {
+      /* ignore — private browsing */
+    }
+  }, [track]);
+
+  /* ——— active track ——— */
+  const nc = track === "nocode";
+  const days = nc ? NOCODE_DAYS : DAYS;
+  const dayZero: DayZeroSpec = nc ? NOCODE_DAY_ZERO : DAY_ZERO;
+  const maxXp = nc ? NOCODE_MAX_XP : MAX_XP;
+  const examChecks = nc ? NOCODE_EXAM : EXAM;
+  const prefix = nc ? "nc_" : "";
+
+  /* progress keys are namespaced per track, so both can be completed */
+  const has = useCallback((k: string) => !!done[prefix + k], [done, prefix]);
+
   /* ——— derived state ——— */
   const bossDefeated = useCallback(
-    (day: Day) => day.boss.checks.every((_, i) => done[`b${day.id}_${i}`]),
-    [done],
+    (day: Day) => day.boss.checks.every((_, i) => has(`b${day.id}_${i}`)),
+    [has],
   );
 
-  const day0Done = DAY_ZERO.checks.every((_, i) => done[`d0c${i}`]);
+  const day0Done = dayZero.checks.every((_, i) => has(`d0c${i}`));
 
   const isUnlocked = useCallback(
     (dayId: number) => {
       if (dayId === 1) return day0Done;
-      const prev = DAYS.find((d) => d.id === dayId - 1);
+      const prev = days.find((d) => d.id === dayId - 1);
       return prev ? bossDefeated(prev) : false;
     },
-    [day0Done, bossDefeated],
+    [day0Done, bossDefeated, days],
   );
 
   const xp = useMemo(() => {
     let total = 0;
-    for (const day of DAYS) {
-      for (const dr of day.drills) if (done[dr.id]) total += dr.xp;
+    for (const day of days) {
+      for (const dr of day.drills) if (has(dr.id)) total += dr.xp;
       if (bossDefeated(day)) total += day.boss.xp;
-      if (done[`s${day.id}`]) total += day.side.xp;
+      if (has(`s${day.id}`)) total += day.side.xp;
     }
     return total;
-  }, [done, bossDefeated]);
+  }, [has, bossDefeated, days]);
 
   const rank = useMemo(() => [...RANKS].reverse().find((r) => xp >= r.min) || RANKS[0], [xp]);
   const nextRank = RANKS.find((r) => r.min > xp);
-  const badgesEarned = DAYS.filter((d) => bossDefeated(d));
-  const examScore = EXAM.filter((_, i) => done[`e${i}`]).length;
+  const badgesEarned = days.filter((d) => bossDefeated(d));
+  const examScore = examChecks.filter((_, i) => has(`e${i}`)).length;
 
   /* ——— celebrate on rank-up / badge ——— */
   const prevRank = useRef(rank.lvl);
   const prevBadges = useRef(badgesEarned.length);
+  const prevTrack = useRef(track);
   useEffect(() => {
-    if (firstRun.current) {
+    if (firstRun.current || prevTrack.current !== track) {
       firstRun.current = false;
+      prevTrack.current = track;
       prevRank.current = rank.lvl;
       prevBadges.current = badgesEarned.length;
       return;
@@ -396,9 +537,16 @@ export function ClaudeMasterPage() {
     }
     prevRank.current = rank.lvl;
     prevBadges.current = badgesEarned.length;
-  }, [rank.lvl, badgesEarned.length]);
+  }, [rank.lvl, badgesEarned.length, track]);
 
-  const toggle = (key: string) => setDone((p) => ({ ...p, [key]: !p[key] }));
+  const toggle = (key: string) => setDone((p) => ({ ...p, [prefix + key]: !p[prefix + key] }));
+
+  const switchTrack = (t: TrackKey) => {
+    if (t === track) return;
+    setTrack(t);
+    setPeeked({});
+    setView(1);
+  };
 
   const goto = (v: ViewKey) => {
     setView(v);
@@ -406,15 +554,22 @@ export function ClaudeMasterPage() {
   };
 
   const resetAll = () => {
-    if (window.confirm("Reset all progress, XP and badges? This cannot be undone.")) {
-      setDone({});
+    if (window.confirm(`Reset all progress, XP and badges on the ${TRACK_META[track].label}? This cannot be undone.`)) {
+      setDone((p) => {
+        const next: Record<string, boolean> = {};
+        for (const k of Object.keys(p)) {
+          const isNoCodeKey = k.startsWith("nc_");
+          if (isNoCodeKey !== nc) next[k] = p[k];
+        }
+        return next;
+      });
       setPeeked({});
       setView(1);
     }
   };
 
-  const currentDay = DAYS.find((d) => !bossDefeated(d)) || DAYS[DAYS.length - 1];
-  const xpPct = Math.min(100, Math.round((xp / MAX_XP) * 100));
+  const currentDay = days.find((d) => !bossDefeated(d)) || days[days.length - 1];
+  const xpPct = Math.min(100, Math.round((xp / maxXp) * 100));
 
   return (
     <div className="relative min-h-screen bg-[#07070c] font-sans text-zinc-100 selection:bg-volt selection:text-void">
@@ -438,7 +593,7 @@ export function ClaudeMasterPage() {
             <span className="hidden h-4 w-px bg-white/15 lg:inline-block" />
             <div className="hidden items-center gap-2 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt lg:flex">
               <Sparkles className="h-3 w-3 animate-spin-slow" />
-              <span>7-Day Operator Protocol</span>
+              <span>{TRACK_META[track].protocol}</span>
             </div>
           </div>
 
@@ -449,7 +604,7 @@ export function ClaudeMasterPage() {
               <div className="leading-none">
                 <div className="flex items-baseline gap-1.5">
                   <span className="font-display text-sm font-black text-white">{xp}</span>
-                  <span className="font-mono text-[9px] text-zinc-500">/ {MAX_XP} XP</span>
+                  <span className="font-mono text-[9px] text-zinc-500">/ {maxXp} XP</span>
                 </div>
                 <div className="mt-1 h-1 w-20 overflow-hidden rounded-full bg-white/10 sm:w-28">
                   <motion.div
@@ -494,21 +649,45 @@ export function ClaudeMasterPage() {
               animate={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-2 rounded-full border border-volt/30 bg-volt/[0.08] px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-volt"
             >
-              <Terminal className="h-3.5 w-3.5" />
-              <span>Free Operator Field Guide · Edition 2.0</span>
+              {nc ? <Layers className="h-3.5 w-3.5" /> : <Terminal className="h-3.5 w-3.5" />}
+              <span>Free Field Guide · Edition 2.0 · Sept 2026</span>
             </motion.div>
 
-            <h1 className="mt-5 font-display text-4xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
-              Become a <span className="text-volt">Claude Code</span>
-              <br />
-              expert in 7 days
-            </h1>
+            <div className="mt-5">
+              <p className="mb-2 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-zinc-500">
+                Two tracks, same seven days — pick where you actually work
+              </p>
+              <TrackSwitch track={track} onChange={switchTrack} />
+            </div>
 
-            <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400">
-              Most people use Claude Code at 10% of its power — they prompt a tool that is designed to be{" "}
-              <span className="text-zinc-200">managed</span>. Seven daily missions turn it from a chatbot that writes
-              broken code into a disciplined AI engineer that works inside your business.
-            </p>
+            {nc ? (
+              <>
+                <h1 className="mt-5 font-display text-4xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
+                  Run your business on <span className="text-volt">Claude</span>
+                  <br />
+                  without writing code
+                </h1>
+                <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400">
+                  Almost everyone only ever opens the chat box — roughly 10% of what Claude does. Seven daily missions
+                  take you through <span className="text-zinc-200">Projects, Artifacts, Connectors, Skills and Cowork</span>{" "}
+                  until Claude is producing real spreadsheets, decks, dashboards and client work inside your business.
+                  No terminal. No code. Ever.
+                </p>
+              </>
+            ) : (
+              <>
+                <h1 className="mt-5 font-display text-4xl font-black uppercase leading-[0.95] tracking-tight text-white sm:text-6xl">
+                  Become a <span className="text-volt">Claude Code</span>
+                  <br />
+                  expert in 7 days
+                </h1>
+                <p className="mt-5 max-w-xl text-[15px] leading-relaxed text-zinc-400">
+                  Most people use Claude Code at 10% of its power — they prompt a tool that is designed to be{" "}
+                  <span className="text-zinc-200">managed</span>. Seven daily missions turn it from a chatbot that writes
+                  broken code into a disciplined AI engineer that works inside your business.
+                </p>
+              </>
+            )}
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <button
@@ -529,12 +708,20 @@ export function ClaudeMasterPage() {
             </div>
 
             <div className="mt-8 grid max-w-lg grid-cols-2 gap-3 sm:grid-cols-4">
-              {[
-                ["7", "daily missions"],
-                ["1,250", "XP to earn"],
-                ["8", "ranks to climb"],
-                ["40+", "copy-paste blocks"],
-              ].map(([n, l]) => (
+              {(nc
+                ? [
+                    ["7", "daily missions"],
+                    ["9", "surfaces mastered"],
+                    ["8", "ranks to climb"],
+                    ["30+", "copy-paste prompts"],
+                  ]
+                : [
+                    ["7", "daily missions"],
+                    ["1,250", "XP to earn"],
+                    ["8", "ranks to climb"],
+                    ["40+", "copy-paste blocks"],
+                  ]
+              ).map(([n, l]) => (
                 <div key={l} className="rounded-xl border border-white/10 bg-white/[0.02] px-3 py-2.5">
                   <div className="font-display text-xl font-black text-volt">{n}</div>
                   <div className="font-mono text-[9.5px] uppercase tracking-wider text-zinc-500">{l}</div>
@@ -609,6 +796,12 @@ export function ClaudeMasterPage() {
         <div className="grid gap-6 lg:grid-cols-[260px_1fr] lg:items-start">
           {/* rail */}
           <nav className="lg:sticky lg:top-24">
+            <div className="mb-4 hidden lg:block">
+              <p className="mb-2 px-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-zinc-500">
+                Track
+              </p>
+              <TrackSwitch track={track} onChange={switchTrack} compact />
+            </div>
             <p className="mb-2.5 px-1 font-mono text-[10px] font-bold uppercase tracking-[0.24em] text-zinc-500">
               Mission map
             </p>
@@ -632,7 +825,7 @@ export function ClaudeMasterPage() {
                 </span>
               </button>
 
-              {DAYS.map((d) => {
+              {days.map((d) => {
                 const unlocked = isUnlocked(d.id) || peeked[d.id];
                 const beaten = bossDefeated(d);
                 return (
@@ -666,7 +859,7 @@ export function ClaudeMasterPage() {
 
               {(
                 [
-                  ["cheatsheet", "Cheat sheet", BookOpen],
+                  ["cheatsheet", nc ? "Surface map" : "Cheat sheet", nc ? Compass : BookOpen],
                   ["prompts", "Prompt vault", ScrollText],
                   ["templates", "Template pack", FileCode],
                   ["antipatterns", "Fix-it table", AlertTriangle],
@@ -701,30 +894,38 @@ export function ClaudeMasterPage() {
                 transition={{ duration: 0.22 }}
               >
                 {view === 0 ? (
-                  <DayZeroView done={done} toggle={toggle} allDone={day0Done} onNext={() => goto(1)} />
+                  <DayZeroView dz={dayZero} has={has} toggle={toggle} allDone={day0Done} onNext={() => goto(1)} />
                 ) : typeof view === "number" ? (
                   <DayView
-                    day={DAYS.find((d) => d.id === view)!}
-                    done={done}
+                    day={days.find((d) => d.id === view)!}
+                    has={has}
                     toggle={toggle}
                     unlocked={isUnlocked(view) || !!peeked[view]}
                     onPeek={() => setPeeked((p) => ({ ...p, [view]: true }))}
                     onGotoBlocker={() => goto(view === 1 ? 0 : view - 1)}
-                    beaten={bossDefeated(DAYS.find((d) => d.id === view)!)}
+                    beaten={bossDefeated(days.find((d) => d.id === view)!)}
                     onNext={() => goto(view === 7 ? "exam" : view + 1)}
                   />
                 ) : view === "cheatsheet" ? (
-                  <CheatSheetView />
+                  nc ? <SurfaceMapView plans={dayZero.plans} planHead={dayZero.planTableHead} /> : <CheatSheetView />
                 ) : view === "prompts" ? (
-                  <PromptsView />
+                  <PromptsView prompts={nc ? NOCODE_PROMPTS : PROMPTS} nocode={nc} />
                 ) : view === "templates" ? (
-                  <TemplatesView />
+                  nc ? <NoCodeTemplatesView /> : <TemplatesView />
                 ) : view === "antipatterns" ? (
-                  <AntiPatternsView />
+                  <AntiPatternsView rows={nc ? NOCODE_ANTIPATTERNS : ANTIPATTERNS} />
                 ) : view === "ladder" ? (
-                  <LadderView />
+                  <LadderView rows={nc ? NOCODE_LADDER : LADDER} />
                 ) : (
-                  <ExamView done={done} toggle={toggle} score={examScore} xp={xp} rank={rank.name} />
+                  <ExamView
+                    checks={examChecks}
+                    nocode={nc}
+                    has={has}
+                    toggle={toggle}
+                    score={examScore}
+                    xp={xp}
+                    rank={rank.name}
+                  />
                 )}
               </motion.div>
             </AnimatePresence>
@@ -763,8 +964,9 @@ export function ClaudeMasterPage() {
             </a>
           </div>
           <p className="mt-8 font-mono text-[10px] uppercase tracking-wider text-zinc-600">
-            Claude Code ships weekly — run /doctor monthly and skim the changelog. Ten minutes a month keeps you ahead of
-            almost everyone.
+            {nc
+              ? "Anthropic ships new surfaces constantly — spend ten minutes a month in Customize and Settings. That alone keeps you ahead of almost everyone."
+              : "Claude Code ships weekly — run /doctor monthly and skim the changelog. Ten minutes a month keeps you ahead of almost everyone."}
           </p>
         </div>
       </section>
@@ -781,12 +983,14 @@ export function ClaudeMasterPage() {
 ════════════════════════════════════════════════════════════════ */
 
 function DayZeroView({
-  done,
+  dz,
+  has,
   toggle,
   allDone,
   onNext,
 }: {
-  done: Record<string, boolean>;
+  dz: DayZeroSpec;
+  has: (k: string) => boolean;
   toggle: (k: string) => void;
   allDone: boolean;
   onNext: () => void;
@@ -801,39 +1005,27 @@ function DayZeroView({
           <span className="rounded-full bg-white/5 px-3 py-1 font-mono text-[10px] font-bold text-zinc-500">20 min · 0 XP</span>
         </div>
         <h2 className="mt-4 font-display text-3xl font-black uppercase tracking-tight text-white sm:text-4xl">
-          {DAY_ZERO.title}
+          {dz.title}
         </h2>
-        <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-zinc-400">{DAY_ZERO.tagline}</p>
+        <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-zinc-400">{dz.tagline}</p>
       </div>
 
       <div className="rounded-3xl border border-white/10 bg-[#0b0b13]/60 p-5 sm:p-7">
-        <h3 className="mb-1 font-display text-lg font-bold text-white">First: the plan question nobody tells you about</h3>
-        <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">
-          Claude Code is free to install and not free to use. The free Claude.ai tier does not include it.
-        </p>
-        <DataTable head={["Plan", "Cost", "Verdict for this challenge"]} rows={DAY_ZERO.plans} />
-        <p className="mt-4 text-[13px] leading-relaxed text-zinc-500">
-          Subscription plans have two stacked limits: a rolling five-hour window and a weekly cap, shared across the
-          Claude apps and Claude Code together. Check yours any time with <span className="font-mono text-volt">/usage</span>.
-        </p>
+        <h3 className="mb-1 font-display text-lg font-bold text-white">{dz.planHeading}</h3>
+        <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">{dz.planIntro}</p>
+        <DataTable head={dz.planTableHead} rows={dz.plans} />
+        <p className="mt-4 text-[13px] leading-relaxed text-zinc-500">{dz.planNote}</p>
       </div>
 
       <div className="rounded-3xl border border-white/10 bg-[#0b0b13]/60 p-5 sm:p-7">
-        <h3 className="mb-4 font-display text-lg font-bold text-white">Install it — the current way</h3>
+        <h3 className="mb-4 font-display text-lg font-bold text-white">{dz.installHeading}</h3>
         <div className="space-y-3">
-          {DAY_ZERO.blocks.map((b, i) => (
+          {dz.blocks.map((b, i) => (
             <CodeBlock key={i} block={b} />
           ))}
         </div>
         <div className="mt-4">
-          <CalloutBox
-            callout={{
-              kind: "trap",
-              title: "Already installed via npm from an older guide?",
-              body:
-                "Migrate: run /migrate-installer inside Claude Code, then npm uninstall -g @anthropic-ai/claude-code and hash -r. Running both versions at once produces genuinely baffling bugs. On native Windows (not WSL), also install Git for Windows — without it, Claude's Bash tool doesn't work.",
-            }}
-          />
+          <CalloutBox callout={dz.installTrap} />
         </div>
       </div>
 
@@ -843,19 +1035,17 @@ function DayZeroView({
           <span>Day 0 complete when</span>
         </div>
         <div className="space-y-2">
-          {DAY_ZERO.checks.map((c, i) => (
-            <CheckRow key={i} checked={!!done[`d0c${i}`]} onToggle={() => toggle(`d0c${i}`)}>
+          {dz.checks.map((c, i) => (
+            <CheckRow key={i} checked={has(`d0c${i}`)} onToggle={() => toggle(`d0c${i}`)}>
               {c}
             </CheckRow>
           ))}
         </div>
         <div className="mt-5 rounded-2xl border border-red-500/25 bg-red-500/[0.05] p-4">
-          <p className="mb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-red-300">Non-negotiable</p>
-          <p className="text-[13px] leading-relaxed text-zinc-400">
-            If your project is not in git with a clean working tree, stop and fix that now. Every safety mechanism in
-            this guide — checkpoints, worktrees, review gates, rollbacks — assumes git underneath. Working with an
-            autonomous agent on uncommitted code is the single most common way people lose work.
+          <p className="mb-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-red-300">
+            {dz.nonNegotiable.title}
           </p>
+          <p className="text-[13px] leading-relaxed text-zinc-400">{dz.nonNegotiable.body}</p>
         </div>
 
         {allDone && (
@@ -865,7 +1055,7 @@ function DayZeroView({
             onClick={onNext}
             className="mt-5 flex w-full items-center justify-center gap-2 rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void transition hover:shadow-[0_0_35px_rgba(204,242,68,0.45)] active:scale-95 cursor-pointer"
           >
-            <span>Boot camp cleared — start Day 1</span>
+            <span>{dz.ctaLabel}</span>
             <ArrowRight className="h-4 w-4" />
           </motion.button>
         )}
@@ -880,7 +1070,7 @@ function DayZeroView({
 
 function DayView({
   day,
-  done,
+  has,
   toggle,
   unlocked,
   onPeek,
@@ -889,7 +1079,7 @@ function DayView({
   onNext,
 }: {
   day: Day;
-  done: Record<string, boolean>;
+  has: (k: string) => boolean;
   toggle: (k: string) => void;
   unlocked: boolean;
   onPeek: () => void;
@@ -897,12 +1087,12 @@ function DayView({
   beaten: boolean;
   onNext: () => void;
 }) {
-  const bossDone = day.boss.checks.filter((_, i) => done[`b${day.id}_${i}`]).length;
-  const drillsDone = day.drills.filter((d) => done[d.id]).length;
+  const bossDone = day.boss.checks.filter((_, i) => has(`b${day.id}_${i}`)).length;
+  const drillsDone = day.drills.filter((d) => has(d.id)).length;
   const dayXp =
-    day.drills.reduce((s, d) => s + (done[d.id] ? d.xp : 0), 0) +
+    day.drills.reduce((s, d) => s + (has(d.id) ? d.xp : 0), 0) +
     (beaten ? day.boss.xp : 0) +
-    (done[`s${day.id}`] ? day.side.xp : 0);
+    (has(`s${day.id}`) ? day.side.xp : 0);
   const dayMax = day.drills.reduce((s, d) => s + d.xp, 0) + day.boss.xp + day.side.xp;
 
   if (!unlocked) {
@@ -1010,7 +1200,7 @@ function DayView({
 
         <div className="space-y-4">
           {day.drills.map((drill, idx) => {
-            const isDone = !!done[drill.id];
+            const isDone = has(drill.id);
             return (
               <div
                 key={drill.id}
@@ -1094,7 +1284,7 @@ function DayView({
 
         <div className="mt-4 space-y-2">
           {day.boss.checks.map((c, i) => (
-            <CheckRow key={i} checked={!!done[`b${day.id}_${i}`]} onToggle={() => toggle(`b${day.id}_${i}`)}>
+            <CheckRow key={i} checked={has(`b${day.id}_${i}`)} onToggle={() => toggle(`b${day.id}_${i}`)}>
               {c}
             </CheckRow>
           ))}
@@ -1129,7 +1319,7 @@ function DayView({
           <span>Side quest · +{day.side.xp} XP</span>
         </div>
         <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">{day.side.text}</p>
-        <CheckRow checked={!!done[`s${day.id}`]} onToggle={() => toggle(`s${day.id}`)} xp={day.side.xp}>
+        <CheckRow checked={has(`s${day.id}`)} onToggle={() => toggle(`s${day.id}`)} xp={day.side.xp}>
           Side quest complete.
         </CheckRow>
       </div>
@@ -1143,6 +1333,57 @@ function DayView({
 
 function Panel({ children }: { children: React.ReactNode }) {
   return <div className="rounded-3xl border border-white/10 bg-[#0b0b13]/60 p-5 sm:p-7">{children}</div>;
+}
+
+function SurfaceMapView({ plans, planHead }: { plans: string[][]; planHead: string[] }) {
+  return (
+    <div className="space-y-6">
+      <Panel>
+        <SectionHeading eyebrow="Appendix A" title="The surface map" />
+        <p className="mb-5 text-[13.5px] leading-relaxed text-zinc-400">
+          The whole skill in one table. Anthropic ships fast, so if something here doesn't match what you see, open{" "}
+          <span className="font-mono text-volt">Customize</span> and <span className="font-mono text-volt">Settings</span>{" "}
+          and look — half of what's new arrives quietly in a sidebar you stopped checking.
+        </p>
+        <DataTable head={["Surface", "What it's for", "Open it when"]} rows={SURFACES} />
+      </Panel>
+
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Quick picks — decide in five seconds</h3>
+        <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">
+          When you're mid-task and can't remember which door to open, read the left column and stop thinking.
+        </p>
+        <DataTable head={["What you want", "Where to go"]} rows={QUICK_PICKS.map(([a, b]) => [a, b])} />
+      </Panel>
+
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Where each thing lives in the interface</h3>
+        <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">
+          Almost every "Claude can't do that" complaint is really a "Claude can't do that yet, because a toggle is off"
+          problem. This is the map of the toggles.
+        </p>
+        <DataTable head={["Place", "What's there"]} rows={UI_MAP.map(([a, b]) => [a, b])} />
+      </Panel>
+
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Plans, and what each one actually unlocks</h3>
+        <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">
+          Third-party reported pricing — directional, and worth verifying at claude.com/pricing before you buy seats.
+        </p>
+        <DataTable head={planHead} rows={plans} />
+      </Panel>
+
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Speed, cost and limit levers</h3>
+        <p className="mb-4 text-[13.5px] leading-relaxed text-zinc-400">
+          Every message re-sends your project instructions, your knowledge base context, every connector's tool
+          definitions and the whole conversation so far. That's why a sprawling thread with twelve connectors feels slow
+          and hits limits — and why a fresh chat inside the same project is the cheapest fix available to you.
+        </p>
+        <DataTable head={["Lever", "Effect"]} rows={NOCODE_LEVERS.map(([a, b]) => [a, b])} />
+      </Panel>
+    </div>
+  );
 }
 
 function CheatSheetView() {
@@ -1177,9 +1418,15 @@ function CheatSheetView() {
   );
 }
 
-function PromptsView() {
+function PromptsView({
+  prompts,
+  nocode,
+}: {
+  prompts: { n: number; title: string; code: string }[];
+  nocode: boolean;
+}) {
   const [q, setQ] = useState("");
-  const filtered = PROMPTS.filter(
+  const filtered = prompts.filter(
     (p) => p.title.toLowerCase().includes(q.toLowerCase()) || p.code.toLowerCase().includes(q.toLowerCase()),
   );
   return (
@@ -1187,12 +1434,13 @@ function PromptsView() {
       <Panel>
         <SectionHeading eyebrow="Appendix B" title="The prompt vault" />
         <p className="mb-5 text-[13.5px] leading-relaxed text-zinc-400">
-          Thirteen prompts that do the heavy lifting. Steal them, adapt them, keep them in a file.
+          {prompts.length} prompts that do the heavy lifting. Steal them, adapt them, keep them somewhere you'll find
+          them again — {nocode ? "a note in your Company Brain project is the right home." : "a file in your repo is the right home."}
         </p>
         <input
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Filter prompts — try 'review', 'test', 'debug'…"
+          placeholder={nocode ? "Filter prompts — try 'skill', 'cowork', 'brief'…" : "Filter prompts — try 'review', 'test', 'debug'…"}
           className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 font-mono text-[12.5px] text-zinc-200 outline-none transition placeholder:text-zinc-600 focus:border-volt/40"
         />
       </Panel>
@@ -1205,7 +1453,7 @@ function PromptsView() {
             </span>
             <h3 className="font-display text-base font-bold text-white">{p.title}</h3>
           </div>
-          <CodeBlock block={{ lang: "text", label: `Prompt ${p.n}`, code: p.code }} />
+          <CodeBlock block={{ lang: nocode ? "prompt" : "text", label: `Prompt ${p.n}`, code: p.code }} />
         </div>
       ))}
 
@@ -1214,6 +1462,50 @@ function PromptsView() {
           <p className="text-center text-[13.5px] text-zinc-500">No prompts match “{q}”.</p>
         </Panel>
       )}
+    </div>
+  );
+}
+
+function NoCodeTemplatesView() {
+  return (
+    <div className="space-y-5">
+      <Panel>
+        <SectionHeading eyebrow="Appendix C" title="The template pack" />
+        <p className="mb-5 text-[13.5px] leading-relaxed text-zinc-400">
+          One Drive folder, synced to your projects, is the whole filing system. Build this once and every future client,
+          project and Cowork session starts from the same place instead of from a blank page.
+        </p>
+        <CodeBlock block={{ lang: "text", label: "The workspace folder", code: WORKSPACE_TREE }} />
+      </Panel>
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Project instructions</h3>
+        <p className="mb-3 text-[13px] leading-relaxed text-zinc-500">
+          The standing orders for every chat inside a project. The highest-leverage 200 words you'll write this year.
+        </p>
+        <CodeBlock block={{ lang: "md", label: "Paste into Project → Instructions", code: PROJECT_INSTRUCTIONS_TEMPLATE }} />
+      </Panel>
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Skill template</h3>
+        <p className="mb-3 text-[13px] leading-relaxed text-zinc-500">
+          Plain English, no code. The "Never" and "What good looks like" sections are the parts that carry your judgement
+          — everything else is just steps.
+        </p>
+        <CodeBlock block={{ lang: "md", label: "Customize → Skills → your own skill", code: SKILL_TEMPLATE }} />
+      </Panel>
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">Cowork brief</h3>
+        <p className="mb-3 text-[13px] leading-relaxed text-zinc-500">
+          An unbounded agentic session is an unbounded bill. A brief with a "done when" is a bounded one.
+        </p>
+        <CodeBlock block={{ lang: "prompt", label: "Start every Cowork session with this", code: COWORK_BRIEF_TEMPLATE }} />
+      </Panel>
+      <Panel>
+        <h3 className="mb-1 font-display text-base font-bold text-white">The one-page SOP</h3>
+        <p className="mb-3 text-[13px] leading-relaxed text-zinc-500">
+          Day 7's deliverable. Write one of these per recurring job and your setup survives you being busy, ill or away.
+        </p>
+        <CodeBlock block={{ lang: "md", label: "One per recurring job", code: SOP_TEMPLATE }} />
+      </Panel>
     </div>
   );
 }
@@ -1240,19 +1532,19 @@ function TemplatesView() {
   );
 }
 
-function AntiPatternsView() {
+function AntiPatternsView({ rows }: { rows: [string, string][] }) {
   return (
     <Panel>
       <SectionHeading eyebrow="Appendix E" title="Anti-patterns and their antidotes" />
       <p className="mb-5 text-[13.5px] leading-relaxed text-zinc-400">
         Find your symptom. Apply the antidote. Every one of these traces back to a day in this protocol.
       </p>
-      <DataTable head={["Symptom", "Antidote"]} rows={ANTIPATTERNS.map(([a, b]) => [a, b])} />
+      <DataTable head={["Symptom", "Antidote"]} rows={rows.map(([a, b]) => [a, b])} />
     </Panel>
   );
 }
 
-function LadderView() {
+function LadderView({ rows }: { rows: [string, string, string][] }) {
   return (
     <Panel>
       <SectionHeading eyebrow="Appendix G" title="Days 8–30: the mastery ladder" />
@@ -1260,7 +1552,7 @@ function LadderView() {
         Seven days makes you dangerous. These four weeks make you the person others ask.
       </p>
       <div className="space-y-3">
-        {LADDER.map(([week, focus, body]) => (
+        {rows.map(([week, focus, body]) => (
           <div key={week} className="rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
             <div className="mb-2 flex items-center gap-2.5">
               <span className="rounded-md bg-volt/15 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
@@ -1277,19 +1569,23 @@ function LadderView() {
 }
 
 function ExamView({
-  done,
+  checks,
+  nocode,
+  has,
   toggle,
   score,
   xp,
   rank,
 }: {
-  done: Record<string, boolean>;
+  checks: string[];
+  nocode: boolean;
+  has: (k: string) => boolean;
   toggle: (k: string) => void;
   score: number;
   xp: number;
   rank: string;
 }) {
-  const passed = score === EXAM.length;
+  const passed = score === checks.length;
   return (
     <div className="space-y-6">
       <div
@@ -1304,15 +1600,15 @@ function ExamView({
             The Operator Exam
           </h2>
           <p className="mt-3 max-w-2xl text-[14px] leading-relaxed text-zinc-400">
-            Twelve checks. No partial credit. Pass all twelve and you have earned the title — not because a webpage says
-            so, but because these things either exist in your repo or they don't. Each one is a fact you can verify in
-            under a minute.
+            {nocode
+              ? "Twelve checks. No partial credit. Pass all twelve and you've earned the title — not because a webpage says so, but because these things either exist in your account and your business or they don't. Each one is a fact you can verify in under a minute."
+              : "Twelve checks. No partial credit. Pass all twelve and you have earned the title — not because a webpage says so, but because these things either exist in your repo or they don't. Each one is a fact you can verify in under a minute."}
           </p>
           <div className="mt-5 flex flex-wrap items-center gap-3">
             <div className="rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5">
               <div className="font-display text-2xl font-black text-volt">
                 {score}
-                <span className="text-base text-zinc-600">/12</span>
+                <span className="text-base text-zinc-600">/{checks.length}</span>
               </div>
               <div className="font-mono text-[9.5px] uppercase tracking-wider text-zinc-500">exam score</div>
             </div>
@@ -1330,8 +1626,8 @@ function ExamView({
 
       <Panel>
         <div className="space-y-2">
-          {EXAM.map((c, i) => (
-            <CheckRow key={i} checked={!!done[`e${i}`]} onToggle={() => toggle(`e${i}`)}>
+          {checks.map((c, i) => (
+            <CheckRow key={i} checked={has(`e${i}`)} onToggle={() => toggle(`e${i}`)}>
               <span className="font-mono text-[11px] text-zinc-600">{String(i + 1).padStart(2, "0")}. </span>
               {c}
             </CheckRow>
@@ -1351,9 +1647,9 @@ function ExamView({
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-volt">Twelve out of twelve</p>
           <h3 className="mt-2 font-display text-3xl font-black uppercase tracking-tight text-white">The Operator</h3>
           <p className="mx-auto mt-3 max-w-lg text-[13.5px] leading-relaxed text-zinc-400">
-            You're not a person who uses Claude Code. You're an operator who runs it — and that is a genuinely rare
-            thing. Most people at your skill level got there over months of trial and error. You did it in a week
-            because you followed a system instead of collecting tips.
+            {nocode
+              ? "You're not a person who uses Claude. You're an operator who runs a business on it — projects that hold your context, connectors into your real systems, skills that carry your judgement, and an AI coworker that produces finished deliverables. Almost nobody at your level got there without writing code. You did it in a week because you followed a system instead of collecting tips."
+              : "You're not a person who uses Claude Code. You're an operator who runs it — and that is a genuinely rare thing. Most people at your skill level got there over months of trial and error. You did it in a week because you followed a system instead of collecting tips."}
           </p>
           <a
             href="/#membership"
@@ -1369,10 +1665,10 @@ function ExamView({
           <div className="flex items-start gap-3">
             <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-zinc-600" />
             <p className="text-[13.5px] leading-relaxed text-zinc-400">
-              <span className="font-bold text-zinc-200">Eight or nine out of twelve is completely normal.</span> Find the
-              missing ones, look at which day they came from, and redo that day's boss fight. The gaps are almost always
-              Days 5–7, because that's where it stops being about prompting and starts being about engineering. That's
-              also where all the leverage is. Go back.
+              <span className="font-bold text-zinc-200">Eight or nine out of twelve is completely normal.</span>{" "}
+              {nocode
+                ? "Find the missing ones, look at which day they came from, and redo that day's boss fight. The gaps are almost always Days 5–7, because that's where it stops being about prompting and starts being about delegation — writing down a process, handing it over, and letting something finish without you watching. That's also where every hour you get back comes from. Go back."
+                : "Find the missing ones, look at which day they came from, and redo that day's boss fight. The gaps are almost always Days 5–7, because that's where it stops being about prompting and starts being about engineering. That's also where all the leverage is. Go back."}
             </p>
           </div>
         </Panel>
