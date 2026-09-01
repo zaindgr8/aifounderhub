@@ -13,7 +13,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   LayoutDashboard, Users, CreditCard, UserPlus, RefreshCw, LogOut,
-  Loader2, ShieldAlert, AlertTriangle, TrendingUp, Database, Zap, Mail, ArrowRight,
+  Loader2, ShieldAlert, AlertTriangle, TrendingUp, Database, Zap, Mail, ArrowRight, Lock, KeyRound,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../lib/auth';
@@ -425,6 +425,8 @@ function FullPage({ children }: { children: React.ReactNode }) {
 const ADMIN_EMAIL = 'zangbang360@gmail.com';
 
 function SignInGate() {
+  const [authMode, setAuthMode] = useState<'password' | 'magic-link'>('password');
+  const [password, setPassword] = useState('');
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -435,7 +437,21 @@ function SignInGate() {
     return params.get('error_description')?.replace(/\+/g, ' ') ?? null;
   })();
 
-  async function sendLink(e: React.FormEvent) {
+  async function handlePasswordSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    const { error: err } = await supabase.auth.signInWithPassword({
+      email: ADMIN_EMAIL,
+      password: password,
+    });
+    setBusy(false);
+    if (err) {
+      setError(err.message);
+    }
+  }
+
+  async function handleMagicLinkSubmit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
     setError(null);
@@ -451,7 +467,6 @@ function SignInGate() {
       setError(err.message);
     } else {
       setSent(true);
-      // Clear the hash so a stale error from a previous attempt doesn't confuse
       window.history.replaceState(null, '', '/admin');
     }
   }
@@ -463,15 +478,63 @@ function SignInGate() {
         <h1 className="mt-2 text-xl font-semibold text-zinc-50">Admin sign in</h1>
         <p className="mt-1 text-xs text-zinc-500">Restricted to authorised accounts only.</p>
 
+        {/* Mode Selector */}
+        <div className="mt-4 grid grid-cols-2 gap-1 rounded-xl border border-edge bg-void p-1 text-xs">
+          <button
+            type="button"
+            onClick={() => { setAuthMode('password'); setError(null); }}
+            className={`rounded-lg py-1.5 font-medium transition ${
+              authMode === 'password' ? 'bg-white/[0.08] text-volt font-bold' : 'text-zinc-500 hover:text-zinc-300'
+            }`}
+          >
+            Password
+          </button>
+          <button
+            type="button"
+            onClick={() => { setAuthMode('magic-link'); setError(null); }}
+            className={`rounded-lg py-1.5 font-medium transition ${
+              authMode === 'magic-link' ? 'bg-white/[0.08] text-volt font-bold' : 'text-zinc-500 hover:text-zinc-300'
+            }`}
+          >
+            Magic Link
+          </button>
+        </div>
+
         {/* Stale link error from URL hash */}
         {hashError && !sent && (
           <div className="mt-4 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-300">
-            ⚠️ {hashError}. Please request a fresh link below.
+            ⚠️ {hashError}. Please log in below.
           </div>
         )}
 
-        {sent ? (
-          <div className="mt-6 space-y-4">
+        {authMode === 'password' ? (
+          <form onSubmit={handlePasswordSubmit} className="mt-4 space-y-3">
+            <div className="rounded-xl border border-edge bg-void px-3 py-2.5 flex items-center gap-2">
+              <Mail size={14} className="shrink-0 text-zinc-500" />
+              <span className="text-sm text-zinc-300 font-mono">{ADMIN_EMAIL}</span>
+            </div>
+            <div className="relative">
+              <Lock size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoFocus
+                placeholder="Enter password"
+                className="w-full rounded-xl border border-edge bg-void py-2.5 pl-9 pr-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:border-volt/40 focus:outline-none"
+              />
+            </div>
+            <button
+              type="submit"
+              disabled={busy || !password}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-volt px-4 py-3 text-sm font-bold text-void transition hover:bg-volt/90 disabled:opacity-40"
+            >
+              {busy ? <Loader2 size={15} className="animate-spin" /> : 'Sign in'}
+            </button>
+          </form>
+        ) : sent ? (
+          <div className="mt-4 space-y-4">
             <div className="rounded-xl border border-emerald-500/25 bg-emerald-950/30 p-4 text-center">
               <Mail size={22} className="mx-auto mb-2 text-emerald-400" />
               <p className="text-sm font-semibold text-emerald-200">Check your email</p>
@@ -480,7 +543,7 @@ function SignInGate() {
                 <span className="font-mono text-zinc-200">{ADMIN_EMAIL}</span>.
                 <br />Click the link in the email to access the admin panel.
               </p>
-              <p className="mt-2 text-[10px] text-zinc-600">The link expires in 60 minutes. Use the most recent email.</p>
+              <p className="mt-2 text-[10px] text-zinc-600">The link expires in 60 minutes.</p>
             </div>
             <button
               type="button"
@@ -491,7 +554,7 @@ function SignInGate() {
             </button>
           </div>
         ) : (
-          <form onSubmit={sendLink} className="mt-6 space-y-3">
+          <form onSubmit={handleMagicLinkSubmit} className="mt-4 space-y-3">
             <div className="rounded-xl border border-edge bg-void px-3 py-2.5 flex items-center gap-2">
               <Mail size={14} className="shrink-0 text-zinc-500" />
               <span className="text-sm text-zinc-300 font-mono">{ADMIN_EMAIL}</span>
