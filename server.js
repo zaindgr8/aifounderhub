@@ -1,14 +1,10 @@
-// Lightweight Express API server — runs on port 3001 alongside Vite (port 3000)
-// Vite proxies /api/* → http://localhost:3001/api/*
-
+import 'dotenv/config';
 import express from 'express';
-import dotenv from 'dotenv';
 import { sendLeadEmail } from './api/send-lead-email.js';
 import { createPayment } from './api/create-payment.js';
 import { confirmPayment } from './api/confirm-payment.js';
 import checkMember from './api/check-member.js';
-
-dotenv.config();
+import admin from './api/admin.js';
 
 const app = express();
 const PORT = process.env.API_PORT || 3001;
@@ -27,7 +23,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', origin || '*');
   }
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.sendStatus(204);
   next();
 });
@@ -38,6 +34,7 @@ app.post('/api/send-lead-email', sendLeadEmail);
 app.post('/api/create-payment', createPayment);
 app.post('/api/confirm-payment', confirmPayment);
 app.post('/api/check-member', checkMember);
+app.post('/api/admin', admin);
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ ok: true, ts: Date.now() }));

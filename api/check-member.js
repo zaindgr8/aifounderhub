@@ -1,3 +1,5 @@
+import 'dotenv/config';
+
 /**
  * POST /api/check-member
  *
@@ -7,9 +9,6 @@
  * Body: { email: string }
  * Response: { hasAccess: boolean, status?: string, expiresAt?: string }
  */
-
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 function setCors(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -26,6 +25,9 @@ export default async function checkMember(req, res) {
   if (!email || typeof email !== 'string') {
     return res.status(400).json({ hasAccess: false, error: 'Missing email' });
   }
+
+  const SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+  const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
   if (!SUPABASE_URL || !SERVICE_KEY) {
     console.error('[check-member] Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY');
