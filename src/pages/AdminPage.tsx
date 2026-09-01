@@ -10,10 +10,10 @@
  * the client.
  */
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   LayoutDashboard, Users, CreditCard, UserPlus, RefreshCw, LogOut,
-  Loader2, ShieldAlert, AlertTriangle, TrendingUp, Database, Zap, Mail, KeyRound, ArrowRight, CheckCircle2,
+  Loader2, ShieldAlert, AlertTriangle, TrendingUp, Database, Zap, Mail, ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
 import { signOut } from '../lib/auth';
@@ -425,76 +425,35 @@ function FullPage({ children }: { children: React.ReactNode }) {
 const ADMIN_EMAIL = 'zangbang360@gmail.com';
 
 function SignInGate() {
-  // step: 'email' → user enters email; 'otp' → user enters 6-digit OTP
-  const [step, setStep] = useState<'email' | 'otp'>('email');
-  const [email, setEmail] = useState('');
-  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  async function sendOtp(e: React.FormEvent) {
+  // Read auth error from URL hash (e.g. otp_expired after clicking a stale link)
+  const hashError = (() => {
+    const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
+    return params.get('error_description')?.replace(/\+/g, ' ') ?? null;
+  })();
+
+  async function sendLink(e: React.FormEvent) {
     e.preventDefault();
-    // Client-side allowlist — block any email that isn't the admin address
-    if (email.trim().toLowerCase() !== ADMIN_EMAIL.toLowerCase()) {
-      setError('This email is not authorised to access the admin panel.');
-      return;
-    }
     setBusy(true);
     setError(null);
     const { error: err } = await supabase.auth.signInWithOtp({
-      email: ADMIN_EMAIL,           // always use the canonical address
-      options: { shouldCreateUser: false },
+      email: ADMIN_EMAIL,
+      options: {
+        shouldCreateUser: false,
+        emailRedirectTo: `${window.location.origin}/admin`,
+      },
     });
     setBusy(false);
     if (err) {
       setError(err.message);
     } else {
-      setStep('otp');
+      setSent(true);
+      // Clear the hash so a stale error from a previous attempt doesn't confuse
+      window.history.replaceState(null, '', '/admin');
     }
-  }
-
-  async function verifyOtp(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    const token = otp.join('');
-    const { error: err } = await supabase.auth.verifyOtp({
-      email: email.trim(),
-      token,
-      type: 'email',
-    });
-    setBusy(false);
-    if (err) {
-      setError(err.message);
-    }
-    // on success, useAuth() picks up the new session automatically
-  }
-
-  function handleOtpKey(idx: number, e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Backspace' && otp[idx] === '' && idx > 0) {
-      inputRefs.current[idx - 1]?.focus();
-    }
-  }
-
-  function handleOtpChange(idx: number, val: string) {
-    const ch = val.replace(/\D/g, '').slice(-1);
-    const next = [...otp];
-    next[idx] = ch;
-    setOtp(next);
-    if (ch && idx < 5) {
-      inputRefs.current[idx + 1]?.focus();
-    }
-  }
-
-  function handleOtpPaste(e: React.ClipboardEvent) {
-    e.preventDefault();
-    const digits = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6).split('');
-    const next = [...otp];
-    digits.forEach((d, i) => { next[i] = d; });
-    setOtp(next);
-    const focusIdx = Math.min(digits.length, 5);
-    inputRefs.current[focusIdx]?.focus();
   }
 
   return (
@@ -502,22 +461,40 @@ function SignInGate() {
       <div className="w-full max-w-sm rounded-2xl border border-edge bg-panel p-7 text-left">
         <p className="font-mono text-[10px] uppercase tracking-[0.25em] text-volt">⚡ AI Founder Hub</p>
         <h1 className="mt-2 text-xl font-semibold text-zinc-50">Admin sign in</h1>
-        <p className="mt-1 text-xs text-zinc-500">This dashboard is restricted to allowlisted accounts.</p>
+        <p className="mt-1 text-xs text-zinc-500">Restricted to authorised accounts only.</p>
 
-        {step === 'email' ? (
-          <form onSubmit={sendOtp} className="mt-6 space-y-3">
-            <div className="relative">
-              <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
-              <input
-                id="admin-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                autoFocus
-                placeholder="zangbang360@gmail.com"
-                className="w-full rounded-xl border border-edge bg-void py-2.5 pl-9 pr-3 text-sm text-zinc-200 placeholder:text-zinc-600 focus:border-volt/40 focus:outline-none"
-              />
+        {/* Stale link error from URL hash */}
+        {hashError && !sent && (
+          <div className="mt-4 rounded-lg border border-amber-400/30 bg-amber-400/10 px-3 py-2 text-xs text-amber-300">
+            ⚠️ {hashError}. Please request a fresh link below.
+          </div>
+        )}
+
+        {sent ? (
+          <div className="mt-6 space-y-4">
+            <div className="rounded-xl border border-emerald-500/25 bg-emerald-950/30 p-4 text-center">
+              <Mail size={22} className="mx-auto mb-2 text-emerald-400" />
+              <p className="text-sm font-semibold text-emerald-200">Check your email</p>
+              <p className="mt-1 text-xs text-zinc-400">
+                A sign-in link has been sent to{' '}
+                <span className="font-mono text-zinc-200">{ADMIN_EMAIL}</span>.
+                <br />Click the link in the email to access the admin panel.
+              </p>
+              <p className="mt-2 text-[10px] text-zinc-600">The link expires in 60 minutes. Use the most recent email.</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => { setSent(false); setError(null); }}
+              className="w-full text-center text-xs text-zinc-600 hover:text-zinc-400 transition"
+            >
+              ← Send another link
+            </button>
+          </div>
+        ) : (
+          <form onSubmit={sendLink} className="mt-6 space-y-3">
+            <div className="rounded-xl border border-edge bg-void px-3 py-2.5 flex items-center gap-2">
+              <Mail size={14} className="shrink-0 text-zinc-500" />
+              <span className="text-sm text-zinc-300 font-mono">{ADMIN_EMAIL}</span>
             </div>
             <button
               type="submit"
@@ -526,55 +503,8 @@ function SignInGate() {
             >
               {busy
                 ? <Loader2 size={15} className="animate-spin" />
-                : (<><ArrowRight size={14} /> Send OTP to email</>)
+                : <><ArrowRight size={14} /> Send sign-in link</>
               }
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={verifyOtp} className="mt-6 space-y-5">
-            <div className="rounded-xl border border-emerald-500/20 bg-emerald-950/30 px-3 py-2.5 text-center">
-              <CheckCircle2 size={13} className="inline mr-1 text-emerald-400" />
-              <span className="text-xs text-emerald-300">OTP sent to </span>
-              <span className="font-mono text-xs text-emerald-200">{email}</span>
-            </div>
-
-            <div>
-              <p className="mb-3 flex items-center gap-1.5 text-xs text-zinc-400">
-                <KeyRound size={12} className="text-volt" />
-                Enter the 6-digit code from your email
-              </p>
-              <div className="flex justify-between gap-2" onPaste={handleOtpPaste}>
-                {otp.map((digit, i) => (
-                  <input
-                    key={i}
-                    ref={(el) => { inputRefs.current[i] = el; }}
-                    type="text"
-                    inputMode="numeric"
-                    maxLength={1}
-                    value={digit}
-                    onChange={(e) => handleOtpChange(i, e.target.value)}
-                    onKeyDown={(e) => handleOtpKey(i, e)}
-                    className="h-12 w-full rounded-xl border border-edge bg-void text-center text-lg font-bold text-volt caret-volt focus:border-volt/60 focus:outline-none focus:ring-1 focus:ring-volt/30"
-                    autoFocus={i === 0}
-                  />
-                ))}
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={busy || otp.join('').length < 6}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-volt px-4 py-3 text-sm font-bold text-void transition hover:bg-volt/90 disabled:opacity-40"
-            >
-              {busy ? <Loader2 size={15} className="animate-spin" /> : 'Verify & Sign In'}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => { setStep('email'); setOtp(['','','','','','']); setError(null); }}
-              className="w-full text-center text-xs text-zinc-600 hover:text-zinc-400 transition"
-            >
-              ← Use a different email
             </button>
           </form>
         )}
