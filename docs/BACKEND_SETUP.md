@@ -29,6 +29,13 @@ success, booking shows a "coming soon" note). It will not break.
 
 ---
 
+## Admin dashboard
+
+Operator dashboard at `/admin` — signups, revenue, who bought which package,
+leads by source. Setup and security model: **[docs/ADMIN_PANEL.md](./ADMIN_PANEL.md)**.
+
+---
+
 ## Prerequisites (create these accounts)
 
 1. **Supabase** account + a new project. https://supabase.com

@@ -12,7 +12,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import {
-  LayoutDashboard, Users, CreditCard, UserPlus, RefreshCw, LogOut,
+  LayoutDashboard, Users, CreditCard, UserPlus, RefreshCw, LogOut, Share2,
   Loader2, ShieldAlert, AlertTriangle, TrendingUp, Database, Zap, Mail, ArrowRight, Lock, KeyRound,
 } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -21,11 +21,13 @@ import { supabase } from '../lib/supabase';
 import {
   adminApi, AdminError, money, compactNumber, relativeTime,
   type Overview, type Person, type PaymentRow, type LeadRow,
+  type AffiliateRow, type CommissionRow,
 } from '../lib/adminApi';
 import { ChartCard, StatTile, ColumnChart, BarList, Funnel, MiniTable } from '../components/admin/AdminCharts';
 import { CustomersTable, OrdersTable, LeadsTable, Chip } from '../components/admin/AdminTables';
+import { AffiliatesTable } from '../components/admin/AffiliatesTable';
 
-type Tab = 'overview' | 'customers' | 'orders' | 'leads';
+type Tab = 'overview' | 'customers' | 'orders' | 'leads' | 'affiliates';
 type Range = '7d' | '30d' | '90d' | 'all';
 
 const TABS: { id: Tab; label: string; Icon: React.ElementType }[] = [
@@ -33,6 +35,7 @@ const TABS: { id: Tab; label: string; Icon: React.ElementType }[] = [
   { id: 'customers', label: 'Customers', Icon: Users },
   { id: 'orders',    label: 'Orders',    Icon: CreditCard },
   { id: 'leads',     label: 'Leads',     Icon: UserPlus },
+  { id: 'affiliates', label: 'Affiliates', Icon: Share2 },
 ];
 
 const RANGES: { id: Range; label: string }[] = [
@@ -62,6 +65,8 @@ export function AdminPage() {
   const [people, setPeople] = useState<Person[] | null>(null);
   const [payments, setPayments] = useState<PaymentRow[] | null>(null);
   const [leads, setLeads] = useState<LeadRow[] | null>(null);
+  const [affiliates, setAffiliates] = useState<{ rows: AffiliateRow[]; defaultPct: number } | null>(null);
+  const [commissions, setCommissions] = useState<CommissionRow[] | null>(null);
 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -102,6 +107,11 @@ export function AdminPage() {
       if (which === 'customers') setPeople((await adminApi.customers()).people);
       if (which === 'orders') setPayments((await adminApi.payments()).payments);
       if (which === 'leads') setLeads((await adminApi.leads()).leads);
+      if (which === 'affiliates') {
+        const [a, c] = await Promise.all([adminApi.affiliates(), adminApi.commissions()]);
+        setAffiliates({ rows: a.affiliates, defaultPct: a.defaultPct });
+        setCommissions(c.commissions);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not load that view.');
     } finally {
@@ -121,7 +131,7 @@ export function AdminPage() {
   if (!user) return <SignInGate />;
   if (gate === 'denied') return <DeniedGate email={user.email ?? ''} reason={gateError} />;
 
-  const hasData = (tab === 'overview' && overview) || (tab === 'customers' && people) || (tab === 'orders' && payments) || (tab === 'leads' && leads);
+  const hasData = (tab === 'overview' && overview) || (tab === 'customers' && people) || (tab === 'orders' && payments) || (tab === 'leads' && leads) || (tab === 'affiliates' && affiliates && commissions);
 
   return (
     <div className="min-h-screen bg-void text-zinc-100">
@@ -182,6 +192,14 @@ export function AdminPage() {
           {tab === 'customers' && people && <CustomersTable people={people} onChanged={refresh} />}
           {tab === 'orders' && payments && <OrdersTable payments={payments} onChanged={refresh} />}
           {tab === 'leads' && leads && <LeadsTable leads={leads} />}
+          {tab === 'affiliates' && affiliates && commissions && (
+            <AffiliatesTable
+              affiliates={affiliates.rows}
+              commissions={commissions}
+              defaultPct={affiliates.defaultPct}
+              onChanged={refresh}
+            />
+          )}
         </div>
       </main>
     </div>

@@ -13,6 +13,8 @@
 
 import { Resend } from 'resend';
 import { sessionStore } from './payment-store.js';
+import { PACKAGES, sbSelect, sbPatch, sbInsertTolerant, supabaseConfigured, likeSafe } from './_admin-lib.js';
+import { recordCommission } from './_affiliate-lib.js';
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -21,36 +23,87 @@ const SERVICE_KEY  = process.env.SUPABASE_SERVICE_ROLE_KEY;
  * Upsert a row in the `members` table using the Supabase REST API.
  * Gives the email 31 days of active access.
  */
-async function upsertMember(email) {
+async function upsertMember(email, { fullName, pkg } = {}) {
   if (!SUPABASE_URL || !SERVICE_KEY) {
     console.warn('[Supabase] upsertMember: missing env vars, skipping');
     return;
   }
-  const expiresAt = new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+
+  const code = pkg?.code || 'aaa-accelerator';
+  // One-time courses do not lapse; the monthly RoadMap gets a 31-day window
+  // that each renewal payment extends.
+  const expiresAt = pkg && pkg.recurring === false
+    ? null
+    : new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/members`, {
+    // grant_member_product() upserts on (email, product) atomically. Posting
+    // straight to /members cannot: the uniqueness lives on an expression index,
+    // which PostgREST has no way to name as a conflict target — that is what
+    // made a second purchase 409 and silently drop the entitlement.
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/grant_member_product`, {
       method: 'POST',
       headers: {
         apikey:         SERVICE_KEY,
         Authorization:  `Bearer ${SERVICE_KEY}`,
         'Content-Type': 'application/json',
-        Prefer:         'resolution=merge-duplicates,return=minimal',
       },
       body: JSON.stringify({
-        email:      email.toLowerCase(),
-        status:     'active',
-        started_at: new Date().toISOString(),
-        expires_at: expiresAt,
+        p_email:         email.toLowerCase(),
+        p_product_code:  code,
+        p_product_label: pkg?.label ?? null,
+        p_status:        'active',
+        p_expires_at:    expiresAt,
+        p_full_name:     fullName ?? null,
+        p_source:        'checkout',
       }),
     });
-    if (!res.ok) {
-      const err = await res.text();
-      console.error('[Supabase] upsertMember failed:', res.status, err);
-    } else {
-      console.log('[Supabase] Member upserted for:', email);
+
+    if (res.ok) {
+      console.log('[Supabase] Entitlement granted:', email, '→', code);
+      return;
     }
+
+    const err = await res.text();
+    console.error('[Supabase] grant_member_product failed:', res.status, err);
+    // Migration 0005 not applied yet — fall back so a sale still grants access.
+    await legacyUpsertMember(email, { fullName, pkg, expiresAt });
   } catch (err) {
     console.error('[Supabase] upsertMember error:', err);
+  }
+}
+
+/**
+ * Pre-0005 path: read-then-write against (email, product). Not atomic, but it
+ * keeps checkout working on a database that has not run the migration yet.
+ */
+async function legacyUpsertMember(email, { fullName, pkg, expiresAt }) {
+  const code = pkg?.code || 'aaa-accelerator';
+  const headers = {
+    apikey:         SERVICE_KEY,
+    Authorization:  `Bearer ${SERVICE_KEY}`,
+    'Content-Type': 'application/json',
+  };
+  const body = {
+    email: email.toLowerCase(),
+    status: 'active',
+    started_at: new Date().toISOString(),
+    expires_at: expiresAt,
+    ...(fullName ? { full_name: fullName } : {}),
+    ...(pkg ? { product_code: pkg.code, product_label: pkg.label, source: 'checkout' } : {}),
+  };
+
+  try {
+    const existing = await sbSelect(
+      'members',
+      `select=id&email=ilike.${encodeURIComponent(likeSafe(email.toLowerCase()))}&product_code=eq.${encodeURIComponent(code)}&limit=1`,
+    );
+    const result = existing.length
+      ? await sbPatch('members', `id=eq.${existing[0].id}`, body)
+      : await sbInsertTolerant('members', body, { email: body.email, status: 'active', expires_at: expiresAt });
+    if (!result.ok) console.error('[Supabase] legacyUpsertMember failed:', result.status, result.raw?.slice(0, 200));
+  } catch (err) {
+    console.error('[Supabase] legacyUpsertMember error:', err?.message);
   }
 }
 
@@ -87,8 +140,57 @@ async function inviteSupabaseUser(email, fullName) {
 
 const ZIINA_API = 'https://api-v2.ziina.com/api';
 
-// Track IDs we've already confirmed so double-hits don't send duplicate emails
+// Track IDs we've already confirmed so double-hits don't send duplicate emails.
+// This only covers a single warm instance — settlePayment() below uses the
+// payments row as the durable, cross-instance idempotency guard.
 const confirmedIds = new Set();
+
+/** The pending row written by create-payment, if it is still around. */
+async function findPaymentRow(paymentIntentId) {
+  if (!supabaseConfigured) return null;
+  const rows = await sbSelect('payments', `select=*&ziina_intent_id=eq.${encodeURIComponent(paymentIntentId)}&limit=1`);
+  return rows[0] ?? null;
+}
+
+/**
+ * Moves the payments row to its final state. If create-payment's row is missing
+ * (cold serverless instance, or a payment made before payments were persisted)
+ * the row is created here instead, so revenue is never silently lost.
+ */
+async function settlePayment(paymentIntentId, existing, { status, amount, fullName, email, advisorName, pkg, error }) {
+  if (!supabaseConfigured) return;
+  const now = new Date().toISOString();
+  try {
+    if (existing) {
+      const full = { status, ...(status === 'completed' ? { completed_at: now } : {}), ...(error ? { latest_error: error } : {}) };
+      const result = await sbPatch('payments', `id=eq.${existing.id}`, full);
+      if (!result.ok) await sbPatch('payments', `id=eq.${existing.id}`, { status });
+      return existing.id;
+    }
+    const label = advisorName ? `1:1 Private Session — ${advisorName}` : pkg.label;
+    const full = {
+      purpose: pkg.purpose, status, amount_fils: amount, amount_cents: amount, currency: 'USD',
+      customer_name: fullName, customer_email: String(email || '').toLowerCase(),
+      ziina_intent_id: paymentIntentId, is_test: process.env.ZIINA_TEST_MODE !== 'false',
+      product_code: pkg.code, product_label: label, provider: 'ziina',
+      ...(status === 'completed' ? { completed_at: now } : {}),
+    };
+    const base = {
+      purpose: pkg.purpose, status, amount_fils: amount, currency: 'USD',
+      customer_name: fullName, customer_email: String(email || '').toLowerCase(),
+      ziina_intent_id: paymentIntentId, is_test: process.env.ZIINA_TEST_MODE !== 'false',
+    };
+    const result = await sbInsertTolerant('payments', full, base);
+    if (!result.ok) {
+      console.error('[payments] settle insert failed:', result.status, result.raw?.slice(0, 200));
+      return null;
+    }
+    return result.data?.[0]?.id ?? null;
+  } catch (err) {
+    console.error('[payments] settlePayment error:', err?.message);
+    return null;
+  }
+}
 
 let _resend = null;
 function getResend() {
@@ -285,12 +387,21 @@ export async function confirmPayment(req, res) {
     const { status, amount, currency_code } = data;
     console.log('[Ziina] Payment intent status:', { paymentIntentId, status });
 
+    const existingRow = await findPaymentRow(paymentIntentId);
+
     if (status !== 'completed') {
+      const failedPkg = existingRow ? (PACKAGES[existingRow.product_code] || PACKAGES['aaa-accelerator']) : PACKAGES['aaa-accelerator'];
+      await settlePayment(paymentIntentId, existingRow, {
+        status: status === 'failed' ? 'failed' : 'pending',
+        amount, fullName: existingRow?.customer_name, email: existingRow?.customer_email,
+        pkg: failedPkg, error: `Ziina reported status: ${status}`,
+      });
       return res.status(200).json({ ok: false, status, error: `Payment is not completed (status: ${status})` });
     }
 
-    // 2. Idempotency — don't send email twice
-    if (confirmedIds.has(paymentIntentId)) {
+    // 2. Idempotency — the payments row survives across serverless instances,
+    //    so it is the guard that actually prevents duplicate emails.
+    if (confirmedIds.has(paymentIntentId) || existingRow?.status === 'completed') {
       console.log('[Ziina] Already confirmed, skipping email:', paymentIntentId);
       return res.status(200).json({ ok: true, status, alreadySent: true });
     }
@@ -302,17 +413,37 @@ export async function confirmPayment(req, res) {
     const email        = session?.email;
     const advisorName  = session?.advisorName; // present for session bookings
     const isSession    = !!advisorName;
+    // The pending row created at checkout carries the real product code; fall
+    // back to the session/RoadMap guess only when that row is gone.
+    const pkg =
+      PACKAGES[existingRow?.product_code] ||
+      (isSession ? PACKAGES['session-1on1'] : PACKAGES['aaa-accelerator']);
     const productLabel = isSession
       ? `Private 1:1 Session with ${advisorName}`
-      : 'AAA Accelerator Membership';
+      : existingRow?.product_label || pkg.label;
 
     // 4a. Grant member access in Supabase (all purchases get /progress access)
-    if (email) {
-      await Promise.allSettled([
-        upsertMember(email),
-        inviteSupabaseUser(email, fullName),
-      ]);
-    }
+    //     and mark the order paid so /admin can attribute the revenue.
+    const settleEmail = email || existingRow?.customer_email;
+    const [settled] = await Promise.allSettled([
+      settlePayment(paymentIntentId, existingRow, {
+        status: 'completed', amount,
+        fullName: session?.fullName || existingRow?.customer_name,
+        email: settleEmail, advisorName, pkg,
+      }),
+      ...(email ? [upsertMember(email, { fullName, pkg }), inviteSupabaseUser(email, fullName)] : []),
+    ]);
+
+    // 4b. Credit the affiliate who referred this buyer, if there is one.
+    //     Idempotent on payment_id, and it never throws — a commission problem
+    //     must not stop the customer's confirmation email.
+    await recordCommission({
+      paymentId: settled.status === 'fulfilled' ? settled.value : null,
+      customerEmail: settleEmail,
+      amountCents: amount,
+      productCode: pkg.code,
+      productLabel,
+    });
 
     const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
     const FROM_EMAIL  = process.env.FROM_EMAIL   || 'AI Founder Hub <hello@aifounderhub.com>';

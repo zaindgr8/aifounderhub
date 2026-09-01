@@ -1,4 +1,60 @@
 import { Resend } from 'resend';
+import { sbSelect, sbPatch, sbInsertTolerant, supabaseConfigured, likeSafe } from './_admin-lib.js';
+
+// Goals the original lead_goal enum understood. Anything else (workshop,
+// session) needs migration 0003, which widens the column to text; until then we
+// fall back to 'explore' and keep the real value in tags so nothing is lost.
+const ENUM_GOALS = ['founder', 'freelancer', 'scaleup', 'agency', 'explore'];
+
+/**
+ * Persists the lead to Supabase so /admin can report on signups by source.
+ * Best-effort and never throws: the email notification is the critical path.
+ */
+async function persistLead(input) {
+  if (!supabaseConfigured) return;
+  const email = String(input.email).toLowerCase();
+  const goal = input.goal || 'explore';
+  const tags = [
+    `goal:${goal}`,
+    `source:${input.source || 'website'}`,
+    ...(input.workshopTitle ? ['workshop'] : []),
+  ];
+
+  const shared = {
+    first_name:   input.fullName,
+    email,
+    phone:        input.phone || null,
+    country_code: input.countryCode || null,
+    dial_code:    input.dialCode || null,
+    source:       input.source || 'website',
+    tags,
+  };
+  const full = {
+    ...shared,
+    goal,
+    full_phone:     input.fullPhoneNumber || null,
+    workshop_title: input.workshopTitle || null,
+    ticket_number:  input.ticketNumber || null,
+    last_seen_at:   new Date().toISOString(),
+  };
+  const base = { ...shared, goal: ENUM_GOALS.includes(goal) ? goal : 'explore' };
+
+  try {
+    const existing = await sbSelect('leads', `select=id,submissions&email=ilike.${encodeURIComponent(likeSafe(email))}&limit=1`);
+    if (existing.length) {
+      // Returning lead — refresh the record rather than colliding with the
+      // unique email index, and count the extra submission.
+      const patch = { ...full, submissions: (existing[0].submissions ?? 1) + 1, updated_at: new Date().toISOString() };
+      const result = await sbPatch('leads', `id=eq.${existing[0].id}`, patch);
+      if (!result.ok) await sbPatch('leads', `id=eq.${existing[0].id}`, base);
+      return;
+    }
+    const result = await sbInsertTolerant('leads', full, base);
+    if (!result.ok) console.error('[leads] insert failed:', result.status, result.raw?.slice(0, 200));
+  } catch (err) {
+    console.error('[leads] persistLead error:', err?.message);
+  }
+}
 
 // lazily initialized after dotenv loads
 let _resend = null;
@@ -35,6 +91,9 @@ export async function sendLeadEmail(req, res) {
     if (!fullName || !email) {
       return res.status(400).json({ ok: false, error: 'fullName and email are required' });
     }
+
+    // Store the lead first — an email provider outage should not lose the record.
+    await persistLead({ fullName, email, phone, dialCode, countryCode, fullPhoneNumber, goal, source, ticketNumber, workshopTitle });
 
     const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
     const FROM_EMAIL = process.env.FROM_EMAIL || 'AI Founder Hub <onboarding@resend.dev>';

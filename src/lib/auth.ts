@@ -61,10 +61,13 @@ export async function getCurrentUser(): Promise<User | null> {
 
 // ─── Member Access Check ──────────────────────────────────────────────────────
 
-export interface MemberRecord {
-  email: string;
-  status: 'active' | 'lapsed' | 'cancelled';
-  expires_at: string | null;
+export interface MemberAccessDetails {
+  hasAccess: boolean;
+  hasRoadmapAccess: boolean;
+  hasClaudeAccess: boolean;
+  products?: string[];
+  status?: string;
+  expiresAt?: string | null;
 }
 
 /**
@@ -73,16 +76,28 @@ export interface MemberRecord {
  * service-role key stays on the backend.
  */
 export async function checkMemberAccess(email: string): Promise<boolean> {
+  const details = await checkMemberDetails(email);
+  return details.hasAccess;
+}
+
+export async function checkMemberDetails(email: string): Promise<MemberAccessDetails> {
   try {
     const res = await fetch('/api/check-member', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
     });
-    if (!res.ok) return false;
-    const data = await res.json() as { hasAccess: boolean };
-    return data.hasAccess === true;
+    if (!res.ok) return { hasAccess: false, hasRoadmapAccess: false, hasClaudeAccess: false };
+    const data = await res.json() as MemberAccessDetails;
+    return {
+      hasAccess: Boolean(data.hasAccess),
+      hasRoadmapAccess: Boolean(data.hasRoadmapAccess || data.hasAccess),
+      hasClaudeAccess: Boolean(data.hasClaudeAccess || data.hasAccess),
+      products: data.products ?? [],
+      status: data.status,
+      expiresAt: data.expiresAt,
+    };
   } catch {
-    return false;
+    return { hasAccess: false, hasRoadmapAccess: false, hasClaudeAccess: false };
   }
 }

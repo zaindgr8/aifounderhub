@@ -5,6 +5,7 @@ import { createPayment } from './api/create-payment.js';
 import { confirmPayment } from './api/confirm-payment.js';
 import checkMember from './api/check-member.js';
 import admin from './api/admin.js';
+import affiliate from './api/affiliate.js';
 
 const app = express();
 const PORT = process.env.API_PORT || 3001;
@@ -35,6 +36,7 @@ app.post('/api/create-payment', createPayment);
 app.post('/api/confirm-payment', confirmPayment);
 app.post('/api/check-member', checkMember);
 app.post('/api/admin', admin);
+app.post('/api/affiliate', affiliate);
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ ok: true, ts: Date.now() }));

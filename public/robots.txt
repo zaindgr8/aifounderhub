@@ -6,6 +6,7 @@ Allow: /
 Disallow: /api/
 Disallow: /payment-success
 Disallow: /payment-failed
+Disallow: /admin
 
 # Googlebot specific rules
 User-agent: Googlebot
@@ -13,6 +14,7 @@ Allow: /
 Disallow: /api/
 Disallow: /payment-success
 Disallow: /payment-failed
+Disallow: /admin
 
 # Googlebot-Image (allow crawling all images, favicons, logos)
 User-agent: Googlebot-Image
@@ -24,6 +26,7 @@ Allow: /
 Disallow: /api/
 Disallow: /payment-success
 Disallow: /payment-failed
+Disallow: /admin
 
 # Sitemap location
 Sitemap: https://aifounderhub.com/sitemap.xml

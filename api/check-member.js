@@ -36,7 +36,10 @@ export default async function checkMember(req, res) {
 
   try {
     // Query the members table directly via Supabase REST API using service-role key
-    const url = `${SUPABASE_URL}/rest/v1/members?email=ilike.${encodeURIComponent(email.toLowerCase())}&select=email,status,expires_at&limit=1`;
+    // Escape ILIKE wildcards — an unescaped `_` (common in addresses) would
+    // match a different customer's row.
+    const pattern = email.toLowerCase().replace(/([%_\\])/g, '\\$1');
+    const url = `${SUPABASE_URL}/rest/v1/members?email=ilike.${encodeURIComponent(pattern)}&select=email,status,expires_at,product_code&limit=50`;
 
     const supaRes = await fetch(url, {
       headers: {
@@ -54,21 +57,32 @@ export default async function checkMember(req, res) {
 
     const rows = await supaRes.json();
     if (!Array.isArray(rows) || rows.length === 0) {
-      return res.status(200).json({ hasAccess: false });
+      return res.status(200).json({ hasAccess: false, hasRoadmapAccess: false, hasClaudeAccess: false });
     }
 
-    const member = rows[0];
     const now = new Date();
-    const expiresAt = member.expires_at ? new Date(member.expires_at) : null;
-    const isActive = member.status === 'active' && (!expiresAt || expiresAt > now);
+    const activeRows = rows.filter((m) => {
+      const exp = m.expires_at ? new Date(m.expires_at) : null;
+      return m.status === 'active' && (!exp || exp > now);
+    });
+
+    const hasAccess = activeRows.length > 0;
+    const hasRoadmapAccess = activeRows.some((r) => !r.product_code || r.product_code === 'aaa-accelerator' || r.product_code === 'all-access');
+    const hasClaudeAccess = activeRows.some((r) => !r.product_code || r.product_code === 'claude-master' || r.product_code === 'all-access');
+    const products = activeRows.map((r) => r.product_code || 'aaa-accelerator');
+
+    const primary = activeRows[0] || rows[0];
 
     return res.status(200).json({
-      hasAccess: isActive,
-      status: member.status,
-      expiresAt: member.expires_at,
+      hasAccess,
+      hasRoadmapAccess,
+      hasClaudeAccess,
+      products,
+      status: primary.status,
+      expiresAt: primary.expires_at,
     });
   } catch (err) {
     console.error('[check-member] Unexpected error:', err);
-    return res.status(500).json({ hasAccess: false, error: 'Internal server error' });
+    return res.status(500).json({ hasAccess: false, hasRoadmapAccess: false, hasClaudeAccess: false, error: 'Internal server error' });
   }
 }

@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import { AuthModal } from "./AuthModal";
 
 const LINKS = [
+  { label: "COURSES", target: "courses" },
   { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
   { label: "FOUNDERS", target: "mentors" },

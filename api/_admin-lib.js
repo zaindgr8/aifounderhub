@@ -23,9 +23,11 @@ export const supabaseConfigured = true; // backward compat
 // passed to initiateZiinaPayment() on the frontend.
 
 export const PACKAGES = {
-  'aaa-accelerator': { code: 'aaa-accelerator', label: 'AAA Accelerator',     purpose: 'membership', priceCents: 15900, recurring: true  },
-  'session-1on1':    { code: 'session-1on1',    label: '1:1 Private Session', purpose: 'booking',    priceCents: 59900, recurring: false },
-  'other':           { code: 'other',           label: 'Other / Manual',      purpose: 'membership', priceCents: 0,     recurring: false },
+  'aaa-accelerator': { code: 'aaa-accelerator', label: '50K RoadMap (AAA Accelerator)', purpose: 'membership', priceCents: 15900, recurring: true  },
+  'claude-master':   { code: 'claude-master',   label: 'Master Claude in 7 Days',        purpose: 'course',     priceCents: 4500,  recurring: false },
+  'all-access':      { code: 'all-access',      label: 'All Access (RoadMap + Claude)',  purpose: 'membership', priceCents: 19900, recurring: false },
+  'session-1on1':    { code: 'session-1on1',    label: '1:1 Private Session',            purpose: 'booking',    priceCents: 59900, recurring: false },
+  'other':           { code: 'other',           label: 'Other / Manual',                 purpose: 'membership', priceCents: 0,     recurring: false },
 };
 
 /** Best-effort product identification for a payments row, pre- or post-migration 0003. */
@@ -156,12 +158,13 @@ async function dbAdminEmails() {
 }
 
 /**
- * Verifies the caller's Supabase access token and checks it against the admin
- * allowlist (the admin_users table, plus the ADMIN_EMAILS env var).
+ * Verifies the caller's Supabase access token and returns who they are.
+ * Any signed-in user passes — this is the gate for user-facing endpoints such
+ * as the affiliate dashboard. Use requireAdmin() where admin rights are needed.
  *
- * Returns { ok: true, email, role } or { ok: false, status, error }.
+ * Returns { ok: true, email, userId, user } or { ok: false, status, error }.
  */
-export async function requireAdmin(req) {
+export async function requireUser(req) {
   if (!isSupabaseConfigured()) {
     return { ok: false, status: 500, error: 'Server is missing SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY' };
   }
@@ -186,11 +189,25 @@ export async function requireAdmin(req) {
   const email = String(user?.email || '').toLowerCase();
   if (!email) return { ok: false, status: 401, error: 'Session has no email' };
 
+  return { ok: true, email, userId: user.id, user };
+}
+
+/**
+ * Verifies the caller's Supabase access token and checks it against the admin
+ * allowlist (the admin_users table, plus the ADMIN_EMAILS env var).
+ *
+ * Returns { ok: true, email, role } or { ok: false, status, error }.
+ */
+export async function requireAdmin(req) {
+  const session = await requireUser(req);
+  if (!session.ok) return session;
+  const { email, userId } = session;
+
   const envList = envAdminEmails();
   const dbList = await dbAdminEmails();
 
-  if (dbList.has(email)) return { ok: true, email, role: dbList.get(email), userId: user.id };
-  if (envList.includes(email)) return { ok: true, email, role: 'admin', userId: user.id };
+  if (dbList.has(email)) return { ok: true, email, role: dbList.get(email), userId };
+  if (envList.includes(email)) return { ok: true, email, role: 'admin', userId };
 
   console.warn('[admin] denied access to', email);
   return { ok: false, status: 403, error: 'This account is not an admin' };

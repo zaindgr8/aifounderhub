@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
 import { ToolsMarquee, TerminalShowcase } from "./components/TerminalShowcase";
+import { Courses } from "./components/Courses";
 import { Workshops } from "./components/Workshops";
 import { Membership } from "./components/Membership";
 import { Mentors } from "./components/Mentors";
@@ -12,12 +13,14 @@ import { FinalCta } from "./components/FinalCta";
 import { Footer } from "./components/Footer";
 import { ModalKind } from "./components/PolicyModal";
 import { BackToTop, CircuitDivider } from "./components/shared";
+import { captureReferral } from "./lib/referral";
 
 // Lazy-load dedicated secondary routes and heavy modals so initial home page payload is tiny & instant
 const ProgressPage = lazy(() => import("./pages/ProgressPage").then(m => ({ default: m.ProgressPage })));
 const FreeMasterclassPage = lazy(() => import("./pages/FreeMasterclassPage").then(m => ({ default: m.FreeMasterclassPage })));
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess").then(m => ({ default: m.PaymentSuccess })));
 const ClaudeMasterPage = lazy(() => import("./pages/ClaudeMasterPage").then(m => ({ default: m.ClaudeMasterPage })));
+const AdminPage = lazy(() => import("./pages/AdminPage").then(m => ({ default: m.AdminPage })));
 const PaymentModal = lazy(() => import("./components/PaymentModal").then(m => ({ default: m.PaymentModal })));
 const PolicyModal = lazy(() => import("./components/PolicyModal").then(m => ({ default: m.PolicyModal })));
 const ClaudeMasterclassPopupModal = lazy(() => import("./components/ClaudeMasterclassPopupModal").then(m => ({ default: m.ClaudeMasterclassPopupModal })));
@@ -42,11 +45,17 @@ function useRoute() {
   if (path === "/progress") return "progress";
   if (path === "/freemasterclass") return "freemasterclass";
   if (path === "/claude-master-in-7-days") return "claude-master";
+  if (path === "/admin") return "admin";
   return "home";
 }
 
 export default function App() {
   const route = useRoute();
+
+  // Stash any ?ref=CODE the visitor arrived with, before anything else runs.
+  useEffect(() => {
+    captureReferral();
+  }, []);
   const [activeModal, setActiveModal] = useState<ModalKind>(null);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const [claudePopupOpen, setClaudePopupOpen] = useState(false);
@@ -97,6 +106,14 @@ export default function App() {
     );
   }
 
+  if (route === "admin") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AdminPage />
+      </Suspense>
+    );
+  }
+
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-void font-sans text-zinc-100">
       {/* fixed film-grain texture over everything */}
@@ -109,6 +126,7 @@ export default function App() {
         <ToolsMarquee />
         <TerminalShowcase />
         {/* <StatsBand /> */}
+        <Courses />
         <CircuitDivider />
         <Workshops />
         <Membership onPay={() => setPaymentOpen(true)} />

@@ -26,6 +26,16 @@ import {
   FolderOpen,
   ChevronDown,
   ExternalLink,
+  BookOpen,
+  Map,
+  Settings,
+  Play,
+  ShoppingCart,
+  User,
+  RefreshCw,
+  Star,
+  BadgeCheck,
+  Share2,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
@@ -33,6 +43,9 @@ import { LockedStageModal } from "../components/LockedStageModal";
 import { PaymentModal } from "../components/PaymentModal";
 import { useAuth } from "../hooks/useAuth";
 import { signOut } from "../lib/auth";
+import { initiateZiinaPayment } from "../lib/api";
+import { AffiliatePanel } from "../components/affiliate/AffiliatePanel";
+import type { ZiinaPaymentResult } from "../lib/api";
 import { supabase } from "../lib/supabase";
 
 interface QuestTask {
@@ -288,8 +301,9 @@ const RANKS = [
 
 export function ProgressPage() {
   // ─── Supabase Auth ──────────────────────────────────────────────────────────
-  const { user, loading: authLoading, hasAccess, accessLoading } = useAuth();
-  const isUnlocked = hasAccess;
+  const { user, loading: authLoading, hasAccess, hasRoadmapAccess, hasClaudeAccess, accessLoading } = useAuth();
+  const isUnlocked = hasRoadmapAccess;
+  const isClaudeUnlocked = hasClaudeAccess;
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [lockedModalOpen, setLockedModalOpen] = useState(false);
@@ -297,6 +311,10 @@ export function ProgressPage() {
   const [activeLevelTab, setActiveLevelTab] = useState<number>(1);
   const [showCelebration, setShowCelebration] = useState(false);
   const [progressSyncing, setProgressSyncing] = useState(false);
+  // Dashboard top-level tab
+  const [dashTab, setDashTab] = useState<'courses' | 'roadmap' | 'affiliate' | 'settings'>('courses');
+  const [claudePayLoading, setClaudePayLoading] = useState(false);
+  const [claudePayError, setClaudePayError] = useState<string | null>(null);
 
   // ─── Progress State ─────────────────────────────────────────────────────────
   // Starts from localStorage for instant render; syncs with Supabase when authed
@@ -458,27 +476,29 @@ export function ProgressPage() {
       />
 
       {/* Top Header Bar */}
-      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07070c]/85 backdrop-blur-xl px-5 py-4 sm:px-8">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <div className="flex items-center gap-4">
-            <a href="/" className="transition-opacity hover:opacity-85">
+      <header className="sticky top-0 z-50 border-b border-white/10 bg-[#07070c]/90 backdrop-blur-xl px-4 py-3 sm:px-8">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3">
+          {/* Left Brand & Badge */}
+          <div className="flex items-center gap-3 shrink-0">
+            <a href="/" className="transition-opacity hover:opacity-85 flex items-center">
               <Wordmark />
             </a>
-            <span className="hidden sm:inline-block h-4 w-px bg-white/15" />
-            <div className="hidden sm:flex items-center gap-2 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
-              <Sparkles className="h-3 w-3 animate-spin-slow" />
+            <span className="hidden md:inline-block h-4 w-px bg-white/15" />
+            <div className="hidden md:flex h-9 items-center gap-2 rounded-xl border border-volt/30 bg-volt/10 px-3 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
+              <Sparkles className="h-3.5 w-3.5" />
               <span>AAA Accelerator Game Map</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Right Action Buttons & Badges (Uniform h-9 single row) */}
+          <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
             {user ? (
               <>
-                {/* Resources Dropdown Button */}
-                <div className="relative group/res py-1">
+                {/* Resources Dropdown */}
+                <div className="relative group/res">
                   <button
                     type="button"
-                    className="flex items-center gap-1.5 rounded-xl border border-volt/35 bg-volt/10 px-3.5 py-2 font-display text-xs font-bold uppercase tracking-wider text-volt transition hover:bg-volt hover:text-void hover:shadow-[0_0_20px_rgba(204,242,68,0.3)] cursor-pointer"
+                    className="flex h-9 items-center gap-1.5 rounded-xl border border-volt/35 bg-volt/10 px-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-volt transition hover:bg-volt hover:text-void hover:shadow-[0_0_20px_rgba(204,242,68,0.3)] cursor-pointer"
                   >
                     <FolderOpen className="h-3.5 w-3.5" />
                     <span>Resources</span>
@@ -520,22 +540,26 @@ export function ProgressPage() {
                 </div>
 
                 {/* User email badge */}
-                <div className="hidden sm:flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-950/30 px-3 py-2">
+                <div className="hidden lg:flex h-9 items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-950/30 px-3">
                   <div className="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" />
-                  <span className="font-mono text-[10px] font-bold text-emerald-400 max-w-[140px] truncate">
+                  <span className="font-mono text-[11px] font-bold text-emerald-400 max-w-[140px] truncate">
                     {user.email}
                   </span>
                   {accessLoading && <Loader2 className="h-3 w-3 animate-spin text-zinc-500" />}
                 </div>
+
+                {/* Member access badge */}
                 {isUnlocked && (
-                  <div className="hidden sm:flex items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-950/40 px-3 py-2 font-mono text-xs font-bold text-emerald-400">
+                  <div className="hidden sm:flex h-9 items-center gap-1.5 rounded-xl border border-emerald-500/30 bg-emerald-950/40 px-3 font-mono text-xs font-bold text-emerald-400">
                     <Unlock className="h-3.5 w-3.5" />
                     <span>Member Access Active</span>
                   </div>
                 )}
+
+                {/* Sign Out button */}
                 <button
                   onClick={handleLogout}
-                  className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 font-mono text-xs font-semibold text-zinc-400 transition hover:bg-white/10 hover:text-white cursor-pointer"
+                  className="flex h-9 items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 font-mono text-xs font-semibold text-zinc-400 transition hover:bg-white/10 hover:text-white cursor-pointer"
                 >
                   <LogOut className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Sign Out</span>
@@ -544,23 +568,26 @@ export function ProgressPage() {
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-1.5 rounded-xl border border-volt/30 bg-volt px-3.5 py-2 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:shadow-[0_0_35px_rgba(204,242,68,0.5)] transition cursor-pointer"
+                className="flex h-9 items-center gap-1.5 rounded-xl border border-volt/30 bg-volt px-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:shadow-[0_0_35px_rgba(204,242,68,0.5)] transition cursor-pointer"
               >
                 <ShieldAlert className="h-3.5 w-3.5" />
                 <span>Member Login</span>
               </button>
             )}
 
+            {/* Return Home button */}
             <a
               href="/"
-              className="rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 font-mono text-xs font-semibold text-zinc-300 transition hover:bg-white/10 hover:text-white"
+              className="flex h-9 items-center gap-1 rounded-xl border border-white/10 bg-white/5 px-3.5 font-mono text-xs font-semibold text-zinc-300 transition hover:bg-white/10 hover:text-white"
             >
               ← Return Home
             </a>
+
+            {/* Reset Progress button */}
             <button
               onClick={resetProgress}
               title="Reset progress checklist"
-              className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-500 hover:text-red-400 hover:border-red-500/30 transition-colors cursor-pointer"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-500 hover:text-red-400 hover:border-red-500/30 transition-colors cursor-pointer"
             >
               <RotateCcw className="h-4 w-4" />
             </button>
@@ -624,9 +651,277 @@ export function ProgressPage() {
         </main>
       ) : (
         /* Main HUD Dashboard for Authenticated Users */
-        <main className="relative z-10 mx-auto max-w-7xl px-5 pt-8 sm:px-8 sm:pt-12">
-          {/* Title & Introduction */}
-          <div className="mb-10 text-center max-w-3xl mx-auto">
+        <main className="relative z-10 mx-auto max-w-7xl px-5 pt-6 sm:px-8 sm:pt-8">
+
+          {/* ── Dashboard Header ─────────────────────────────────────── */}
+          <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-volt/15 text-volt border border-volt/30">
+                  <Zap className="h-4 w-4" />
+                </div>
+                <span className="font-mono text-[11px] font-bold uppercase tracking-widest text-volt">Member Dashboard</span>
+              </div>
+              <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white">
+                Welcome Back<span className="text-volt">,</span> Builder
+              </h1>
+              <p className="text-xs text-zinc-500 mt-0.5">{user?.email}</p>
+            </div>
+            {/* Quick stats */}
+            <div className="flex items-center gap-3">
+              <div className="rounded-2xl border border-white/8 bg-[#0e0e18]/80 px-4 py-2.5 text-center">
+                <div className="font-display text-lg font-black text-volt">{currentXP.toLocaleString()}</div>
+                <div className="font-mono text-[9px] uppercase tracking-widest text-zinc-500">XP Earned</div>
+              </div>
+              <div className="rounded-2xl border border-white/8 bg-[#0e0e18]/80 px-4 py-2.5 text-center">
+                <div className="font-display text-lg font-black text-white">{completedCount}<span className="text-zinc-500 text-xs">/{totalTasksCount}</span></div>
+                <div className="font-mono text-[9px] uppercase tracking-widest text-zinc-500">Quests Done</div>
+              </div>
+              <div className="rounded-2xl border border-emerald-500/20 bg-emerald-950/30 px-4 py-2.5 text-center">
+                <div className="font-display text-lg font-black text-emerald-400">{progressPercent}%</div>
+                <div className="font-mono text-[9px] uppercase tracking-widest text-zinc-500">Complete</div>
+              </div>
+            </div>
+          </div>
+
+          {/* ── 3-Tab Nav ───────────────────────────────────────────── */}
+          <div className="mb-8 flex items-center gap-1 rounded-2xl border border-white/8 bg-[#0b0b14]/80 p-1.5 w-fit">
+            {([
+              { id: 'courses',   label: 'Courses',   icon: BookOpen },
+              { id: 'roadmap',   label: 'RoadMap',   icon: Map },
+              { id: 'affiliate', label: 'Affiliate', icon: Share2 },
+              { id: 'settings',  label: 'Settings',  icon: Settings },
+            ] as { id: 'courses'|'roadmap'|'affiliate'|'settings'; label: string; icon: React.ElementType }[]).map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setDashTab(tab.id)}
+                className={`flex items-center gap-2 rounded-xl px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                  dashTab === tab.id
+                    ? 'bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]'
+                    : 'text-zinc-500 hover:text-zinc-200'
+                }`}
+              >
+                <tab.icon className="h-3.5 w-3.5" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* ═══════════════════════════════════════════════════════════
+              TAB: COURSES
+          ══════════════════════════════════════════════════════════ */}
+          {dashTab === 'courses' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="font-display text-xl font-black uppercase tracking-tight text-white">Your Courses</h2>
+                <p className="text-xs text-zinc-500 mt-1">Continue learning or unlock new courses.</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                {/* ── Card 1: Road to $50K ── */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.05 }}
+                  className="group relative rounded-3xl border border-volt/30 bg-[#0d0d16]/90 overflow-hidden shadow-[0_0_40px_rgba(204,242,68,0.07)] hover:shadow-[0_0_60px_rgba(204,242,68,0.15)] transition-all duration-300"
+                >
+                  {/* Glow */}
+                  <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-volt/10 blur-[60px]" />
+
+                  {/* Top accent */}
+                  <div className="h-1 w-full bg-gradient-to-r from-volt via-[#d4fa4c] to-emerald-400" />
+
+                  <div className="p-7">
+                    {/* Badge */}
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
+                        <BadgeCheck className="h-3 w-3" /> Enrolled
+                      </span>
+                      <span className="font-mono text-[10px] text-zinc-600">6 Stages · 21 Quests</span>
+                    </div>
+
+                    {/* Icon + title */}
+                    <div className="flex items-start gap-4 mb-5">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-volt/30 bg-volt/10 text-volt">
+                        <DollarSign className="h-7 w-7" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-xl font-black uppercase tracking-tight text-white leading-tight">
+                          Road to <span className="text-volt">$50K/mo</span>
+                        </h3>
+                        <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                          The AAA Agency gamified roadmap. Build, sell & scale your AI automation agency from $0.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div className="mb-5">
+                      <div className="flex items-center justify-between text-[10px] font-mono mb-1.5">
+                        <span className="text-zinc-500 uppercase tracking-wider">Overall Progress</span>
+                        <span className="text-volt font-bold">{progressPercent}% Done</span>
+                      </div>
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-void border border-white/8">
+                        <div
+                          className="h-full rounded-full bg-gradient-to-r from-volt to-emerald-400 transition-all duration-700"
+                          style={{ width: `${progressPercent}%` }}
+                        />
+                      </div>
+                      <div className="flex items-center justify-between text-[10px] font-mono mt-1.5">
+                        <span className="text-zinc-600">{completedCount} / {totalTasksCount} tasks complete</span>
+                        <span className="text-zinc-600">{currentXP.toLocaleString()} XP</span>
+                      </div>
+                    </div>
+
+                    {/* Stage summary chips */}
+                    <div className="flex gap-1.5 flex-wrap mb-6">
+                      {ROADMAP_LEVELS.map(lvl => {
+                        const done = lvl.tasks.filter(t => completedTasks[t.id]).length;
+                        const pct = Math.round((done / lvl.tasks.length) * 100);
+                        return (
+                          <div key={lvl.id} className={`rounded-lg border px-2.5 py-1 text-[10px] font-mono font-bold ${
+                            pct === 100 ? 'border-emerald-500/40 bg-emerald-950/40 text-emerald-400' :
+                            pct > 0 ? 'border-volt/30 bg-volt/10 text-volt' :
+                            'border-white/8 bg-white/[0.03] text-zinc-600'
+                          }`}>
+                            S{lvl.id} · {pct}%
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    <button
+                      onClick={() => setDashTab('roadmap')}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl bg-volt px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c] hover:shadow-[0_0_35px_rgba(204,242,68,0.45)] transition cursor-pointer active:scale-95"
+                    >
+                      <Play className="h-3.5 w-3.5 fill-current" />
+                      Continue Roadmap
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </motion.div>
+
+                {/* ── Card 2: Master Claude ── */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="group relative rounded-3xl border border-[#a855f7]/30 bg-[#0d0d16]/90 overflow-hidden shadow-[0_0_40px_rgba(168,85,247,0.07)] hover:shadow-[0_0_60px_rgba(168,85,247,0.18)] transition-all duration-300"
+                >
+                  {/* Purple glow */}
+                  <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-purple-500/10 blur-[60px]" />
+
+                  {/* Top accent */}
+                  <div className="h-1 w-full bg-gradient-to-r from-purple-500 via-violet-400 to-pink-400" />
+
+                  <div className="p-7">
+                    {/* Price badge */}
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-purple-300">
+                        <Star className="h-3 w-3" /> New Course
+                      </span>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-[11px] text-zinc-600 line-through">$175</span>
+                        <span className="rounded-lg bg-volt px-2.5 py-0.5 font-mono text-[11px] font-extrabold text-void">$45</span>
+                      </div>
+                    </div>
+
+                    {/* Icon + title */}
+                    <div className="flex items-start gap-4 mb-5">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-purple-400/30 bg-purple-500/10 text-purple-300">
+                        <Bot className="h-7 w-7" />
+                      </div>
+                      <div>
+                        <h3 className="font-display text-xl font-black uppercase tracking-tight text-white leading-tight">
+                          Master <span className="text-purple-300">Claude</span>
+                          <br />in 7 Days
+                        </h3>
+                        <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                          Go from zero to expert with Anthropic's Claude AI. Prompting, projects, and building real automations.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* What's included */}
+                    <div className="mb-6 space-y-2">
+                      {[
+                        '7 daily structured modules',
+                        'Prompt engineering mastery',
+                        'Real automation projects',
+                        'Lifetime access + updates',
+                      ].map(item => (
+                        <div key={item} className="flex items-center gap-2 text-xs text-zinc-300">
+                          <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-purple-300 font-bold text-[10px]">✓</div>
+                          {item}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Launch button */}
+                    {isClaudeUnlocked ? (
+                      <a
+                        href="/claude-master-in-7-days"
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/20 px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-purple-200 hover:bg-purple-500/30 transition cursor-pointer active:scale-95"
+                      >
+                        <Play className="h-3.5 w-3.5 fill-current" />
+                        Start Course
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </a>
+                    ) : (
+                      <div className="space-y-2">
+                        <button
+                          onClick={async () => {
+                            if (!user) { setAuthModalOpen(true); return; }
+                            setClaudePayLoading(true);
+                            setClaudePayError(null);
+                            try {
+                              const res: ZiinaPaymentResult = await initiateZiinaPayment({
+                                fullName: (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email || 'Student',
+                                email: user.email || '',
+                                amount: 4500,
+                                message: 'Master Claude in 7 Days — AI Founder Hub',
+                                cancelPath: '/progress',
+                                productCode: 'claude-master',
+                              });
+                              if (res.ok && res.redirect_url) {
+                                window.location.href = res.redirect_url;
+                              } else {
+                                setClaudePayError(res.error ?? 'Payment failed. Please try again.');
+                                setClaudePayLoading(false);
+                              }
+                            } catch {
+                              setClaudePayError('Network error. Please try again.');
+                              setClaudePayLoading(false);
+                            }
+                          }}
+                          disabled={claudePayLoading}
+                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-white shadow-[0_0_25px_rgba(168,85,247,0.35)] hover:shadow-[0_0_40px_rgba(168,85,247,0.55)] transition cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          {claudePayLoading
+                            ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Processing...</>
+                            : <><ShoppingCart className="h-3.5 w-3.5" /> Enroll Now — $45 <span className="opacity-60 line-through ml-1">$175</span></>}
+                        </button>
+                        {claudePayError && (
+                          <p className="text-center text-[11px] text-red-400">{claudePayError}</p>
+                        )}
+                        <p className="text-center text-[10px] text-zinc-600">Secure checkout via Ziina · One-time payment</p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+
+              </div>
+            </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════════
+              TAB: ROADMAP (existing content wrapped)
+          ══════════════════════════════════════════════════════════ */}
+          {dashTab === 'roadmap' && (<div>
+
+          {/* Title */}
+          <div className="mb-8 text-center max-w-3xl mx-auto">
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -635,10 +930,9 @@ export function ProgressPage() {
               <Trophy className="h-3.5 w-3.5" />
               <span>Paid Member Progress Tracker</span>
             </motion.div>
-
-            <h1 className="font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-white leading-tight">
+            <h2 className="font-display text-3xl sm:text-5xl font-black uppercase tracking-tight text-white leading-tight">
               The AAA Roadmap: <span className="text-volt">Zero to $50,000/mo</span>
-            </h1>
+            </h2>
             <p className="mt-3 text-sm sm:text-base text-zinc-400 leading-relaxed max-w-2xl mx-auto">
               Your gamified execution roadmap. Stage 1 is open for free preview. Unlock Stages 2–6 with your paid member access.
             </p>
@@ -968,8 +1262,114 @@ export function ProgressPage() {
             );
           })}
         </AnimatePresence>
-      </main>
-      )}
+          </div>)}
+
+          {/* ═══════════════════════════════════════════════════════════
+              TAB: SETTINGS
+          ══════════════════════════════════════════════════════════ */}
+          {/* ═══════════════════════════════════════════════════════════
+              TAB: AFFILIATE
+          ══════════════════════════════════════════════════════════ */}
+          {dashTab === 'affiliate' && (
+            <div>
+              <div className="mb-6">
+                <h2 className="font-display text-xl font-black uppercase tracking-tight text-white">Affiliate</h2>
+                <p className="text-xs text-zinc-500 mt-1">Share what you are learning and earn on every sale you refer.</p>
+              </div>
+              <AffiliatePanel
+                email={user?.email ?? ''}
+                fullName={(user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || null}
+              />
+            </div>
+          )}
+
+          {dashTab === 'settings' && (
+            <div className="max-w-xl">
+              <div className="mb-6">
+                <h2 className="font-display text-xl font-black uppercase tracking-tight text-white">Account Settings</h2>
+                <p className="text-xs text-zinc-500 mt-1">Manage your account and progress.</p>
+              </div>
+
+              <div className="space-y-4">
+                {/* Profile Card */}
+                <div className="rounded-2xl border border-white/10 bg-[#0e0e18]/80 p-5">
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/5 text-zinc-300">
+                      <User className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="font-display text-sm font-bold text-white">
+                        {(user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || 'Builder'}
+                      </p>
+                      <p className="font-mono text-xs text-zinc-500">{user?.email}</p>
+                    </div>
+                    <div className="ml-auto">
+                      {isUnlocked ? (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-950/40 px-3 py-1 font-mono text-[10px] font-bold text-emerald-400">
+                          <Unlock className="h-3 w-3" /> Member Active
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10px] font-bold text-zinc-500">
+                          <Lock className="h-3 w-3" /> Free Tier
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Stats Card */}
+                <div className="rounded-2xl border border-white/10 bg-[#0e0e18]/80 p-5">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-4">Your Progress Stats</p>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="text-center">
+                      <div className="font-display text-2xl font-black text-volt">{currentXP.toLocaleString()}</div>
+                      <div className="font-mono text-[9px] uppercase tracking-widest text-zinc-600 mt-0.5">XP Earned</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-display text-2xl font-black text-white">{completedCount}/{totalTasksCount}</div>
+                      <div className="font-mono text-[9px] uppercase tracking-widest text-zinc-600 mt-0.5">Quests Done</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="font-display text-2xl font-black text-emerald-400">{progressPercent}%</div>
+                      <div className="font-mono text-[9px] uppercase tracking-widest text-zinc-600 mt-0.5">Complete</div>
+                    </div>
+                  </div>
+                  <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-void border border-white/8">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-volt to-emerald-400 transition-all duration-700"
+                      style={{ width: `${progressPercent}%` }}
+                    />
+                  </div>
+                  <p className="mt-2 font-mono text-[10px] text-zinc-600 text-center">Current Rank: <span className="text-zinc-400 font-bold">{currentRank.title}</span></p>
+                </div>
+
+                {/* Actions */}
+                <div className="rounded-2xl border border-white/10 bg-[#0e0e18]/80 p-5 space-y-3">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Actions</p>
+
+                  <button
+                    onClick={resetProgress}
+                    className="flex w-full items-center gap-3 rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3 font-mono text-xs text-zinc-400 hover:bg-white/[0.07] hover:text-white transition cursor-pointer"
+                  >
+                    <RefreshCw className="h-4 w-4 text-amber-400" />
+                    Reset Roadmap Progress
+                    <span className="ml-auto text-zinc-600 text-[10px]">Cannot undo</span>
+                  </button>
+
+                  <button
+                    onClick={handleLogout}
+                    className="flex w-full items-center gap-3 rounded-xl border border-red-500/20 bg-red-950/20 px-4 py-3 font-mono text-xs text-red-400 hover:bg-red-950/40 transition cursor-pointer"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+        </main>
+        )}
 
       {/* Member Auth Modal (Supabase Google OAuth + Email) */}
       <AuthModal

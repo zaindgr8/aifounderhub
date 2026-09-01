@@ -91,6 +91,8 @@ export interface ZiinaPaymentInput {
   cancelPath?: string;
   /** For session bookings — included in session store for email context. */
   advisorName?: string;
+  /** Product code for catalogue tracking (e.g. 'claude-master', 'aaa-accelerator'). */
+  productCode?: string;
 }
 
 export interface ZiinaPaymentResult {

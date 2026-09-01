@@ -8,12 +8,16 @@
 import { useState, useEffect, useRef } from 'react';
 import type { User } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
-import { checkMemberAccess } from '../lib/auth';
+import { checkMemberDetails, type MemberAccessDetails } from '../lib/auth';
+import { bindReferral } from '../lib/referral';
 
 export interface AuthState {
   user: User | null;
   loading: boolean;
   hasAccess: boolean;
+  hasRoadmapAccess: boolean;
+  hasClaudeAccess: boolean;
+  products: string[];
   accessLoading: boolean;
   refreshAccess: () => void;
 }
@@ -22,12 +26,33 @@ export function useAuth(): AuthState {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
+  const [hasRoadmapAccess, setHasRoadmapAccess] = useState(false);
+  const [hasClaudeAccess, setHasClaudeAccess] = useState(false);
+  const [products, setProducts] = useState<string[]>([]);
   const [accessLoading, setAccessLoading] = useState(false);
   const accessCheckRef = useRef<string | null>(null);
+
+  /**
+   * Attaches this person to the affiliate whose link brought them here.
+   * Runs once per browser per account; the server enforces first-touch.
+   */
+  const linkReferral = async (u: User | null) => {
+    if (!u?.email) return;
+    try {
+      const { data } = await supabase.auth.getSession();
+      const token = data.session?.access_token;
+      if (token) await bindReferral(u.email, token);
+    } catch {
+      // never block sign-in on affiliate tracking
+    }
+  };
 
   const checkAccess = async (u: User | null) => {
     if (!u?.email) {
       setHasAccess(false);
+      setHasRoadmapAccess(false);
+      setHasClaudeAccess(false);
+      setProducts([]);
       return;
     }
     // Avoid duplicate checks for the same user
@@ -35,10 +60,16 @@ export function useAuth(): AuthState {
     accessCheckRef.current = u.email;
     setAccessLoading(true);
     try {
-      const result = await checkMemberAccess(u.email);
-      setHasAccess(result);
+      const result = await checkMemberDetails(u.email);
+      setHasAccess(result.hasAccess);
+      setHasRoadmapAccess(result.hasRoadmapAccess);
+      setHasClaudeAccess(result.hasClaudeAccess);
+      setProducts(result.products || []);
     } catch {
       setHasAccess(false);
+      setHasRoadmapAccess(false);
+      setHasClaudeAccess(false);
+      setProducts([]);
     } finally {
       setAccessLoading(false);
     }
@@ -51,6 +82,7 @@ export function useAuth(): AuthState {
       setUser(u);
       setLoading(false);
       checkAccess(u);
+      void linkReferral(u);
     });
 
     // Listen for auth state changes (login, logout, token refresh)
@@ -60,6 +92,7 @@ export function useAuth(): AuthState {
       setLoading(false);
       accessCheckRef.current = null; // allow re-check on user change
       checkAccess(u);
+      void linkReferral(u);
     });
 
     return () => {
@@ -72,5 +105,5 @@ export function useAuth(): AuthState {
     checkAccess(user);
   };
 
-  return { user, loading, hasAccess, accessLoading, refreshAccess };
+  return { user, loading, hasAccess, hasRoadmapAccess, hasClaudeAccess, products, accessLoading, refreshAccess };
 }
