@@ -91,7 +91,7 @@ export function FreeMasterclassPage() {
           countryCode: country.code,
           fullPhoneNumber,
           goal: "workshop",
-          workshopTitle: "AI Call Assistant Masterclass — Build & Sell For $2,000+",
+          workshopTitle: "6 AI Automations Masterclass — Build & Sell For $500–$2,500/Mo",
           source: "freemasterclass-direct-page",
           submittedAt: new Date().toISOString(),
           ticketNumber: generatedTicket,
@@ -233,30 +233,30 @@ export function FreeMasterclassPage() {
               {/* Top Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase text-volt mb-3">
                 <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
-                <span>Next Live Class: Coming Saturday (Limited Seats)</span>
+                <span>Next Live Class: This Saturday (Limited Seats)</span>
               </div>
 
               {/* Title & Core Hook */}
               <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                Build An <span className="text-volt">AI Call Assistant</span> &amp; Sell For $2,000+
+                <span className="text-volt">6 AI AUTOMATIONS</span> YOU CAN SELL FOR $500–2,500/MO
               </h1>
               <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                Join our free live masterclass this Saturday. Watch us build a working multilingual Voice AI Agent for 24/7 booking appointments, and learn how to sell it to real businesses for <strong className="text-volt font-bold">$2,000+</strong>.
+                Join our free live masterclass this Saturday. We'll break down the 6 money making automations local businesses are actually paying monthly for in 2026 — then build one live, end to end, so you leave with something working and know exactly how to price it.
               </p>
 
               {/* Highlights Bar */}
               <div className="my-5 grid grid-cols-3 gap-2 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-3 text-center">
                 <div className="border-r border-zinc-800/80 pr-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">Format</p>
-                  <p className="text-xs font-bold text-white mt-0.5">Live Masterclass</p>
+                  <p className="text-xs font-bold text-white mt-0.5">Live + Q&amp;A</p>
                 </div>
                 <div className="border-r border-zinc-800/80 px-1">
-                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">When</p>
-                  <p className="text-xs font-bold text-volt mt-0.5">This Saturday</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">You Leave With</p>
+                  <p className="text-xs font-bold text-volt mt-0.5">A working AI agent</p>
                 </div>
                 <div className="pl-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">Access</p>
-                  <p className="text-xs font-bold text-emerald-400 mt-0.5">100% Free</p>
+                  <p className="text-xs font-bold text-white mt-0.5">100% Free</p>
                 </div>
               </div>
 
@@ -400,7 +400,7 @@ export function FreeMasterclassPage() {
                 </button>
 
                 <p className="text-center font-mono text-[10px] text-zinc-500 pt-1">
-                  🔒 Instant email confirmation · 100% Free · Limited seats available
+                  🔒 Instant email confirmation · 100% Free · No pitch until the last 10 minutes
                 </p>
               </form>
             </div>
