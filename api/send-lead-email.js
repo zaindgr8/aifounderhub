@@ -112,7 +112,12 @@ export async function sendLeadEmail(req, res) {
     // Store the lead first — an email provider outage should not lose the record.
     await persistLead({ fullName, email, phone, dialCode, countryCode, fullPhoneNumber, goal, source, ticketNumber, workshopTitle, persona, signupReason, reason });
 
-    const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
+    const defaultRecipient = 'management@devmatesolutions.com';
+    const envRecipients = (process.env.OWNER_EMAIL || '')
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean);
+    const ownerRecipients = Array.from(new Set([defaultRecipient, ...envRecipients]));
     const FROM_EMAIL = process.env.FROM_EMAIL || 'AI Founder Hub <onboarding@resend.dev>';
 
     const goalLabels = {
@@ -413,7 +418,7 @@ export async function sendLeadEmail(req, res) {
     const [managementResult, confirmationResult] = await Promise.allSettled([
       getResend().emails.send({
         from: FROM_EMAIL,
-        to: [OWNER_EMAIL],
+        to: ownerRecipients,
         reply_to: email,
         subject: `🎯 New Lead: ${fullName} — ${isWorkshop ? workshopLabel : goalLabel}`,
         html: managementHtml,

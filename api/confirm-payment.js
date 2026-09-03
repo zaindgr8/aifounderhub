@@ -445,7 +445,12 @@ export async function confirmPayment(req, res) {
       productLabel,
     });
 
-    const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
+    const defaultRecipient = 'management@devmatesolutions.com';
+    const envRecipients = (process.env.OWNER_EMAIL || '')
+      .split(',')
+      .map((e) => e.trim())
+      .filter(Boolean);
+    const ownerRecipients = Array.from(new Set([defaultRecipient, ...envRecipients]));
     const FROM_EMAIL  = process.env.FROM_EMAIL   || 'AI Founder Hub <hello@aifounderhub.com>';
 
     const emailPromises = [];
@@ -468,7 +473,7 @@ export async function confirmPayment(req, res) {
     emailPromises.push(
       getResend().emails.send({
         from:    FROM_EMAIL,
-        to:      [OWNER_EMAIL],
+        to:      ownerRecipients,
         subject: isSession
           ? `🗓️ Session Booked: ${fullName} — 1:1 with ${advisorName} · $${(amount / 100).toFixed(2)} ${currency_code}`
           : `💰 New Purchase: ${fullName} — ${productLabel} · $${(amount / 100).toFixed(2)} ${currency_code}`,
