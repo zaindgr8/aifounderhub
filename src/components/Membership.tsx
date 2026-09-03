@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Check, ShieldCheck, TrendingUp, Globe2, Users } from "lucide-react";
-import { Magnetic, Reveal, SectionTag, scrollToRegister } from "./shared";
+import { Magnetic, Reveal, SectionTag } from "./shared";
 
 const VALUE_STACK = [
   // { item: "AI Lead Management System — Built, Deployed & Ready to Sell." },
@@ -37,7 +37,7 @@ const COURSE_CARDS = [
   { title: "Private Builders Community", rotate: 8, x: 32 },
 ];
 
-export function Membership({ onPay }: { onPay?: () => void }) {
+export function Membership() {
   return (
     <section
       id="membership"
@@ -100,21 +100,24 @@ export function Membership({ onPay }: { onPay?: () => void }) {
 
           {/* CTA */}
           <Reveal delay={0.36}>
-            <div className="mt-7 flex flex-col gap-4 sm:flex-row sm:items-center">
+            <div className="mt-8 flex flex-col items-start gap-3.5">
               <Magnetic strength={0.2}>
-                <button
-                  onClick={onPay ?? scrollToRegister}
-                  className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] cursor-pointer"
+                <a
+                  href="/aaa-accelerator"
+                  className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] cursor-pointer whitespace-nowrap"
                   id="membership-pay-btn"
                 >
                   <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                  <span className="relative">GET ACCESS $159/mo</span>
+                  <span className="relative whitespace-nowrap">SEE THE PROGRAM — $1,500</span>
                   <ArrowRight className="relative h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
+                </a>
               </Magnetic>
-              <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                <ShieldCheck className="h-4 w-4 text-volt" />
-                Cancel anytime · 7-day money-back
+
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                <div className="flex items-center gap-1.5 whitespace-nowrap">
+                  <ShieldCheck className="h-4 w-4 text-volt flex-shrink-0" />
+                  <span>8 seats · founding cohort · $159/mo from month 4</span>
+                </div>
               </div>
             </div>
           </Reveal>

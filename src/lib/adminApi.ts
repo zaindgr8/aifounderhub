@@ -141,7 +141,7 @@ export interface LeadRow {
 }
 
 export const GRANTABLE_PRODUCTS = [
-  { code: 'aaa-accelerator', label: '50K RoadMap', recurring: true },
+  { code: 'aaa-accelerator', label: 'AAA Accelerator (Founding Cohort)', recurring: false },
   { code: 'claude-master', label: 'Master Claude in 7 Days', recurring: false },
   { code: 'all-access', label: 'All Access', recurring: false },
   { code: 'session-1on1', label: '1:1 Private Session', recurring: false },

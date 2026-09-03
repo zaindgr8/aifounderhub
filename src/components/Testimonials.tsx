@@ -106,7 +106,7 @@ export function Testimonials() {
         <div className="mb-12 flex flex-col items-start justify-between gap-6 md:flex-row md:items-end">
           <div>
             <Reveal>
-              <SectionTag index="04" label="From the community" />
+              <SectionTag index="05" label="From the community" />
             </Reveal>
             <Reveal delay={0.08}>
               <h2 className="mt-6 font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">

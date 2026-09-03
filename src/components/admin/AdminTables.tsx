@@ -332,7 +332,7 @@ function PersonDrawer({ person, onClose, onChanged }: { person: Person; onClose:
         <section className="mt-auto space-y-2 border-t border-edge pt-5">
           <h4 className="mb-2 font-mono text-[10px] uppercase tracking-widest text-volt">Approve Access (Free / Without Payment)</h4>
           <div className="grid grid-cols-2 gap-2">
-            <ActionButton busy={busy === '50K RoadMap'} onClick={() => run('50K RoadMap', () => adminApi.grantAccess(person.email, 365, 'aaa-accelerator', person.name ?? undefined))}>
+            <ActionButton busy={busy === 'AAA Accelerator'} onClick={() => run('AAA Accelerator', () => adminApi.grantAccess(person.email, 365, 'aaa-accelerator', person.name ?? undefined))}>
               <Map size={13} /> Approve 50K RoadMap
             </ActionButton>
             <ActionButton busy={busy === 'Master Claude'} onClick={() => run('Master Claude', () => adminApi.grantAccess(person.email, 3650, 'claude-master', person.name ?? undefined))}>
@@ -549,12 +549,12 @@ function RecordPaymentModal({ onClose, onSaved }: { onClose: () => void; onSaved
                   e.target.value === 'session-1on1' ? '599' :
                   e.target.value === 'claude-master' ? '45' :
                   e.target.value === 'all-access' ? '199' :
-                  e.target.value === 'aaa-accelerator' ? '159' : '0'
+                  e.target.value === 'aaa-accelerator' ? '1500' : '0'
                 );
               }}
               className="w-full rounded-xl border border-edge bg-panel px-3 py-2.5 text-sm text-zinc-200 focus:border-volt/40 focus:outline-none"
             >
-              <option value="aaa-accelerator">50K RoadMap (AAA Accelerator) — $159</option>
+              <option value="aaa-accelerator">AAA Accelerator (Founding Cohort) — $1,500</option>
               <option value="claude-master">Master Claude in 7 Days — $45</option>
               <option value="all-access">All Access Package — $199</option>
               <option value="session-1on1">1:1 Private Session — $599</option>

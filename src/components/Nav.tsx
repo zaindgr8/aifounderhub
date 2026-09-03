@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { motion, useScroll, useSpring } from "motion/react";
-import { ArrowUpRight, LogIn, LayoutDashboard, Sparkles } from "lucide-react";
+import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
+import { ArrowUpRight, LogIn, LayoutDashboard, Menu, Sparkles, X } from "lucide-react";
 import { Wordmark, scrollToWorkshops } from "./shared";
 import { useAuth } from "../hooks/useAuth";
 import { AuthModal } from "./AuthModal";
@@ -23,7 +23,31 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
   const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 28, mass: 0.3 });
   const [scrolled, setScrolled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { user, hasAccess } = useAuth();
+
+  /* lock body scroll while the drawer is open */
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  /* escape closes the drawer */
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
+  const goToSection = (target: string) => {
+    setMenuOpen(false);
+    requestAnimationFrame(() =>
+      document.getElementById(target)?.scrollIntoView({ behavior: "smooth" }),
+    );
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -150,13 +174,101 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
 
             <button
               onClick={handleClaimFreeSeat}
-              className="group flex items-center gap-1.5 rounded-full bg-volt px-4 py-1.5 font-display text-[11px] md:text-[11.5px] font-extrabold uppercase tracking-wider text-void transition-all duration-300 hover:shadow-[0_0_24px_rgba(204,242,68,0.45)] whitespace-nowrap active:scale-95 cursor-pointer"
+              className="group flex items-center gap-1.5 rounded-full bg-volt px-3.5 sm:px-4 py-1.5 font-display text-[10.5px] sm:text-[11px] md:text-[11.5px] font-extrabold uppercase tracking-wider text-void transition-all duration-300 hover:shadow-[0_0_24px_rgba(204,242,68,0.45)] whitespace-nowrap active:scale-95 cursor-pointer"
             >
-              <span>Claim Free Seat</span>
+              <span className="hidden sm:inline">Claim Free Seat</span>
+              <span className="sm:hidden">Free Seat</span>
               <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </button>
+
+            {/* burger — the whole nav was unreachable on mobile before this */}
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-menu"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/15 bg-white/5 text-zinc-200 transition-colors hover:border-volt/50 hover:text-volt lg:hidden cursor-pointer"
+            >
+              {menuOpen ? <X className="h-4.5 w-4.5" /> : <Menu className="h-4.5 w-4.5" />}
             </button>
           </div>
         </div>
+        {/* ─────────── mobile drawer ─────────── */}
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.div
+              id="mobile-menu"
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              className="overflow-hidden border-t border-edge bg-void/98 backdrop-blur-xl lg:hidden"
+            >
+              <nav className="mx-auto max-w-7xl px-4 py-4">
+                <div className="flex flex-col gap-1">
+                  {LINKS.map((link) =>
+                    link.href ? (
+                      <a
+                        key={link.label}
+                        href={link.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="flex items-center justify-between rounded-xl border border-edge bg-white/[0.02] px-4 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-zinc-300 transition-colors hover:border-volt/40 hover:text-volt"
+                      >
+                        <span>{link.label}</span>
+                        <span className="rounded-full border border-volt/30 bg-volt/15 px-2 py-0.5 text-[10px] font-extrabold text-volt">
+                          $50K
+                        </span>
+                      </a>
+                    ) : (
+                      <button
+                        key={link.target}
+                        onClick={() => goToSection(link.target!)}
+                        className="flex items-center justify-between rounded-xl border border-edge bg-white/[0.02] px-4 py-3.5 text-left font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-zinc-300 transition-colors hover:border-volt/40 hover:text-volt cursor-pointer"
+                      >
+                        <span>{link.label}</span>
+                        <ArrowUpRight className="h-3.5 w-3.5 text-zinc-600" />
+                      </button>
+                    ),
+                  )}
+
+                  <a
+                    href="/claude-master-in-7-days"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-between rounded-xl border border-lilac/25 bg-lilac/[0.07] px-4 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-lilac transition-colors hover:border-lilac/50"
+                  >
+                    <span>Master Claude in 7 Days</span>
+                    <Sparkles className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+
+                <div className="mt-3 flex flex-col gap-2 border-t border-edge pt-3">
+                  {!user && (
+                    <button
+                      onClick={() => {
+                        setMenuOpen(false);
+                        setAuthOpen(true);
+                      }}
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 py-3.5 font-display text-[12px] font-extrabold uppercase tracking-wider text-zinc-200 transition-colors hover:border-volt/50 hover:text-volt cursor-pointer"
+                    >
+                      <LogIn className="h-4 w-4" />
+                      Login
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      setMenuOpen(false);
+                      handleClaimFreeSeat();
+                    }}
+                    className="flex items-center justify-center gap-2 rounded-xl bg-volt py-3.5 font-display text-[12.5px] font-extrabold uppercase tracking-wider text-void active:scale-[0.98] cursor-pointer"
+                  >
+                    Claim Free Seat
+                    <ArrowUpRight className="h-4 w-4" />
+                  </button>
+                </div>
+              </nav>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </header>
 
       {/* Auth Modal */}

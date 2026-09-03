@@ -3,12 +3,12 @@
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://aifounderhub.com/</loc>
-    <lastmod>2026-08-28</lastmod>
+    <lastmod>2026-09-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
       <image:loc>https://aifounderhub.com/og-cover.jpg</image:loc>
-      <image:title>AI Founder Hub - Learn AI, Build Apps, Get Paid</image:title>
+      <image:title>AI Founder Hub - Build and sell AI automation systems</image:title>
     </image:image>
     <image:image>
       <image:loc>https://aifounderhub.com/logo.png</image:loc>
@@ -16,15 +16,27 @@
     </image:image>
   </url>
   <url>
-    <loc>https://aifounderhub.com/freemasterclass</loc>
-    <lastmod>2026-08-28</lastmod>
+    <loc>https://aifounderhub.com/aaa-accelerator</loc>
+    <lastmod>2026-09-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://aifounderhub.com/claude-master-in-7-days</loc>
-    <lastmod>2026-08-29</lastmod>
+    <lastmod>2026-09-03</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aifounderhub.com/freemasterclass</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://aifounderhub.com/progress</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

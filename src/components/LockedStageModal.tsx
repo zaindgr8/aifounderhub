@@ -128,7 +128,7 @@ export function LockedStageModal({
                   className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-full bg-volt py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.35)] hover:shadow-[0_0_50px_rgba(204,242,68,0.6)] active:scale-95 transition cursor-pointer"
                 >
                   <Zap className="h-4 w-4 fill-current" />
-                  <span>Unlock AAA Accelerator ($159/mo) →</span>
+                  <span>Unlock AAA Accelerator ($1,500) →</span>
                 </button>
 
                 {!user && (

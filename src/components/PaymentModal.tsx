@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, ArrowRight, ShieldCheck, Lock, Zap, AlertCircle, Loader2, User, Mail, Phone, ChevronDown, CheckCircle2 } from "lucide-react";
 import { initiateZiinaPayment } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
+import { AAA_COHORT, PRODUCTS, formatPrice } from "../lib/products";
+import { trackBeginCheckout } from "../lib/analytics";
 
 interface Country {
   name: string;
@@ -136,7 +138,19 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
     setLoading(true);
 
     try {
-      const result = await initiateZiinaPayment({ fullName: fullName.trim(), email: email.trim() });
+      const product = PRODUCTS["aaa-accelerator"];
+      trackBeginCheckout({ product: product.code, value: product.priceCents / 100 });
+
+      const result = await initiateZiinaPayment({
+        fullName: fullName.trim(),
+        email: email.trim(),
+        /* explicit — the server defaults to $159 and silently under-charged
+           every founding-cohort enrolment while the UI displayed $1,500 */
+        amount: product.priceCents,
+        message: product.checkoutMessage,
+        productCode: product.code,
+        cancelPath: product.cancelPath,
+      });
 
       if (!result.ok || !result.redirect_url) {
         setError(result.error ?? "Payment initiation failed. Please try again.");
@@ -214,8 +228,13 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">$549</p>
-                    <p className="font-display text-2xl font-black text-volt">$159/mo</p>
+                    <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">
+                      {AAA_COHORT.nextCohortPrice}
+                    </p>
+                    <p className="font-display text-2xl font-black text-volt">
+                      {formatPrice(PRODUCTS["aaa-accelerator"].priceCents)}
+                    </p>
+                    <p className="font-mono text-[8px] text-zinc-500">one-time · founding cohort</p>
                   </div>
                 </div>
 

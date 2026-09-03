@@ -77,7 +77,7 @@ export function Mentors() {
           {/* Heading */}
           <div className="mb-12">
             <Reveal>
-              <SectionTag index="03" label="Mentorship & advisory" />
+              <SectionTag index="04" label="Mentorship & advisory" />
             </Reveal>
             <Reveal delay={0.08}>
               <h2 className="mt-6 max-w-2xl font-display text-4xl font-extrabold uppercase leading-[0.95] tracking-tight text-white sm:text-5xl">

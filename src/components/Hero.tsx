@@ -10,6 +10,7 @@ import {
 import {
   Mail,
   User,
+  Target,
   ChevronDown,
   Check,
   ArrowRight,
@@ -19,8 +20,9 @@ import {
   Share2,
   Sparkles,
 } from "lucide-react";
-import { EVENT, Magnetic, OrbitRing, Squiggle, scrollToRegister, scrollToMembership } from "./shared";
+import { Magnetic, OrbitRing, scrollToMembership } from "./shared";
 import { captureLead } from "../lib/api";
+import { trackLead } from "../lib/analytics";
 
 /* ————————————————— country data ————————————————— */
 
@@ -109,47 +111,6 @@ function TiltCard({ children }: { children: React.ReactNode }) {
   );
 }
 
-/* rotating community-activity toast (placeholder names, like the testimonial wall) */
-const TICKER = [
-  { flag: "🇦🇪", text: "Sara from Dubai landed her first $2K AI client" },
-  { flag: "🇸🇦", text: "Omar built his AI Lead System live in class" },
-  { flag: "🇮🇳", text: "Priya enrolled in the AAA Accelerator" },
-  { flag: "🇬🇧", text: "James booked a 1:1 with Zain" },
-  { flag: "🇦🇪", text: "Fatima closed her first AI automation retainer" },
-  { flag: "🇺🇸", text: "Maya claimed her free masterclass seat" },
-];
-
-function JoinTicker() {
-  const [idx, setIdx] = useState(0);
-  useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % TICKER.length), 3800);
-    return () => clearInterval(id);
-  }, []);
-  const entry = TICKER[idx];
-  return (
-    <div className="pointer-events-none absolute bottom-6 left-6 z-20 hidden lg:block" aria-hidden="true">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={idx}
-          initial={{ opacity: 0, y: 18, scale: 0.95 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -14, scale: 0.97 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="flex items-center gap-2.5 rounded-full border border-edge bg-panel/90 px-4 py-2.5 shadow-[0_14px_40px_rgba(0,0,0,0.5)] backdrop-blur-md"
-        >
-          <span className="relative flex h-2 w-2 flex-shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-volt opacity-70" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-volt" />
-          </span>
-          <span className="text-base leading-none">{entry.flag}</span>
-          <span className="text-[12px] font-semibold text-zinc-300">{entry.text}</span>
-          <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-zinc-600">live</span>
-        </motion.div>
-      </AnimatePresence>
-    </div>
-  );
-}
-
 /* confetti burst when the ticket is issued */
 const CONFETTI_COLORS = ["#ccf244", "#b5a1ff", "#ffffff", "#fb923c"];
 
@@ -191,7 +152,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
   const [selectedCountry, setSelectedCountry] = useState<Country>(COUNTRIES[0]);
   const [goalId, setGoalId] = useState("explore");
   const [countryDropdownOpen, setCountryDropdownOpen] = useState(false);
-  const [agreedToTerms, setAgreedToTerms] = useState(true);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [errors, setErrors] = useState<{ firstName?: string; emailAddress?: string }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -266,7 +227,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
 
       // 2. Submit lead to Make.com webhook
       try {
-        await fetch("https://hook.eu2.make.com/t321a330pbobto3ejdm7awu0tchrzpjn", {
+        await fetch("/api/lead-webhook", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -285,7 +246,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
           }),
         });
       } catch (webhookErr) {
-        console.error("Make.com Webhook error:", webhookErr);
+        console.error("Lead webhook error:", webhookErr);
       }
 
       // 3. Send lead notification email via Resend
@@ -310,6 +271,16 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
         });
       } catch (resendErr) {
         console.error("Resend email error:", resendErr);
+      }
+
+      trackLead({ source: "website-hero", goal: goalId });
+
+      /* a real URL for the conversion so GA4 destination goals, Meta custom
+         conversions and retargeting audiences all have something to match on */
+      try {
+        window.history.pushState({ thankYou: true }, "", "/thank-you");
+      } catch {
+        /* ignore — pushState can throw in sandboxed frames */
       }
 
       setTicketNumber(generatedTicket);
@@ -354,9 +325,6 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
       {/* cursor spotlight */}
       <motion.div className="pointer-events-none absolute inset-0 z-[1]" style={{ background: spotlight }} />
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-44 bg-gradient-to-t from-void to-transparent" />
-
-      {/* live community ticker */}
-      <JoinTicker />
 
       {/* scroll cue */}
       <motion.button
@@ -668,9 +636,35 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                           type="tel"
                           value={phoneNumber}
                           onChange={(e) => setPhoneNumber(e.target.value.replace(/[^0-9\- ()]/g, ""))}
-                          placeholder="CONTACT NUMBER"
+                          placeholder="CONTACT NUMBER (OPTIONAL)"
                           className="w-full bg-transparent py-3.5 pl-14 pr-4 text-sm font-semibold text-white placeholder-zinc-500 outline-none"
                         />
+                      </div>
+                    </div>
+
+                    {/* goal — one tap, and it's what tags the lead in the CRM */}
+                    <div className="space-y-1.5">
+                      <label
+                        htmlFor="hero-goal"
+                        className="block pl-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500"
+                      >
+                        What are you here to do?
+                      </label>
+                      <div className="relative">
+                        <Target className="pointer-events-none absolute left-4 top-1/2 h-4.5 w-4.5 -translate-y-1/2 text-zinc-500" />
+                        <select
+                          id="hero-goal"
+                          value={goalId}
+                          onChange={(e) => setGoalId(e.target.value)}
+                          className={`${inputBase} cursor-pointer appearance-none border-edge pl-11 pr-10 focus:border-volt/60`}
+                        >
+                          {GOALS.map((g) => (
+                            <option key={g.id} value={g.id} className="bg-panel text-white">
+                              {g.label}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                       </div>
                     </div>
 
@@ -683,14 +677,15 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         className="h-4 w-4 flex-shrink-0 rounded border-edge bg-void accent-[#ccf244]"
                       />
                       <span className="text-[11.5px] font-medium leading-relaxed text-zinc-400">
-                        I Accept{" "}
+                        Email me the masterclass link and occasional updates. I accept the{" "}
                         <button
                           type="button"
                           onClick={() => onOpenModal("terms")}
                           className="font-semibold text-zinc-300 underline transition-colors hover:text-volt cursor-pointer"
                         >
-                          Terms & Conditions
+                          Terms &amp; Conditions
                         </button>
+                        . Unsubscribe anytime.
                       </span>
                     </label>
 
@@ -754,6 +749,32 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         <span className="font-semibold text-volt">Masterclass Access</span>, is confirmed{" "}
                         <span className="font-semibold text-zinc-200">{emailAddress}</span>.
                       </p>
+                    </div>
+
+                    {/* tripwire: highest-intent moment on the page */}
+                    <div className="rounded-xl border border-volt/30 bg-volt/[0.07] p-3.5 text-left">
+                      <span className="font-mono text-[9px] font-black uppercase tracking-[0.2em] text-volt">
+                        Don't want to wait for Saturday?
+                      </span>
+                      <p className="mt-1.5 text-xs leading-relaxed text-zinc-300">
+                        AAA Accelerator members start tonight:{" "}
+                        <span className="font-bold text-white">
+                          full access, live builds, 1:1 support, the sales playbook.
+                        </span>{" "}
+                        Cancel anytime · 7-day money-back.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          document.getElementById("membership")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }}
+                        className="group mt-2.5 flex items-center gap-1.5 font-display text-[11px] font-extrabold uppercase tracking-wide text-volt transition-colors hover:text-white cursor-pointer"
+                      >
+                        GET INSTANT ACCESS · $159/mo
+                        <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
+                      </button>
                     </div>
 
                     {/* the pass */}
@@ -820,29 +841,6 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                       </span>
                     </div>
 
-                    {/* tripwire: highest-intent moment on the page */}
-                    <div className="rounded-xl border border-volt/30 bg-volt/[0.07] p-3.5 text-left">
-                      <span className="font-mono text-[9px] font-black uppercase tracking-[0.2em] text-volt">
-                        While you wait
-                      </span>
-                      <p className="mt-1.5 text-xs leading-relaxed text-zinc-300">
-                        Your masterclass is this week. AAA Accelerator members start tonight:{" "}
-                        <span className="font-bold text-white">full access, live builds, 1:1 support, instantly.</span>
-                      </p>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          document.getElementById("membership")?.scrollIntoView({ behavior: "smooth", block: "start" });
-                        }}
-                        className="group mt-2.5 flex items-center gap-1.5 font-display text-[11px] font-extrabold uppercase tracking-wide text-volt transition-colors hover:text-white cursor-pointer"
-                      >
-                        GET INSTANT ACCESS · $159.99/mo
-                        <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
-                      </button>
-                    </div>
-
                     <div className="flex gap-2.5">
                       <button
                         onClick={() => {
@@ -864,17 +862,6 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                             <Share2 className="h-3.5 w-3.5 text-volt" /> Invite a friend
                           </>
                         )}
-                      </button>
-                      <button
-                        onClick={() => {
-                          setIsSubmitted(false);
-                          setFirstName("");
-                          setEmailAddress("");
-                          setPhoneNumber("");
-                        }}
-                        className="flex-1 rounded-xl border border-volt/25 bg-volt/10 py-3 text-xs font-bold text-volt transition-colors hover:bg-volt/20 cursor-pointer"
-                      >
-                        Register another
                       </button>
                     </div>
                   </motion.div>

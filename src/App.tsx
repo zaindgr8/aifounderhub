@@ -14,6 +14,8 @@ import { Footer } from "./components/Footer";
 import { ModalKind } from "./components/PolicyModal";
 import { BackToTop, CircuitDivider } from "./components/shared";
 import { captureReferral } from "./lib/referral";
+import { initAnalytics, trackPageView } from "./lib/analytics";
+import { applyRouteMeta } from "./lib/meta";
 
 // Lazy-load dedicated secondary routes and heavy modals so initial home page payload is tiny & instant
 const ProgressPage = lazy(() => import("./pages/ProgressPage").then(m => ({ default: m.ProgressPage })));
@@ -21,7 +23,8 @@ const FreeMasterclassPage = lazy(() => import("./pages/FreeMasterclassPage").the
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess").then(m => ({ default: m.PaymentSuccess })));
 const ClaudeMasterPage = lazy(() => import("./pages/ClaudeMasterPage").then(m => ({ default: m.ClaudeMasterPage })));
 const AdminPage = lazy(() => import("./pages/AdminPage").then(m => ({ default: m.AdminPage })));
-const PaymentModal = lazy(() => import("./components/PaymentModal").then(m => ({ default: m.PaymentModal })));
+const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
+const AAAAcceleratorPage = lazy(() => import("./pages/AAAAcceleratorPage").then(m => ({ default: m.AAAAcceleratorPage })));
 const PolicyModal = lazy(() => import("./components/PolicyModal").then(m => ({ default: m.PolicyModal })));
 const ClaudeMasterclassPopupModal = lazy(() => import("./components/ClaudeMasterclassPopupModal").then(m => ({ default: m.ClaudeMasterclassPopupModal })));
 
@@ -42,9 +45,11 @@ function useRoute() {
   const path = window.location.pathname.toLowerCase().replace(/\/$/, "");
   if (path === "/payment-success") return "payment-success";
   if (path === "/payment-failed") return "payment-failed";
+  if (path === "/thank-you") return "thank-you";
   if (path === "/progress") return "progress";
   if (path === "/freemasterclass") return "freemasterclass";
   if (path === "/claude-master-in-7-days") return "claude-master";
+  if (path === "/aaa-accelerator") return "aaa-accelerator";
   if (path === "/admin") return "admin";
   return "home";
 }
@@ -55,9 +60,16 @@ export default function App() {
   // Stash any ?ref=CODE the visitor arrived with, before anything else runs.
   useEffect(() => {
     captureReferral();
+    initAnalytics();
   }, []);
+
+  /* client-side routing means the head has to be rewritten per route,
+     and GA4 needs to be told the page changed */
+  useEffect(() => {
+    applyRouteMeta(route);
+    trackPageView(window.location.pathname);
+  }, [route]);
   const [activeModal, setActiveModal] = useState<ModalKind>(null);
-  const [paymentOpen, setPaymentOpen] = useState(false);
   const [claudePopupOpen, setClaudePopupOpen] = useState(false);
 
   // Trigger Claude masterclass popup after 4 seconds on the site (only on home page)
@@ -78,6 +90,14 @@ export default function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <PaymentSuccess />
+      </Suspense>
+    );
+  }
+
+  if (route === "thank-you") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <ThankYouPage />
       </Suspense>
     );
   }
@@ -106,6 +126,14 @@ export default function App() {
     );
   }
 
+  if (route === "aaa-accelerator") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AAAAcceleratorPage />
+      </Suspense>
+    );
+  }
+
   if (route === "admin") {
     return (
       <Suspense fallback={<PageLoader />}>
@@ -129,7 +157,7 @@ export default function App() {
         <Courses />
         <CircuitDivider />
         <Workshops />
-        <Membership onPay={() => setPaymentOpen(true)} />
+        <Membership />
         {/* <Agenda /> */}
         {/* <Pathways /> */}
         <CircuitDivider flip />
@@ -146,7 +174,6 @@ export default function App() {
       <BackToTop />
       <Suspense fallback={null}>
         {activeModal && <PolicyModal active={activeModal} onClose={() => setActiveModal(null)} />}
-        {paymentOpen && <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} />}
         {claudePopupOpen && (
           <ClaudeMasterclassPopupModal
             open={claudePopupOpen}

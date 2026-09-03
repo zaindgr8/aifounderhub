@@ -3,12 +3,7 @@ import {
   ArrowRight,
   Zap,
   CheckCircle2,
-  PhoneCall,
-  Workflow,
-  Target,
-  BadgeDollarSign,
   Crown,
-  Check,
 } from "lucide-react";
 import { Reveal, SectionTag } from "./shared";
 import { WorkshopRegistrationModal } from "./WorkshopRegistrationModal";
@@ -38,40 +33,7 @@ const MARKET_STATS = [
   },
 ];
 
-const AGENCY_PILLARS = [
-  {
-    step: "01",
-    icon: PhoneCall,
-    title: "AI Voice Agents & Chatbots",
-    desc: "Build human-sounding voice agents & qualification bots on Retell AI & Vapi, connected to 24/7 calendar booking via Cal.com.",
-    tools: ["Retell AI", "Vapi", "Cal.com", "Twilio"],
-    accent: "text-volt border-volt/20 bg-volt/10",
-  },
-  {
-    step: "02",
-    icon: Workflow,
-    title: "No-Code Workflow Automations",
-    desc: "Connect AI tools directly to CRMs using n8n & Make. Trigger instant WhatsApp/SMS alerts and eliminate manual back-office tasks.",
-    tools: ["n8n", "Make.com", "Zapier", "CRMs"],
-    accent: "text-lilac border-lilac/20 bg-lilac/10",
-  },
-  {
-    step: "03",
-    icon: Target,
-    title: "Lead Scraping & Outbound Engine",
-    desc: "Find high-intent business leads in real estate, clinics & gyms, and automate 1:1 personalized cold outreach emails using Claude & Clay.",
-    tools: ["Claude AI", "Clay", "Cold Email"],
-    accent: "text-emerald-400 border-emerald-500/20 bg-emerald-500/10",
-  },
-  {
-    step: "04",
-    icon: BadgeDollarSign,
-    title: "Packaging & $2,000+ Retainer Sales",
-    desc: "Structure your agency offer ($1,500–$3,000 setup + monthly retainers) and use live demo scripts that close clients on the first call.",
-    tools: ["Retainer Model", "Scripts", "Proposals"],
-    accent: "text-amber-400 border-amber-400/20 bg-amber-400/10",
-  },
-];
+
 
 const STACK_BADGES = [
   "Retell AI",
@@ -169,88 +131,31 @@ export function Workshops() {
             </div>
           </Reveal>
 
-          {/* Single Unified 4-Pillar System Container */}
+          {/* Masterclass Registration CTA Bar */}
           <Reveal delay={0.24}>
-            <div className="rounded-3xl border border-edge/80 bg-[#0d0d15] p-6 sm:p-8 shadow-xl">
-              <div className="flex items-center justify-between border-b border-white/5 pb-4 mb-6">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-5 bg-panel/70 rounded-2xl p-5 sm:p-6 border border-edge/80 shadow-xl backdrop-blur-sm">
+              <div className="flex items-center gap-3.5 text-center lg:text-left">
+                <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-volt/10 text-volt">
+                  <Crown className="h-5 w-5" />
+                </div>
                 <div>
-                  <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-volt">
-                    The Complete Masterclass Curriculum
-                  </span>
-                  <h3 className="font-display text-xl font-extrabold uppercase text-white mt-0.5">
-                    What We Build Together Live
-                  </h3>
+                  <p className="text-xs sm:text-[13.5px] text-zinc-300 leading-relaxed">
+                    <strong className="text-white">Free Weekly Class:</strong> Master the tools &amp; live builds on screen.{" "}
+                    <strong className="text-volt">AAA Accelerator:</strong> We guide you to your first $2,000 client.
+                  </p>
                 </div>
-                <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 font-mono text-[10.5px] text-zinc-400">
-                  <span className="h-1.5 w-1.5 rounded-full bg-volt" /> Live Build on Screen
-                </span>
               </div>
 
-              {/* 4 Unified Horizontal Flow Rows */}
-              <div className="space-y-4">
-                {AGENCY_PILLARS.map((pillar) => (
-                  <div
-                    key={pillar.step}
-                    className="group rounded-2xl border border-white/5 bg-panel/50 p-4 sm:p-5 transition-all duration-200 hover:border-white/15 hover:bg-panel flex flex-col md:flex-row md:items-center justify-between gap-4"
-                  >
-                    <div className="flex items-start sm:items-center gap-4">
-                      <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl font-mono text-xs font-black border border-white/10 bg-void text-zinc-300 group-hover:text-volt group-hover:border-volt/30 transition-colors">
-                        {pillar.step}
-                      </span>
-                      <div>
-                        <div className="flex items-center gap-2.5">
-                          <span className={`p-1 rounded-lg ${pillar.accent}`}>
-                            <pillar.icon className="h-4 w-4" />
-                          </span>
-                          <h4 className="font-display text-base font-bold text-white uppercase tracking-tight">
-                            {pillar.title}
-                          </h4>
-                        </div>
-                        <p className="text-xs sm:text-[13px] text-zinc-400 mt-1 leading-relaxed max-w-2xl">
-                          {pillar.desc}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-1.5 self-start md:self-center pl-14 sm:pl-14 md:pl-0">
-                      {pillar.tools.map((t) => (
-                        <span
-                          key={t}
-                          className="rounded-md border border-white/5 bg-void/70 px-2 py-0.5 font-mono text-[10px] text-zinc-400"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Bottom Bridge & CTA Bar */}
-              <div className="mt-8 pt-6 border-t border-white/5 flex flex-col lg:flex-row items-center justify-between gap-5 bg-void/50 rounded-2xl p-5 border border-white/5">
-                <div className="flex items-center gap-3 text-center lg:text-left">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-volt/10 text-volt">
-                    <Crown className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <p className="text-xs sm:text-[13px] text-zinc-300">
-                      <strong className="text-white">Free Weekly Class:</strong> Master the tools &amp; live builds.{" "}
-                      <strong className="text-volt">AAA Accelerator:</strong> We guide you to your first $2,000 client in 90 days.
-                    </p>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setModalOpen(true)}
-                  id="masterclass-register-cta-btn"
-                  className="group relative flex-shrink-0 flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-7 py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] transition-all hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 cursor-pointer w-full sm:w-auto"
-                >
-                  <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                  <Zap className="relative h-3.5 w-3.5 fill-void" />
-                  <span className="relative">Claim Free Masterclass Seat</span>
-                  <ArrowRight className="relative h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
-                </button>
-              </div>
+              <button
+                onClick={() => setModalOpen(true)}
+                id="masterclass-register-cta-btn"
+                className="group relative flex-shrink-0 flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] transition-all hover:shadow-[0_0_50px_rgba(204,242,68,0.55)] active:scale-95 cursor-pointer w-full sm:w-auto"
+              >
+                <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                <Zap className="relative h-4 w-4 fill-void" />
+                <span className="relative">Claim Free Masterclass Seat</span>
+                <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </button>
             </div>
           </Reveal>
 

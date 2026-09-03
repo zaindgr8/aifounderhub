@@ -71,7 +71,7 @@ export function Team() {
         <div className="mb-14 text-center">
           <Reveal>
             <div className="flex justify-center">
-              <SectionTag index="02" label="Meet The Team" />
+              <SectionTag index="03" label="Meet The Team" />
             </div>
           </Reveal>
           <Reveal delay={0.08}>
