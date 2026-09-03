@@ -14,10 +14,18 @@ async function persistLead(input) {
   if (!supabaseConfigured) return;
   const email = String(input.email).toLowerCase();
   const goal = input.goal || 'explore';
+  const whyJoined = input.signupReason || input.reason;
+  const persona = input.persona;
+  const noteParts = [
+    persona ? `Profile: ${persona}` : null,
+    whyJoined ? `Why signed up: ${whyJoined}` : null,
+  ].filter(Boolean);
+
   const tags = [
     `goal:${goal}`,
     `source:${input.source || 'website'}`,
     ...(input.workshopTitle ? ['workshop'] : []),
+    ...(persona ? [`persona:${persona}`] : []),
   ];
 
   const shared = {
@@ -28,6 +36,7 @@ async function persistLead(input) {
     dial_code:    input.dialCode || null,
     source:       input.source || 'website',
     tags,
+    notes:        noteParts.length ? noteParts.join(' | ') : null,
   };
   const full = {
     ...shared,
@@ -86,14 +95,22 @@ export async function sendLeadEmail(req, res) {
       ticketNumber,
       submittedAt,
       workshopTitle,
+      persona,
+      signupReason,
+      reason,
     } = req.body;
 
     if (!fullName || !email) {
-      return res.status(400).json({ ok: false, error: 'fullName and email are required' });
+      return res.status(400).json({ ok: false, error: 'Full name and email are required' });
+    }
+
+    const isMasterclass = goal === 'workshop' || source === 'freemasterclass-direct-page' || source === 'timed-popup-modal';
+    if (isMasterclass && (!phone || !persona || (!signupReason && !reason))) {
+      return res.status(400).json({ ok: false, error: 'All fields are compulsory: Name, Email, Phone Number, Persona, and Why You Signed Up.' });
     }
 
     // Store the lead first — an email provider outage should not lose the record.
-    await persistLead({ fullName, email, phone, dialCode, countryCode, fullPhoneNumber, goal, source, ticketNumber, workshopTitle });
+    await persistLead({ fullName, email, phone, dialCode, countryCode, fullPhoneNumber, goal, source, ticketNumber, workshopTitle, persona, signupReason, reason });
 
     const OWNER_EMAIL = process.env.OWNER_EMAIL || 'management@devmatesolutions.com';
     const FROM_EMAIL = process.env.FROM_EMAIL || 'AI Founder Hub <onboarding@resend.dev>';
@@ -192,6 +209,24 @@ export async function sendLeadEmail(req, res) {
                     <span style="display:inline-block;background:linear-gradient(90deg,#1a2600,#1e2e00);border:1px solid #2d4400;color:#ccf244;font-size:13px;font-weight:800;padding:6px 16px;border-radius:100px;text-transform:uppercase;letter-spacing:0.1em;">🎓 FREE SEAT — ${workshopLabel}</span>
                   </td>
                 </tr>
+                ${persona ? `
+                <tr>
+                  <td style="padding-bottom:16px;">
+                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">What Best Describes Them</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#ccf244;">${persona}</p>
+                  </td>
+                </tr>
+                ` : ''}
+                ${(signupReason || reason) ? `
+                <tr>
+                  <td style="padding-bottom:16px;">
+                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Why They Signed Up</p>
+                    <div style="background:#141420;border-left:3px solid #ccf244;padding:10px 14px;border-radius:0 8px 8px 0;">
+                      <p style="margin:0;font-size:13px;font-weight:500;color:#e4e4e7;line-height:1.5;">${signupReason || reason}</p>
+                    </div>
+                  </td>
+                </tr>
+                ` : ''}
                 <tr>
                   <td>
                     <table width="100%" cellpadding="0" cellspacing="0">

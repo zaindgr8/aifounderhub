@@ -41,12 +41,21 @@ const COUNTRIES: Country[] = [
   { code: "SG", name: "Singapore",            dialCode: "+65",  flag: "🇸🇬" },
 ];
 
+const PERSONA_OPTIONS = [
+  "Agency owner / freelancer",
+  "Have a business, want to add AI services",
+  "Just getting started, no clients yet",
+  "Corporate/exploring a side hustle",
+] as const;
+
 export function FreeMasterclassPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState<Country>(COUNTRIES[0]);
   const [countryOpen, setCountryOpen] = useState(false);
+  const [persona, setPersona] = useState("");
+  const [signupReason, setSignupReason] = useState("");
   const [agreed, setAgreed] = useState(true);
 
   const [formState, setFormState] = useState<"idle" | "loading" | "success">("idle");
@@ -55,16 +64,24 @@ export function FreeMasterclassPage() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim()) {
-      setError("Please fill in your full name and email.");
+    if (!fullName.trim()) {
+      setError("Please enter your full name.");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
     if (!phone.trim()) {
       setError("Please enter your WhatsApp/phone number.");
+      return;
+    }
+    if (!persona) {
+      setError("Please select what best describes you right now.");
+      return;
+    }
+    if (!signupReason.trim()) {
+      setError("Please tell us what made you sign up for this class.");
       return;
     }
     if (!agreed) {
@@ -95,6 +112,8 @@ export function FreeMasterclassPage() {
           source: "freemasterclass-direct-page",
           submittedAt: new Date().toISOString(),
           ticketNumber: generatedTicket,
+          persona,
+          signupReason: signupReason.trim(),
         }),
       });
 
@@ -277,7 +296,7 @@ export function FreeMasterclassPage() {
                 {/* Full Name */}
                 <div className="space-y-1.5">
                   <label className="block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                    Full Name
+                    Full Name <span className="text-volt">*</span>
                   </label>
                   <input
                     type="text"
@@ -292,7 +311,7 @@ export function FreeMasterclassPage() {
                 {/* Email */}
                 <div className="space-y-1.5">
                   <label className="block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                    Email Address
+                    Email Address <span className="text-volt">*</span>
                   </label>
                   <input
                     type="email"
@@ -307,7 +326,7 @@ export function FreeMasterclassPage() {
                 {/* Phone / WhatsApp */}
                 <div className="space-y-1.5">
                   <label className="block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                    WhatsApp / Phone Number
+                    WhatsApp / Phone Number <span className="text-volt">*</span>
                   </label>
                   <div className="flex gap-2">
                     {/* Country Selector */}
@@ -363,6 +382,46 @@ export function FreeMasterclassPage() {
                       className="w-full rounded-xl border border-zinc-800 bg-zinc-900/90 px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none transition focus:border-volt/60 focus:bg-zinc-900 focus:shadow-[0_0_15px_rgba(204,242,68,0.1)]"
                     />
                   </div>
+                </div>
+
+                {/* Persona Dropdown */}
+                <div className="space-y-1.5">
+                  <label className="block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                    What best describes you right now? <span className="text-volt">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      required
+                      value={persona}
+                      onChange={(e) => setPersona(e.target.value)}
+                      className="w-full appearance-none rounded-xl border border-zinc-800 bg-zinc-900/90 px-4 py-3 pr-10 text-sm text-white placeholder-zinc-500 outline-none transition focus:border-volt/60 focus:bg-zinc-900 focus:shadow-[0_0_15px_rgba(204,242,68,0.1)] cursor-pointer"
+                    >
+                      <option value="" disabled className="bg-zinc-950 text-zinc-500">
+                        Select what best describes you...
+                      </option>
+                      {PERSONA_OPTIONS.map((opt) => (
+                        <option key={opt} value={opt} className="bg-zinc-950 text-white py-2">
+                          {opt}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                  </div>
+                </div>
+
+                {/* What made you sign up */}
+                <div className="space-y-1.5">
+                  <label className="block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                    What made you sign up for this class? <span className="text-volt">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={signupReason}
+                    onChange={(e) => setSignupReason(e.target.value)}
+                    placeholder="e.g. Want to learn how to build & sell AI automations to clients"
+                    className="w-full rounded-xl border border-zinc-800 bg-zinc-900/90 px-4 py-3 text-sm text-white placeholder-zinc-600 outline-none transition focus:border-volt/60 focus:bg-zinc-900 focus:shadow-[0_0_15px_rgba(204,242,68,0.1)]"
+                  />
                 </div>
 
                 {/* Terms Checkbox */}

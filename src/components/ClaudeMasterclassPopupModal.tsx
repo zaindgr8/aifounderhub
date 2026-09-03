@@ -42,6 +42,13 @@ interface ClaudeMasterclassPopupModalProps {
 
 type FormState = "idle" | "loading" | "success";
 
+const PERSONA_OPTIONS = [
+  "Agency owner / freelancer",
+  "Have a business, want to add AI services",
+  "Just getting started, no clients yet",
+  "Corporate/exploring a side hustle",
+] as const;
+
 export function ClaudeMasterclassPopupModal({
   open,
   onClose,
@@ -51,6 +58,8 @@ export function ClaudeMasterclassPopupModal({
   const [phone, setPhone]       = useState("");
   const [country, setCountry]   = useState<Country>(COUNTRIES[0]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [persona, setPersona]   = useState("");
+  const [signupReason, setSignupReason] = useState("");
   const [error, setError]       = useState<string | null>(null);
   const [formState, setFormState] = useState<FormState>("idle");
   const [ticketNum, setTicketNum] = useState<string>("");
@@ -101,16 +110,24 @@ export function ClaudeMasterclassPopupModal({
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!fullName.trim() || !email.trim()) {
-      setError("Please fill in your name and email.");
+    if (!fullName.trim()) {
+      setError("Please enter your full name.");
       return;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address.");
       return;
     }
     if (!phone.trim()) {
       setError("Please enter your phone number.");
+      return;
+    }
+    if (!persona) {
+      setError("Please select what best describes you right now.");
+      return;
+    }
+    if (!signupReason.trim()) {
+      setError("Please tell us what made you sign up for this class.");
       return;
     }
 
@@ -137,6 +154,8 @@ export function ClaudeMasterclassPopupModal({
           source:          "timed-popup-modal",
           submittedAt:     new Date().toISOString(),
           ticketNumber:    generatedTicket,
+          persona,
+          signupReason:    signupReason.trim(),
         }),
       });
 
@@ -181,7 +200,7 @@ export function ClaudeMasterclassPopupModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.94, y: 16 }}
               transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto relative w-full max-w-lg rounded-3xl border border-volt/30 bg-[#0c0c14] p-6 sm:p-8 shadow-[0_0_80px_rgba(204,242,68,0.18)] my-auto overflow-hidden text-zinc-100"
+              className="pointer-events-auto relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-3xl border border-volt/30 bg-[#0c0c14] p-6 sm:p-8 shadow-[0_0_80px_rgba(204,242,68,0.18)] my-auto text-zinc-100"
             >
               {/* Background ambient lighting */}
               <div className="pointer-events-none absolute -top-24 -right-24 h-64 w-64 rounded-full bg-volt/10 blur-3xl" />
@@ -306,13 +325,14 @@ export function ClaudeMasterclassPopupModal({
                     {/* Full Name */}
                     <div>
                       <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                        Full Name
+                        Full Name <span className="text-volt">*</span>
                       </label>
                       <div className="relative">
                         <User className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                         <input
                           ref={nameRef}
                           type="text"
+                          required
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="e.g. Alex Morgan"
@@ -325,12 +345,13 @@ export function ClaudeMasterclassPopupModal({
                     {/* Email */}
                     <div>
                       <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                        Email Address
+                        Email Address <span className="text-volt">*</span>
                       </label>
                       <div className="relative">
                         <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                         <input
                           type="email"
+                          required
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="alex@example.com"
@@ -343,7 +364,7 @@ export function ClaudeMasterclassPopupModal({
                     {/* Phone Number with Country Picker */}
                     <div>
                       <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                        Phone Number
+                        Phone Number <span className="text-volt">*</span>
                       </label>
                       <div className="flex gap-2">
                         {/* Country Selector Dropdown */}
@@ -387,6 +408,7 @@ export function ClaudeMasterclassPopupModal({
                           <Phone className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
                           <input
                             type="tel"
+                            required
                             value={phone}
                             onChange={(e) => setPhone(e.target.value)}
                             placeholder="50 123 4567"
@@ -395,6 +417,47 @@ export function ClaudeMasterclassPopupModal({
                           />
                         </div>
                       </div>
+                    </div>
+
+                    {/* Persona Dropdown */}
+                    <div>
+                      <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                        What best describes you right now? <span className="text-volt">*</span>
+                      </label>
+                      <div className="relative">
+                        <select
+                          required
+                          value={persona}
+                          onChange={(e) => setPersona(e.target.value)}
+                          className="w-full appearance-none rounded-xl border border-zinc-800 bg-zinc-900/90 px-4 py-2.5 pr-10 text-sm text-white placeholder-zinc-500 transition focus:border-volt focus:outline-none focus:ring-1 focus:ring-volt cursor-pointer"
+                        >
+                          <option value="" disabled className="bg-zinc-950 text-zinc-500">
+                            Select what best describes you...
+                          </option>
+                          {PERSONA_OPTIONS.map((opt) => (
+                            <option key={opt} value={opt} className="bg-zinc-950 text-white">
+                              {opt}
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
+                      </div>
+                    </div>
+
+                    {/* What made you sign up */}
+                    <div>
+                      <label className="mb-1 block font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                        What made you sign up for this class? <span className="text-volt">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={signupReason}
+                        onChange={(e) => setSignupReason(e.target.value)}
+                        placeholder="e.g. Want to learn how to build & sell AI automations"
+                        disabled={formState === "loading"}
+                        className="w-full rounded-xl border border-zinc-800 bg-zinc-900/90 px-4 py-2.5 text-sm text-white placeholder-zinc-600 transition focus:border-volt focus:outline-none focus:ring-1 focus:ring-volt"
+                      />
                     </div>
 
                     {/* Submit Button */}
