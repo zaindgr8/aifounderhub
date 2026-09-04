@@ -104,7 +104,7 @@ const INCLUSIONS = {
 
 const VALUE_TABLE = [
   { item: "12 live sessions over 6 weeks (2 per week, 75–90 min)", value: "$1,200" },
-  { item: "Two private 1-on-1 calls with Zain (Week 2 and Week 5)", value: "$600" },
+  { item: "Two private 1-on-1 calls with Zain & Ahmed (Week 2 and Week 5)", value: "$600" },
   { item: "Personal review of your agent build and prompts", value: "$400" },
   { item: "Six vertical prompt libraries used commercially by DevMate", value: "$500" },
   { item: "Retell AI + Cal.com + Twilio setup templates", value: "$300" },
@@ -623,48 +623,80 @@ export function AAAAcceleratorPage() {
           <div className="mx-auto max-w-4xl px-5 md:px-10">
             <Reveal>
               <SectionTag index="07" label="Who teaches it" />
-              <h2 className="mt-5 font-display text-3xl font-extrabold uppercase text-white sm:text-4xl">
+              {/* <h2 className="mt-5 font-display text-3xl font-extrabold uppercase text-white sm:text-4xl">
                 You Are Buying My Time
-              </h2>
+              </h2> */}
             </Reveal>
 
             <Reveal delay={0.1}>
-              <div className="mt-8 flex flex-col gap-6 rounded-2xl border border-edge bg-panel/40 p-6 backdrop-blur-sm sm:flex-row sm:p-8">
-                <div className="shrink-0">
-                  <img
-                    src="/me.svg"
-                    alt="Zain Ul Abideen"
-                    className="h-24 w-24 rounded-2xl border border-volt/25 bg-void object-cover"
-                    loading="lazy"
-                  />
+              <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+                {/* ── Zain Ul Abideen ── */}
+                <div className="flex flex-col gap-5 rounded-2xl border border-edge bg-panel/40 p-6 backdrop-blur-sm sm:flex-row sm:p-8">
+                  <div className="shrink-0">
+                    <img
+                      src="/me.svg"
+                      alt="Zain Ul Abideen"
+                      className="h-24 w-24 rounded-2xl border border-volt/25 bg-void object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-xl font-extrabold uppercase tracking-tight text-white">
+                      Zain Ul Abideen
+                    </h3>
+                    <p className="mt-1 font-mono text-[10.5px] font-bold uppercase tracking-wider text-volt">
+                      Founder, AI Founder Hub · Devmate Solutions
+                    </p>
+                    <p className="mt-4 text-[13.5px] leading-relaxed text-zinc-300">
+                      I run an AI-powered software agency across the UAE, Oman and the USA, with clients in the GCC,
+                      Europe and the United States. Since 2019 that has meant 40+ brands across 25+ industries. The
+                      systems taught in this program are the ones Devmate sells commercially.
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {["40+ brands since 2019", "25+ industries", "UAE · Oman · USA"].map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-lg border border-edge bg-void/60 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                <div className="min-w-0">
-                  <h3 className="font-display text-xl font-extrabold uppercase tracking-tight text-white">
-                    Zain Ul Abideen
-                  </h3>
-                  <p className="mt-1 font-mono text-[10.5px] font-bold uppercase tracking-wider text-volt">
-                    Founder, AI Founder Hub · Devmate Solutions
-                  </p>
-                  <p className="mt-4 text-[13.5px] leading-relaxed text-zinc-300">
-                    I run an AI-powered software agency across the UAE, Oman and the USA, with clients in the GCC,
-                    Europe and the United States. Since 2019 that has meant 40+ brands across 25+ industries. The
-                    systems taught in this program are the ones Devmate sells commercially — the prompt libraries in
-                    week three are the ones we bill for.
-                  </p>
-                  <p className="mt-3 text-[13.5px] leading-relaxed text-zinc-400">
-                    Eight seats is not a marketing number. It is how many builds I can personally review and correct in
-                    six weeks while still running the agency. That is the constraint, and it is the reason this costs
-                    what it costs.
-                  </p>
-                  <div className="mt-5 flex flex-wrap gap-2">
-                    {["40+ brands since 2019", "25+ industries", "UAE · Oman · USA", "Ships daily"].map((t) => (
-                      <span
-                        key={t}
-                        className="rounded-lg border border-edge bg-void/60 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400"
-                      >
-                        {t}
-                      </span>
-                    ))}
+
+                {/* ── Ahmed Yahya ── */}
+                <div className="flex flex-col gap-5 rounded-2xl border border-volt/20 bg-panel/40 p-6 backdrop-blur-sm sm:flex-row sm:p-8">
+                  <div className="shrink-0">
+                    <img
+                      src="/ay2.png"
+                      alt="Ahmed Yahya"
+                      className="h-24 w-24 rounded-2xl border border-volt/25 bg-void object-cover"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="min-w-0">
+                    <h3 className="font-display text-xl font-extrabold uppercase tracking-tight text-white">
+                      Ahmed Yahya
+                    </h3>
+                    <p className="mt-1 font-mono text-[10.5px] font-bold uppercase tracking-wider text-volt">
+                      Co-Instructor · AAA Accelerator
+                    </p>
+                    <p className="mt-4 text-[13.5px] leading-relaxed text-zinc-300">
+                      Ahmed brings hands-on experience building and selling AI automation systems to businesses across
+                      the GCC. He co-leads the live sessions, reviews your builds, and conducts the private 1-on-1 
+                      calls alongside Zain in Week 2 and Week 5.
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {["AI Automation", "GCC Markets", "1-on-1 Reviews"].map((t) => (
+                        <span
+                          key={t}
+                          className="rounded-lg border border-edge bg-void/60 px-2.5 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
