@@ -549,12 +549,12 @@ function RecordPaymentModal({ onClose, onSaved }: { onClose: () => void; onSaved
                   e.target.value === 'session-1on1' ? '599' :
                   e.target.value === 'claude-master' ? '45' :
                   e.target.value === 'all-access' ? '199' :
-                  e.target.value === 'aaa-accelerator' ? '1500' : '0'
+                  e.target.value === 'aaa-accelerator' ? '1499' : '0'
                 );
               }}
               className="w-full rounded-xl border border-edge bg-panel px-3 py-2.5 text-sm text-zinc-200 focus:border-volt/40 focus:outline-none"
             >
-              <option value="aaa-accelerator">AAA Accelerator (Founding Cohort) — $1,500</option>
+              <option value="aaa-accelerator">AAA Accelerator (Founding Cohort) — $1,499</option>
               <option value="claude-master">Master Claude in 7 Days — $45</option>
               <option value="all-access">All Access Package — $199</option>
               <option value="session-1on1">1:1 Private Session — $599</option>

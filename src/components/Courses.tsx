@@ -70,7 +70,7 @@ const COURSES: CourseItem[] = [
     badge: "🏆 FOUNDING COHORT",
     badgeTone: "volt",
     originalPrice: "$2,500",
-    currentPrice: "$1,500",
+    currentPrice: "$1,499",
     priceNote: "Founding cohort price — includes 3 months community + all 6 stages",
     description:
       "Six weeks, twelve live sessions, eight seats. Build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. Two private 1-on-1 calls with Zain included.",

@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { Reveal, SectionTag, Wordmark, BackToTop, Magnetic } from "../components/shared";
 import { AAAApplicationModal } from "../components/AAAApplicationModal";
+import { PaymentModal } from "../components/PaymentModal";
 import { AAA_COHORT, AAA_SEATS_LEFT, PRODUCTS, formatPrice } from "../lib/products";
 
 const PRICE = formatPrice(PRODUCTS["aaa-accelerator"].priceCents);
@@ -73,7 +74,7 @@ const IS_FOR = [
 ];
 
 const NOT_FOR_TEXT =
-  "I would rather you skip this than waste $1,500. Do not enroll if you are looking for passive income without doing the work, if you want a guaranteed income promise, or if you cannot commit 8 to 10 hours a week for six weeks. This program only works if you do the outreach.";
+  "I would rather you skip this than waste $1,499. Do not enroll if you are looking for passive income without doing the work, if you want a guaranteed income promise, or if you cannot commit 8 to 10 hours a week for six weeks. This program only works if you do the outreach.";
 
 const INCLUSIONS = {
   liveSessions: [
@@ -210,6 +211,7 @@ function InclusionGroup({
 
 export function AAAAcceleratorPage() {
   const [applyOpen, setApplyOpen] = useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
   const openApply = () => setApplyOpen(true);
 
   return (
@@ -224,10 +226,10 @@ export function AAAAcceleratorPage() {
             <Wordmark />
           </a>
           <button
-            onClick={openApply}
+            onClick={() => setPaymentOpen(true)}
             className="group flex items-center gap-2 rounded-full bg-volt px-5 py-2.5 font-display text-[12px] font-extrabold uppercase tracking-wide text-void transition-shadow hover:shadow-[0_0_40px_rgba(204,242,68,0.4)] cursor-pointer"
           >
-            APPLY NOW
+            BUY PROGRAM — {PRICE}
             <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </button>
         </div>
@@ -294,18 +296,27 @@ export function AAAAcceleratorPage() {
             {/* CTA */}
             <Reveal delay={0.28}>
               <div className="mt-8 flex flex-col items-center gap-3">
-                <Magnetic strength={0.15}>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Magnetic strength={0.15}>
+                    <button
+                      onClick={() => setPaymentOpen(true)}
+                      className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_50px_rgba(204,242,68,0.35)] transition-shadow hover:shadow-[0_0_80px_rgba(204,242,68,0.6)] cursor-pointer whitespace-nowrap"
+                    >
+                      <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                      <span className="relative">BUY PROGRAM — {PRICE}</span>
+                      <ArrowRight className="relative h-4.5 w-4.5 transition-transform group-hover:translate-x-1" />
+                    </button>
+                  </Magnetic>
                   <button
                     onClick={openApply}
-                    className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-10 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_50px_rgba(204,242,68,0.3)] transition-shadow hover:shadow-[0_0_80px_rgba(204,242,68,0.5)] cursor-pointer"
+                    className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-4 font-display text-[13.5px] font-extrabold uppercase tracking-wide text-white hover:border-volt/60 hover:text-volt transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                    <span className="relative">APPLY — {PRICE} FOUNDING PRICE</span>
-                    <ArrowRight className="relative h-4.5 w-4.5 transition-transform group-hover:translate-x-1" />
+                    <span>APPLY FOR SEAT</span>
+                    <ArrowRight className="h-4 w-4" />
                   </button>
-                </Magnetic>
+                </div>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-                  {AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left · Next cohort {AAA_COHORT.nextCohortPrice}
+                  {AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left · Direct checkout via Ziina · Next cohort {AAA_COHORT.nextCohortPrice}
                 </span>
               </div>
             </Reveal>
@@ -527,7 +538,7 @@ export function AAAAcceleratorPage() {
                       Founding cohort price
                     </span>
                     <span className="font-display text-2xl font-black text-volt">
-                      $1,500
+                      {PRICE}
                     </span>
                   </div>
                 </div>
@@ -719,16 +730,25 @@ export function AAAAcceleratorPage() {
             </Reveal>
             <Reveal delay={0.18}>
               <div className="mt-8 flex flex-col items-center gap-3">
-                <Magnetic strength={0.15}>
+                <div className="flex flex-wrap items-center justify-center gap-3">
+                  <Magnetic strength={0.15}>
+                    <button
+                      onClick={() => setPaymentOpen(true)}
+                      className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-volt px-9 py-4.5 font-display text-base font-extrabold uppercase tracking-wide text-void shadow-[0_0_60px_rgba(204,242,68,0.35)] transition-shadow hover:shadow-[0_0_90px_rgba(204,242,68,0.6)] cursor-pointer whitespace-nowrap"
+                    >
+                      <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                      <span className="relative">BUY PROGRAM — {PRICE}</span>
+                      <ArrowRight className="relative h-5 w-5 transition-transform group-hover:translate-x-1.5" />
+                    </button>
+                  </Magnetic>
                   <button
                     onClick={openApply}
-                    className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-volt px-10 py-5 font-display text-base font-extrabold uppercase tracking-wide text-void shadow-[0_0_60px_rgba(204,242,68,0.3)] transition-shadow hover:shadow-[0_0_90px_rgba(204,242,68,0.55)] cursor-pointer"
+                    className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-4.5 font-display text-[14px] font-extrabold uppercase tracking-wide text-white hover:border-volt/60 hover:text-volt transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                    <span className="relative">APPLY — {PRICE} FOUNDING PRICE</span>
-                    <ArrowRight className="relative h-5 w-5 transition-transform group-hover:translate-x-1.5" />
+                    <span>APPLY FOR SEAT</span>
+                    <ArrowRight className="h-4.5 w-4.5" />
                   </button>
-                </Magnetic>
+                </div>
                 <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                   <span>{AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left</span>
                   <span className="h-1 w-1 rounded-full bg-zinc-600" />
@@ -754,6 +774,7 @@ export function AAAAcceleratorPage() {
 
       <BackToTop />
 
+      <PaymentModal open={paymentOpen} onClose={() => setPaymentOpen(false)} />
       <AAAApplicationModal open={applyOpen} onClose={() => setApplyOpen(false)} />
     </div>
   );

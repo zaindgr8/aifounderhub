@@ -78,7 +78,7 @@ export function FinalCta() {
                 Rather start this week?
               {" "}
               <span className="font-bold text-volt underline decoration-volt/40 underline-offset-2">
-                Join the AAA Accelerator — $1,500 founding price
+                Join the AAA Accelerator — $1,499 founding price
               </span>
               </button>
             </div>

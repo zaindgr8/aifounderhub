@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "motion/react";
 import { ArrowRight, Check, ShieldCheck, TrendingUp, Globe2, Users } from "lucide-react";
-import { Magnetic, Reveal, SectionTag } from "./shared";
+import { Magnetic, Reveal, SectionTag, scrollToRegister } from "./shared";
 
 const VALUE_STACK = [
   // { item: "AI Lead Management System — Built, Deployed & Ready to Sell." },
@@ -37,7 +37,7 @@ const COURSE_CARDS = [
   { title: "Private Builders Community", rotate: 8, x: 32 },
 ];
 
-export function Membership() {
+export function Membership({ onPay }: { onPay?: () => void }) {
   return (
     <section
       id="membership"
@@ -101,21 +101,34 @@ export function Membership() {
           {/* CTA */}
           <Reveal delay={0.36}>
             <div className="mt-8 flex flex-col items-start gap-3.5">
-              <Magnetic strength={0.2}>
+              <div className="flex flex-wrap items-center gap-3.5">
+                {/* 1. Explore Program Button */}
                 <a
                   href="/aaa-accelerator"
-                  className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] cursor-pointer whitespace-nowrap"
-                  id="membership-pay-btn"
+                  className="group relative inline-flex items-center justify-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-3.5 font-display text-[13.5px] font-extrabold uppercase tracking-wide text-white transition-all duration-300 hover:border-volt/60 hover:bg-white/10 hover:text-volt cursor-pointer whitespace-nowrap"
+                  id="membership-explore-btn"
                 >
-                  <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                  <span className="relative whitespace-nowrap">SEE THE PROGRAM — $1,500</span>
-                  <ArrowRight className="relative h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
+                  <span>EXPLORE PROGRAM</span>
+                  <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                 </a>
-              </Magnetic>
 
-              <div className="flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                {/* 2. Buy Program Button */}
+                <Magnetic strength={0.2}>
+                  <button
+                    onClick={onPay ?? scrollToRegister}
+                    className="group relative inline-flex items-center justify-center gap-2.5 overflow-hidden rounded-full bg-volt px-7 py-3.5 font-display text-[14px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_35px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_55px_rgba(204,242,68,0.6)] cursor-pointer whitespace-nowrap"
+                    id="membership-buy-btn"
+                  >
+                    <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                    <span className="relative whitespace-nowrap">BUY PROGRAM — $1,499</span>
+                    <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+                  </button>
+                </Magnetic>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                 <div className="flex items-center gap-1.5 whitespace-nowrap">
-                  <ShieldCheck className="h-4 w-4 text-volt flex-shrink-0" />
+                  <ShieldCheck className="h-3.5 w-3.5 text-volt flex-shrink-0" />
                   <span>8 seats · founding cohort · $159/mo from month 4</span>
                 </div>
               </div>
@@ -159,26 +172,47 @@ export function Membership() {
             </div>
           </Reveal>
 
-          {/* floating member proof */}
+          {/* Premium active community proof badge */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.4 }}
-            className="flex items-center justify-center gap-2.5 whitespace-nowrap rounded-full border border-edge bg-panel/90 px-4 py-2 shadow-xl mx-auto w-fit"
+            transition={{ delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-2xl border border-volt/25 bg-void/90 p-3.5 shadow-xl backdrop-blur-md"
           >
-            <div className="flex -space-x-2">
-              {["bg-volt text-void", "bg-lilac text-void", "bg-orange-400 text-void"].map((cls, i) => (
-                <span
-                  key={i}
-                  className={`flex h-5 w-5 items-center justify-center rounded-full border-2 border-void text-[8px] font-black ${cls}`}
-                >
-                  {["DXB", "RUH", "LON"][i]}
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-2">
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-void bg-volt text-[10px] font-black text-void shadow-md">
+                  DXB
                 </span>
-              ))}
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-void bg-lilac text-[10px] font-black text-void shadow-md">
+                  RUH
+                </span>
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-void bg-amber-400 text-[10px] font-black text-void shadow-md">
+                  LON
+                </span>
+                <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border-2 border-void bg-zinc-800 text-[10px] font-bold text-volt shadow-md">
+                  +40
+                </span>
+              </div>
+              <div>
+                <div className="flex items-center gap-1.5">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+                  </span>
+                  <span className="font-display text-[12px] font-bold uppercase tracking-wider text-white">
+                    Active AAA Builders Community
+                  </span>
+                </div>
+                <p className="font-mono text-[10px] text-zinc-400">
+                  Online Network + In-Person Dubai Meetups
+                </p>
+              </div>
             </div>
-            <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-300">
-              COMMUNITY OF ACTIVE AAA BUILDERS
+
+            <span className="rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[9.5px] font-bold uppercase tracking-wider text-volt whitespace-nowrap">
+              Founding Cohort
             </span>
           </motion.div>
         </div>

@@ -30,11 +30,11 @@ export async function createPayment(req, res) {
   try {
     const {
       fullName, email,
-      amount     = 15900,            // cents — default $159
-      message    = 'AI Founder Hub — Idea to Live Product Course',
-      cancelPath = '/#membership',
       advisorName,
       productCode,
+      amount     = (productCode === 'aaa-accelerator' ? 149900 : 15900), // cents
+      message    = (productCode === 'aaa-accelerator' ? 'AI Founder Hub — AAA Accelerator (Founding Cohort)' : 'AI Founder Hub — Idea to Live Product Course'),
+      cancelPath = (productCode === 'aaa-accelerator' ? '/aaa-accelerator' : '/#membership'),
     } = req.body ?? {};
     if (!fullName || !email) {
       return res.status(400).json({ ok: false, error: 'fullName and email are required' });

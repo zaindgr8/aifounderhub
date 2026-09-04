@@ -1153,7 +1153,7 @@ export function ProgressPage() {
                         className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-volt px-6 py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.35)] hover:shadow-[0_0_50px_rgba(204,242,68,0.6)] active:scale-95 transition cursor-pointer"
                       >
                         <Zap className="h-4 w-4 fill-current" />
-                        <span>Unlock All Stages ($1,500) →</span>
+                        <span>Unlock All Stages ($1,499) →</span>
                       </button>
                       <button
                         onClick={() => setActiveLevelTab(1)}

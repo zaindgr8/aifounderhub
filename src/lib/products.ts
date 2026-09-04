@@ -25,7 +25,7 @@ export const PRODUCTS = {
   "aaa-accelerator": {
     code: "aaa-accelerator",
     label: "AAA Accelerator — Founding Cohort",
-    priceCents: 150_000, // $1,500 one-time
+    priceCents: 149_900, // $1,499 one-time
     checkoutMessage: "AI Founder Hub — AAA Accelerator (Founding Cohort)",
     cancelPath: "/aaa-accelerator",
   },
