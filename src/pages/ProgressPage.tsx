@@ -507,16 +507,44 @@ export function ProgressPage() {
 
                   {/* Dropdown Card */}
                   <div className="invisible opacity-0 translate-y-2 group-hover/res:visible group-hover/res:opacity-100 group-hover/res:translate-y-0 transition-all duration-200 ease-out absolute right-0 top-full pt-2 z-50 pointer-events-none group-hover/res:pointer-events-auto">
-                    <div className="w-80 rounded-2xl border border-volt/30 bg-[#0e0e18]/95 p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-xl relative overflow-hidden text-left">
+                    <div className="w-80 sm:w-88 rounded-2xl border border-volt/30 bg-[#0e0e18]/95 p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-xl relative overflow-hidden text-left space-y-2.5">
                       <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-volt/10 blur-[40px]" />
 
+                      {/* 5th Sept Resource */}
+                      <a
+                        href="https://drive.google.com/drive/folders/16XK81K-fk-cVdzlJOLQ19sjIM-YrbjOd?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/item flex items-start gap-3 rounded-xl border border-volt/30 bg-volt/[0.04] p-3 transition-all duration-200 hover:border-volt hover:bg-volt/[0.1] cursor-pointer"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-volt/30 bg-volt/15 text-volt group-hover/item:bg-volt group-hover/item:text-void transition-colors">
+                          <FolderOpen className="h-4.5 w-4.5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-display text-xs font-black uppercase tracking-tight text-white group-hover/item:text-volt transition-colors truncate">
+                              Resources Link (5th Sept)
+                            </span>
+                            <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-volt shrink-0 transition-colors" />
+                          </div>
+                          <p className="font-mono text-[11px] font-medium text-zinc-300 mt-1 leading-snug group-hover/item:text-white transition-colors">
+                            6 Money Making Automations To Sell To Local Businesses
+                          </p>
+                          <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
+                            <span>Open Google Drive</span>
+                            <span>→</span>
+                          </div>
+                        </div>
+                      </a>
+
+                      {/* 29th Aug Resource */}
                       <a
                         href="https://drive.google.com/drive/folders/1RWIfJyVNdDZC9lbwmWgryDLS1Ip8jssC?usp=sharing"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group/item flex items-start gap-3 rounded-xl border border-white/10 bg-panel/80 p-3 transition-all duration-200 hover:border-volt/50 hover:bg-volt/[0.08] cursor-pointer"
                       >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-volt/30 bg-volt/15 text-volt group-hover/item:bg-volt group-hover/item:text-void transition-colors">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-300 group-hover/item:bg-volt group-hover/item:text-void transition-colors">
                           <FolderOpen className="h-4.5 w-4.5" />
                         </div>
                         <div className="flex-1 min-w-0">
@@ -526,8 +554,8 @@ export function ProgressPage() {
                             </span>
                             <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-volt shrink-0 transition-colors" />
                           </div>
-                          <p className="font-mono text-[10px] text-zinc-400 mt-1 leading-relaxed line-clamp-2">
-                            Google Drive folder with live masterclass workflows, templates &amp; assets.
+                          <p className="font-mono text-[11px] font-medium text-zinc-300 mt-1 leading-snug group-hover/item:text-white transition-colors">
+                            Build an AI Call Assistant &amp; Sell for $2,000+
                           </p>
                           <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
                             <span>Open Google Drive</span>
