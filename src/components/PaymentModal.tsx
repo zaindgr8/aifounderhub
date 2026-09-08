@@ -213,28 +213,25 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                 </p>
               </div>
 
-              {/* Cohort & Price badge */}
+              {/* Subscription & Price badge */}
               <div className="mx-7 mt-5 rounded-xl border border-volt/25 bg-volt/[0.06] p-4">
                 <div className="flex items-start justify-between border-b border-volt/15 pb-3 mb-3">
                   <div>
                     <span className="inline-flex items-center gap-1.5 rounded-md bg-volt/20 border border-volt/30 px-2 py-0.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
-                      🔥 Next Cohort: 20th September
+                      ⚡ Monthly Membership
                     </span>
                     <h3 className="font-display text-base font-black uppercase text-white mt-1.5">
                       AAA Accelerator Program
                     </h3>
                     <p className="font-mono text-[10px] text-zinc-400">
-                      Limited seats available for upcoming cohort
+                      Instant access to all blueprints &amp; community
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">
-                      {AAA_COHORT.nextCohortPrice}
-                    </p>
                     <p className="font-display text-2xl font-black text-volt">
                       {formatPrice(PRODUCTS["aaa-accelerator"].priceCents)}
                     </p>
-                    <p className="font-mono text-[8px] text-zinc-500">one-time · founding cohort</p>
+                    <p className="font-mono text-[8px] text-zinc-500">per month · cancel anytime</p>
                   </div>
                 </div>
 
@@ -385,7 +382,7 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                     </>
                   ) : (
                     <>
-                      <span className="relative">Proceed to Secure Checkout</span>
+                      <span className="relative">Subscribe for $159/mo</span>
                       <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </>
                   )}

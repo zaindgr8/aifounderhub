@@ -81,7 +81,7 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
           <span className="truncate">⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "CLAIM FREE SEAT"</span>
         </div>
 
-        {/* Banner 2: Next Cohort Starting 20th September */}
+        {/* Banner 2: AAA Accelerator Monthly Membership */}
         <div 
           onClick={() => {
             const el = document.getElementById("membership");
@@ -94,10 +94,10 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-volt"></span>
             </span>
-            NEXT COHORT:
+            AAA ACCELERATOR:
           </span>
           <span className="truncate">
-            STARTS 20TH SEPTEMBER • ENROLL IN AAA ACCELERATOR TO LAUNCH YOUR AGENCY • LIMITED SEATS • ENROLL NOW →
+            LAUNCH YOUR AGENCY • $159/MONTH SUBSCRIPTION • INSTANT ACCESS • ENROLL NOW →
           </span>
         </div>
 

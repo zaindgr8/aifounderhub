@@ -63,7 +63,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-volt"></span>
                 </span>
-                Next Cohort: Starts 20th September (Limited Seats)
+                Monthly Membership · Instant Access
               </span>
             </div>
           </Reveal>
@@ -120,7 +120,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
                     id="membership-buy-btn"
                   >
                     <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                    <span className="relative whitespace-nowrap">BUY PROGRAM — $1,499</span>
+                    <span className="relative whitespace-nowrap">JOIN ACCELERATOR — $159/MO</span>
                     <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </button>
                 </Magnetic>
@@ -129,7 +129,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                 <div className="flex items-center gap-1.5 whitespace-nowrap">
                   <ShieldCheck className="h-3.5 w-3.5 text-volt flex-shrink-0" />
-                  <span>8 seats · founding cohort · $159/mo from month 4</span>
+                  <span>$159/month · cancel anytime · instant access</span>
                 </div>
               </div>
             </div>
@@ -212,7 +212,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
             </div>
 
             <span className="rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[9.5px] font-bold uppercase tracking-wider text-volt whitespace-nowrap">
-              Founding Cohort
+              Monthly Membership
             </span>
           </motion.div>
         </div>

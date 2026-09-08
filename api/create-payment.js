@@ -32,8 +32,8 @@ export async function createPayment(req, res) {
       fullName, email,
       advisorName,
       productCode,
-      amount     = (productCode === 'aaa-accelerator' ? 149900 : 15900), // cents
-      message    = (productCode === 'aaa-accelerator' ? 'AI Founder Hub — AAA Accelerator (Founding Cohort)' : 'AI Founder Hub — Idea to Live Product Course'),
+      amount     = 15900, // cents ($159 default)
+      message    = (productCode === 'aaa-accelerator' ? 'AI Founder Hub — AAA Accelerator ($159/month)' : 'AI Founder Hub — Idea to Live Product Course'),
       cancelPath = (productCode === 'aaa-accelerator' ? '/aaa-accelerator' : '/#membership'),
     } = req.body ?? {};
     if (!fullName || !email) {

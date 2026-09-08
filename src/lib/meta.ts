@@ -33,9 +33,9 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     path: "/claude-master-in-7-days",
   },
   "aaa-accelerator": {
-    title: "AAA Accelerator — 6-Week AI Agency Cohort (8 Seats) | AI Founder Hub",
+    title: "AAA Accelerator — AI Agency Membership ($159/mo) | AI Founder Hub",
     description:
-      "A 6-week live cohort: build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. Eight seats, two 1-on-1 calls, taught by an operator selling this commercially in Dubai.",
+      "Build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. $159/month subscription, weekly live builds, taught by an operator selling this commercially in Dubai.",
     path: "/aaa-accelerator",
   },
   freemasterclass: {

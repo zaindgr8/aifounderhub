@@ -74,17 +74,17 @@ const IS_FOR = [
 ];
 
 const NOT_FOR_TEXT =
-  "I would rather you skip this than waste $1,499. Do not enroll if you are looking for passive income without doing the work, if you want a guaranteed income promise, or if you cannot commit 8 to 10 hours a week for six weeks. This program only works if you do the outreach.";
+  "I would rather you skip this than waste $159/month. Do not subscribe if you are looking for passive income without doing the work, if you want a guaranteed income promise, or if you cannot commit 8 to 10 hours a week. This program only works if you do the outreach.";
 
 const INCLUSIONS = {
   liveSessions: [
-    "12 live calls across 6 weeks — two per week, 75 to 90 minutes each",
+    "Weekly live calls — two per week, 75 to 90 minutes each",
     "Session one each week is build. Session two is review, feedback and sales practice",
     "Every session recorded and yours to keep",
   ],
   directAccess: [
     "Private builders group with Zain in it, weekday responses",
-    "Two private 1-on-1 calls — Week 2 for your build, Week 5 for your pipeline",
+    "Two private 1-on-1 calls for your build and sales pipeline",
     "Personal review of your agent configuration and prompts before you go live",
   ],
   toolkit: [
@@ -96,22 +96,22 @@ const INCLUSIONS = {
     "Objection-handling scripts taken from real sales calls",
   ],
   community: [
-    "3 months of AI Founder Hub included, worth $477",
+    "Full access to AI Founder Hub community & build archives",
     "In-person Dubai meetups with active AAA builders",
-    "Continues at $159/month from month 4 — cancel anytime, no lock-in",
+    "$159/month subscription — cancel anytime, no lock-in",
   ],
 };
 
 const VALUE_TABLE = [
-  { item: "12 live sessions over 6 weeks (2 per week, 75–90 min)", value: "$1,200" },
-  { item: "Two private 1-on-1 calls with Zain & Ahmed (Week 2 and Week 5)", value: "$600" },
+  { item: "Weekly live sessions (2 per week, 75–90 min)", value: "$1,200" },
+  { item: "Two private 1-on-1 calls with Zain & Ahmed", value: "$600" },
   { item: "Personal review of your agent build and prompts", value: "$400" },
   { item: "Six vertical prompt libraries used commercially by DevMate", value: "$500" },
   { item: "Retell AI + Cal.com + Twilio setup templates", value: "$300" },
   { item: "Claude and Clay lead-research workflows", value: "$300" },
   { item: "Proposal template, pricing sheet and client contract", value: "$250" },
   { item: "Objection-handling scripts from real sales calls", value: "$250" },
-  { item: "3 months AI Founder Hub community access", value: "$477" },
+  { item: "AI Founder Hub community & build archives access", value: "$477" },
 ];
 
 const PROMISES = [
@@ -130,23 +130,21 @@ const NOT_PROMISED = [
 
 const PROGRAM_INFO = [
   { label: "Program", value: "AAA Accelerator — AI Automation Agency Accelerator" },
-  { label: "Next Cohort", value: `Starts ${AAA_COHORT.startDate}` },
-  { label: "Duration", value: "6 weeks live, plus 3 months community access" },
-  { label: "Seats", value: `${AAA_COHORT.seatsTotal} maximum — ${AAA_SEATS_LEFT} still open` },
-  { label: "Investment", value: `${formatPrice(PRODUCTS["aaa-accelerator"].priceCents)} one-time (founding cohort price)` },
-  { label: "Continuation", value: `${AAA_COHORT.monthlyAfter}/month from month ${AAA_COHORT.freeCommunityMonths + 1} — cancel anytime` },
-  { label: "Commitment", value: "8–10 hours per week" },
-  { label: "Format", value: "Live on Zoom, all sessions recorded" },
+  { label: "Access", value: "Instant Access Upon Subscription" },
+  { label: "Format", value: "Weekly Live Zoom Builds + Community Access" },
+  { label: "Investment", value: "$159/month — cancel anytime" },
+  { label: "Commitment", value: "8–10 hours per week recommended" },
+  { label: "Recordings", value: "All sessions recorded and yours to keep" },
 ];
 
 const FAQS = [
   {
     q: "What does it cost to run the tools?",
-    a: "The tools bill you directly, not us — budget roughly $50–$120 a month while you build and demo. Retell AI charges per minute of call time, Twilio charges for the phone number and minutes, Cal.com has a free tier that is enough to start, and Clay has a free tier with paid credits for bulk enrichment. You will not need all of them at full spend during the six weeks, and week one covers how to keep the bill low while testing.",
+    a: "The tools bill you directly, not us — budget roughly $50–$120 a month while you build and demo. Retell AI charges per minute of call time, Twilio charges for the phone number and minutes, Cal.com has a free tier that is enough to start, and Clay has a free tier with paid credits for bulk enrichment. You will not need all of them at full spend, and we cover how to keep the bill low while testing.",
   },
   {
     q: "What is your refund policy?",
-    a: "Seven days from purchase, or until the first live session — whichever comes first. After the cohort has started the seat is yours and is not refundable, because it is capped at eight and holding it means turning someone else away. If you are unsure, come to a free masterclass first and decide there.",
+    a: "Seven days from subscription. If you feel it's not the right fit, cancel within 7 days for a full refund. Beyond that, your subscription can be cancelled anytime with zero lock-in.",
   },
   {
     q: "What if I miss a live session?",
@@ -154,19 +152,19 @@ const FAQS = [
   },
   {
     q: "What time are the sessions, and what time zone?",
-    a: "Two sessions a week, 75 to 90 minutes each, run on Gulf Standard Time (GST, UTC+4) in the evening so they work across the GCC, Europe, Africa and South Asia. Exact times are confirmed with the cohort before week one so we can fit the eight people who are actually in it.",
+    a: "Two sessions a week, 75 to 90 minutes each, run on Gulf Standard Time (GST, UTC+4) in the evening so they work across the GCC, Europe, Africa and South Asia. All sessions are recorded.",
   },
   {
     q: "Do I need coding experience?",
     a: "No. Everything is built through configuration and prompting on Retell AI, Cal.com, n8n, Claude and Clay. You do need to be comfortable following technical instructions carefully and debugging when something does not work — that is a different skill from programming, and it is the one the program builds.",
   },
   {
-    q: "What happens after the six weeks?",
-    a: "Community access is included for the first three months. From month four it continues at $159 a month and you can cancel any time from inside your account. Your recordings, templates, prompt libraries and contracts stay yours permanently whether you continue or not.",
+    q: "How does the subscription work?",
+    a: "It is a straightforward $159/month subscription. As long as you remain subscribed, you have complete access to weekly live builds, new agent blueprints, the private builders group, and Dubai meetups. You can cancel anytime from inside your dashboard with no lock-in.",
   },
   {
-    q: "Can I pay in instalments?",
-    a: "Not on the founding cohort price. If the one-time payment is the only thing in the way, message us on WhatsApp before the cohort closes and we will talk it through.",
+    q: "Can I cancel anytime?",
+    a: "Yes. There are no contracts, minimum commitments or lock-ins. You can cancel your subscription anytime with one click in your account.",
   },
 ];
 
@@ -248,7 +246,7 @@ export function AAAAcceleratorPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-volt opacity-70" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-volt" />
                 </span>
-                Founding cohort · {AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left
+                Monthly Membership · $159/mo · Instant Access
               </div>
             </Reveal>
             <Reveal delay={0.06}>
@@ -263,9 +261,9 @@ export function AAAAcceleratorPage() {
             </Reveal>
             <Reveal delay={0.16}>
               <p className="mx-auto mt-6 max-w-2xl text-[15px] leading-relaxed text-zinc-300">
-                A 6-week guided program where you build a working AI Lead Management System, package it as a service,
-                and run real outreach to land your first paying client. Small cohort. Direct access. Built and taught
-                by an operator who sells this commercially in Dubai every week.
+                A hands-on program where you build a working AI Lead Management System, package it as a service,
+                and run real outreach to land your first paying client. Direct access to weekly live sessions, private community,
+                and blueprints built and taught by an operator who sells this commercially in Dubai every week.
               </p>
             </Reveal>
 
@@ -274,10 +272,10 @@ export function AAAAcceleratorPage() {
               <div className="mx-auto mt-10 max-w-3xl rounded-2xl border border-edge bg-panel/60 backdrop-blur-md overflow-hidden">
                 <div className="grid grid-cols-2 divide-x divide-y divide-edge/50 sm:grid-cols-4 sm:divide-y-0">
                   {[
-                    { label: "Next Cohort", value: AAA_COHORT.startShort, icon: Calendar },
-                    { label: "Duration", value: `${AAA_COHORT.weeks} Weeks`, icon: Clock },
-                    { label: "Seats", value: `${AAA_SEATS_LEFT} of ${AAA_COHORT.seatsTotal} left`, icon: Users },
-                    { label: "Investment", value: PRICE, icon: DollarSign },
+                    { label: "Access", value: "Instant", icon: Zap },
+                    { label: "Format", value: "Weekly Live", icon: Clock },
+                    { label: "Community", value: "Online + Dubai", icon: Users },
+                    { label: "Investment", value: "$159/mo", icon: DollarSign },
                   ].map((s) => (
                     <div key={s.label} className="flex flex-col items-center gap-1 px-4 py-4">
                       <s.icon className="h-4 w-4 text-volt mb-1" />
@@ -303,7 +301,7 @@ export function AAAAcceleratorPage() {
                       className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_50px_rgba(204,242,68,0.35)] transition-shadow hover:shadow-[0_0_80px_rgba(204,242,68,0.6)] cursor-pointer whitespace-nowrap"
                     >
                       <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                      <span className="relative">BUY PROGRAM — {PRICE}</span>
+                      <span className="relative">JOIN ACCELERATOR — $159/MO</span>
                       <ArrowRight className="relative h-4.5 w-4.5 transition-transform group-hover:translate-x-1" />
                     </button>
                   </Magnetic>
@@ -311,12 +309,12 @@ export function AAAAcceleratorPage() {
                     onClick={openApply}
                     className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-6 py-4 font-display text-[13.5px] font-extrabold uppercase tracking-wide text-white hover:border-volt/60 hover:text-volt transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    <span>APPLY FOR SEAT</span>
+                    <span>APPLY / DETAILS</span>
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-                  {AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left · Direct checkout via Ziina · Next cohort {AAA_COHORT.nextCohortPrice}
+                  $159/month · Cancel anytime · Instant access · Direct checkout via Ziina
                 </span>
               </div>
             </Reveal>
@@ -535,10 +533,10 @@ export function AAAAcceleratorPage() {
                   </div>
                   <div className="flex items-center justify-between px-5 py-4">
                     <span className="font-display text-[16px] font-extrabold uppercase text-volt">
-                      Founding cohort price
+                      Monthly Membership
                     </span>
                     <span className="font-display text-2xl font-black text-volt">
-                      {PRICE}
+                      $159 / mo
                     </span>
                   </div>
                 </div>
@@ -549,11 +547,11 @@ export function AAAAcceleratorPage() {
             <Reveal delay={0.18}>
               <div className="mt-5 space-y-2">
                 {[
-                  `Billing: ${PRICE} today. Community access is included for the first ${AAA_COHORT.freeCommunityMonths} months, then ${AAA_COHORT.monthlyAfter} per month from month ${AAA_COHORT.freeCommunityMonths + 1}. You can cancel at any time from inside your account.`,
-                  `Founding price: This is the price for the first cohort only. The next cohort is ${AAA_COHORT.nextCohortPrice}.`,
+                  "Billing: $159 per month. You can cancel at any time from inside your account with zero lock-in.",
+                  "Full access included: Weekly live build sessions, six vertical prompt libraries, complete agency templates, and private builders community.",
                   "Tool costs are separate: budget roughly $50–$120 a month for Retell AI, Twilio, Cal.com and Clay while you build and demo. Those providers bill you directly, not us.",
-                  "Refunds: seven days from purchase, or until the first live session — whichever comes first. After the cohort starts the seat is yours, because it is capped at eight and holding it turns someone else away.",
-                  "One client at $2,000 setup covers the program. That is the arithmetic — but it depends on you doing the outreach in Weeks 4 to 6.",
+                  "Refunds: seven days from subscription if it's not the right fit. Cancel anytime.",
+                  "One client at $2,000 setup covers the entire year of membership.",
                 ].map((note, i) => (
                   <p key={i} className="text-[12.5px] text-zinc-500 leading-relaxed">
                     {note}
@@ -747,17 +745,17 @@ export function AAAAcceleratorPage() {
             </Reveal>
             <Reveal delay={0.06}>
               <h2 className="mt-6 font-display text-3xl font-extrabold uppercase text-white sm:text-5xl">
-                NEXT COHORT STARTS
+                START BUILDING TODAY
                 <br />
                 <span className="font-serif italic font-normal normal-case text-volt">
-                  {AAA_COHORT.startDate}
+                  Launch Your AI Agency
                 </span>
               </h2>
             </Reveal>
             <Reveal delay={0.12}>
               <p className="mx-auto mt-5 max-w-lg text-[14px] text-zinc-400 leading-relaxed">
-                Seats are capped at 8 because every build is reviewed individually. Enrollment is by short application —
-                I would rather run this with 8 committed people than 20 who fade out in Week 3.
+                Join the AAA Accelerator for $159/month. Instant access to the complete agency blueprints,
+                weekly live build sessions, private community, and sales playbooks. Cancel anytime.
               </p>
             </Reveal>
             <Reveal delay={0.18}>
@@ -769,7 +767,7 @@ export function AAAAcceleratorPage() {
                       className="group relative flex items-center gap-3 overflow-hidden rounded-full bg-volt px-9 py-4.5 font-display text-base font-extrabold uppercase tracking-wide text-void shadow-[0_0_60px_rgba(204,242,68,0.35)] transition-shadow hover:shadow-[0_0_90px_rgba(204,242,68,0.6)] cursor-pointer whitespace-nowrap"
                     >
                       <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                      <span className="relative">BUY PROGRAM — {PRICE}</span>
+                      <span className="relative">JOIN ACCELERATOR — $159/MO</span>
                       <ArrowRight className="relative h-5 w-5 transition-transform group-hover:translate-x-1.5" />
                     </button>
                   </Magnetic>
@@ -777,16 +775,16 @@ export function AAAAcceleratorPage() {
                     onClick={openApply}
                     className="flex items-center gap-2 rounded-full border border-white/20 bg-white/5 px-7 py-4.5 font-display text-[14px] font-extrabold uppercase tracking-wide text-white hover:border-volt/60 hover:text-volt transition-colors cursor-pointer whitespace-nowrap"
                   >
-                    <span>APPLY FOR SEAT</span>
+                    <span>APPLY / DETAILS</span>
                     <ArrowRight className="h-4.5 w-4.5" />
                   </button>
                 </div>
                 <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
-                  <span>{AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left</span>
+                  <span>Instant access</span>
                   <span className="h-1 w-1 rounded-full bg-zinc-600" />
-                  <span>{PRICE} founding price</span>
+                  <span>$159/mo subscription</span>
                   <span className="h-1 w-1 rounded-full bg-zinc-600" />
-                  <span>Next cohort {AAA_COHORT.nextCohortPrice}</span>
+                  <span>Cancel anytime</span>
                 </div>
               </div>
             </Reveal>

@@ -324,7 +324,7 @@ export function TerminalShowcase() {
 ———————————————————————————————————————————————— */
 
 const STATS = [
-  { value: 4281, suffix: "+", label: "Founders registered", note: "this cohort" },
+  { value: 4281, suffix: "+", label: "Founders registered", note: "community members" },
   { value: 127, suffix: "+", label: "AI systems shipped", note: "by past members" },
   { value: 2000, suffix: "+", label: "First client value", note: "avg. AAA retainer", prefix: "$" },
   { value: 90, suffix: "", label: "Days to first client", note: "our 90-day guarantee" },

@@ -175,7 +175,7 @@ export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose:
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/80 p-4 backdrop-blur-sm sm:items-center"
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 backdrop-blur-sm"
           onClick={onClose}
           role="dialog"
           aria-modal="true"
@@ -187,20 +187,21 @@ export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose:
             exit={{ opacity: 0, y: 16, scale: 0.98 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative my-8 w-full max-w-lg overflow-hidden rounded-3xl border border-volt/25 bg-panel shadow-[0_30px_90px_rgba(0,0,0,0.7)]"
+            className="relative w-full max-w-lg overflow-y-auto rounded-3xl border border-volt/25 bg-panel shadow-[0_30px_90px_rgba(0,0,0,0.7)]"
+            style={{ maxHeight: 'calc(100vh - 2rem)' }}
           >
             {/* header */}
             <div className="border-b border-edge bg-void/60 px-6 py-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-volt">
-                    {step === 1 ? "Step 1 of 2 · Application" : "Step 2 of 2 · Secure your seat"}
+                    {step === 1 ? "Step 1 of 2 · Application" : "Step 2 of 2 · Start Membership"}
                   </span>
                   <h2 className="mt-1.5 font-display text-xl font-black uppercase tracking-tight text-white">
                     AAA Accelerator
                   </h2>
                   <p className="mt-1 font-mono text-[10.5px] text-zinc-500">
-                    Cohort starts {AAA_COHORT.startDate} · {AAA_SEATS_LEFT} of {AAA_COHORT.seatsTotal} seats left
+                    Monthly Membership · $159/month · Instant Access
                   </p>
                 </div>
                 <button
@@ -370,22 +371,18 @@ export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose:
                         {product.label}
                       </h3>
                       <p className="mt-1 font-mono text-[10.5px] text-zinc-500">
-                        {AAA_COHORT.weeks} weeks live · starts {AAA_COHORT.startDate}
+                        Weekly live builds + agency blueprints
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500 line-through">
-                        {AAA_COHORT.nextCohortPrice}
-                      </p>
                       <p className="font-display text-2xl font-black text-volt">{formatPrice(product.priceCents)}</p>
-                      <p className="font-mono text-[8.5px] text-zinc-500">one-time · founding cohort</p>
+                      <p className="font-mono text-[8.5px] text-zinc-500">per month · cancel anytime</p>
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-1.5 border-t border-edge pt-4 font-mono text-[11px] text-zinc-400">
                     <p>
-                      Includes {AAA_COHORT.freeCommunityMonths} months of community access. Continues at{" "}
-                      {AAA_COHORT.monthlyAfter}/month from month {AAA_COHORT.freeCommunityMonths + 1} — cancel anytime.
+                      $159/month billed via Ziina. Cancel anytime from inside your dashboard.
                     </p>
                     <p>Tool costs (Retell AI, Twilio, Cal.com, Clay) are billed by those providers, not by us.</p>
                   </div>
@@ -406,7 +403,7 @@ export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose:
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      <Lock className="h-4 w-4" /> Pay {formatPrice(product.priceCents)} · Secure my seat
+                      <Lock className="h-4 w-4" /> Subscribe for {formatPrice(product.priceCents)}/mo · Instant Access
                     </>
                   )}
                 </button>

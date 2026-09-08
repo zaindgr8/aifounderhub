@@ -235,7 +235,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
             <td style="background:linear-gradient(135deg,#0d0d14 0%,#12121c 100%);padding:40px 40px 32px;border-bottom:1px solid #1e1e2a;text-align:center;">
               <span style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ccf244;text-transform:uppercase;">⚡ AI Founder Hub</span>
               <h1 style="margin:16px 0 8px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;line-height:1.2;">Welcome to AAA Accelerator! 🎉</h1>
-              <p style="margin:0;font-size:15px;color:#a1a1aa;line-height:1.6;">You are enrolled in the upcoming <strong style="color:#ccf244;">20th September Cohort</strong>.</p>
+              <p style="margin:0;font-size:15px;color:#a1a1aa;line-height:1.6;">Your <strong style="color:#ccf244;">monthly subscription</strong> is active with instant access.</p>
             </td>
           </tr>
 
@@ -260,8 +260,8 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
 
                 <tr>
                   <td style="padding-bottom:20px;">
-                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Cohort Kick-off Date</p>
-                    <p style="margin:0;font-size:14px;font-weight:700;color:#ffffff;">20th September 2026</p>
+                    <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Membership Plan</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#ffffff;">Monthly Subscription ($159/mo) · Instant Access</p>
                   </td>
                 </tr>
 
@@ -280,7 +280,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                             <table width="100%" cellpadding="0" cellspacing="0">
                               <tr>
                                 <td>
-                                  <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">AAA Accelerator — 20th September Cohort</p>
+                                  <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">AAA Accelerator — Monthly Membership</p>
                                   <p style="margin:4px 0 0;font-size:11px;color:#52525b;">All 6-Stage Blueprints · Private Community · Weekly Live Builds</p>
                                 </td>
                                 <td align="right">

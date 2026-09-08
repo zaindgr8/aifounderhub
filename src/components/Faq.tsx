@@ -20,9 +20,9 @@ const FAQ_LIST = [
       "Every week you join a live, hands-on session where we build something real on screen — an AI Call Assistant, a lead capture system, an outbound sequence. You follow along, ask questions, and walk away with a working demo you can show prospects. No pitch, no slides-only webinar. Just building.",
   },
   {
-    question: "What's included in the AAA Accelerator ($1,499 founding cohort)?",
+    question: "What's included in the AAA Accelerator ($159/mo subscription)?",
     answer:
-      "A 6-week live program: 12 sessions where you build a working AI Lead Management System, package it as a service, and run real outreach. Two private 1-on-1 calls with Zain, personal review of your agent build, six vertical prompt libraries, sales scripts, proposal templates, and 3 months of community access included. $159/month from month 4 to continue — cancel anytime.",
+      "A complete agency program: weekly live build sessions where you construct working AI Lead Management Systems, package them as high-ticket services, and execute client outreach. You get instant access to six vertical prompt libraries, sales scripts, proposal templates, the private builders community, and Dubai in-person meetups. Cancel anytime with zero lock-in.",
   },
   {
     question: "How do the 1:1 sessions with the founders work?",

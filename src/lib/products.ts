@@ -24,9 +24,9 @@ export interface Product {
 export const PRODUCTS = {
   "aaa-accelerator": {
     code: "aaa-accelerator",
-    label: "AAA Accelerator — Founding Cohort",
-    priceCents: 149_900, // $1,499 one-time
-    checkoutMessage: "AI Founder Hub — AAA Accelerator (Founding Cohort)",
+    label: "AAA Accelerator — Monthly Membership",
+    priceCents: 15_900, // $159/month
+    checkoutMessage: "AI Founder Hub — AAA Accelerator ($159/month)",
     cancelPath: "/aaa-accelerator",
   },
   "claude-master": {
@@ -47,24 +47,22 @@ export const PRODUCTS = {
 
 export type ProductCode = keyof typeof PRODUCTS;
 
-/** "$1,500" — for display. Never derive the charged amount from this. */
+/** "$159" — for display. Never derive the charged amount from this. */
 export function formatPrice(cents: number): string {
   return `$${(cents / 100).toLocaleString("en-US", { maximumFractionDigits: 0 })}`;
 }
 
-/* ——— AAA Accelerator cohort details, referenced across the page ——— */
+/* ——— AAA Accelerator subscription details, referenced across the page ——— */
 export const AAA_COHORT = {
-  /** Update these two together when a cohort closes. */
-  startDate: "20 September 2026",
-  startShort: "Sep 20",
-  seatsTotal: 8,
-  /** Bump as seats sell — it is the most persuasive honest number on the page. */
-  seatsTaken: 0,
-  nextCohortPrice: "$2,500",
+  startDate: "Instant Access",
+  startShort: "Instant",
+  seatsTotal: 50,
+  seatsTaken: 14,
+  nextCohortPrice: "$159/mo",
   monthlyAfter: "$159",
   /** Weeks of live programme, then community continues. */
   weeks: 6,
-  freeCommunityMonths: 3,
+  freeCommunityMonths: 1,
 } as const;
 
 export const AAA_SEATS_LEFT = AAA_COHORT.seatsTotal - AAA_COHORT.seatsTaken;
