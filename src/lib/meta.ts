@@ -39,9 +39,9 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     path: "/aaa-accelerator",
   },
   freemasterclass: {
-    title: "Free Live AI Masterclass — Build an AI System Live | AI Founder Hub",
+    title: "Claude Mastery: From Level 1 to Level 3 — Free Live Masterclass | AI Founder Hub",
     description:
-      "Join the free weekly live masterclass. We build a real AI voice agent, chatbot or CRM automation end to end on screen, then show you exactly how to price and sell it.",
+      "Join our free live masterclass this Saturday. We'll break down the 3 levels of Claude mastery — memory, models, and skills; connectors and browsing; and full agentic workflows with Cowork and Dispatch.",
     path: "/freemasterclass",
   },
   progress: {

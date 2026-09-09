@@ -108,7 +108,7 @@ export function FreeMasterclassPage() {
           countryCode: country.code,
           fullPhoneNumber,
           goal: "workshop",
-          workshopTitle: "6 AI Automations Masterclass — Build & Sell For $500–$2,500/Mo",
+          workshopTitle: "Claude Mastery: From Level 1 to Level 3",
           source: "freemasterclass-direct-page",
           submittedAt: new Date().toISOString(),
           ticketNumber: generatedTicket,
@@ -257,10 +257,10 @@ export function FreeMasterclassPage() {
 
               {/* Title & Core Hook */}
               <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                <span className="text-volt">6 AI AUTOMATIONS</span> YOU CAN SELL FOR $500–2,500/MO
+                <span className="text-volt">CLAUDE MASTERY</span>: FROM LEVEL 1 TO LEVEL 3
               </h1>
               <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                Join our free live masterclass this Saturday. We'll break down the 6 money making automations local businesses are actually paying monthly for in 2026 — then build one live, end to end, so you leave with something working and know exactly how to price it.
+                Join our free live masterclass this Saturday. We'll break down the 3 levels of Claude mastery — memory, models, and skills; connectors and browsing; and full agentic workflows with Cowork and Dispatch — then set it all up live, end to end, so you leave running Claude like the top 1% of users. Most people never make it past Level 1. This Saturday, you will.
               </p>
 
               {/* Highlights Bar */}
@@ -271,7 +271,7 @@ export function FreeMasterclassPage() {
                 </div>
                 <div className="border-r border-zinc-800/80 px-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">You Leave With</p>
-                  <p className="text-xs font-bold text-volt mt-0.5">A working AI agent</p>
+                  <p className="text-xs font-bold text-volt mt-0.5">A fully set-up Claude</p>
                 </div>
                 <div className="pl-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">Access</p>
