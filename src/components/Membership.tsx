@@ -4,7 +4,7 @@ import { ArrowRight, Check, ShieldCheck, TrendingUp, Globe2, Users } from "lucid
 import { Magnetic, Reveal, SectionTag, scrollToRegister } from "./shared";
 
 const VALUE_STACK = [
-  // { item: "AI Lead Management System — Built, Deployed & Ready to Sell." },
+  { item: "Master Claude in 7 Days — Complete No-Code & Engineer Course Included." },
   { item: "AI Lead Management System — Handles Calls, Qualifies Leads & Books Appointments." },
   { item: "AAA Agency Setup — Niche, Offer, Outreach & First Client Playbook." },
   { item: "Private Builders Community — Online & In-Person Dubai Meetups." },
@@ -129,7 +129,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                 <div className="flex items-center gap-1.5 whitespace-nowrap">
                   <ShieldCheck className="h-3.5 w-3.5 text-volt flex-shrink-0" />
-                  <span>$159/month · cancel anytime · instant access</span>
+                  <span>$159/month · cancel anytime · instant access · Claude course included</span>
                 </div>
               </div>
             </div>

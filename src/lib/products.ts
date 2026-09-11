@@ -31,9 +31,9 @@ export const PRODUCTS = {
   },
   "claude-master": {
     code: "claude-master",
-    label: "Master Claude in 7 Days",
-    priceCents: 4_500, // $45 one-time
-    checkoutMessage: "AI Founder Hub — Master Claude in 7 Days",
+    label: "Master Claude in 7 Days (Included in Accelerator)",
+    priceCents: 15_900, // Included inside the single $159/mo package
+    checkoutMessage: "AI Founder Hub — AAA Accelerator ($159/month)",
     cancelPath: "/claude-master-in-7-days",
   },
   "session-1on1": {

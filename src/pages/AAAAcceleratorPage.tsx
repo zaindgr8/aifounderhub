@@ -96,6 +96,7 @@ const INCLUSIONS = {
     "Objection-handling scripts taken from real sales calls",
   ],
   community: [
+    "Master Claude in 7 Days full course & curriculum included",
     "Full access to AI Founder Hub community & build archives",
     "In-person Dubai meetups with active AAA builders",
     "$159/month subscription — cancel anytime, no lock-in",
@@ -103,6 +104,7 @@ const INCLUSIONS = {
 };
 
 const VALUE_TABLE = [
+  { item: "Master Claude in 7 Days full course (No-Code & Engineer tracks)", value: "$175" },
   { item: "Weekly live sessions (2 per week, 75–90 min)", value: "$1,200" },
   { item: "Two private 1-on-1 calls with Zain & Ahmed", value: "$600" },
   { item: "Personal review of your agent build and prompts", value: "$400" },

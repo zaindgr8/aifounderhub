@@ -23,9 +23,9 @@ export const supabaseConfigured = true; // backward compat
 // passed to initiateZiinaPayment() on the frontend.
 
 export const PACKAGES = {
-  'aaa-accelerator': { code: 'aaa-accelerator', label: 'AAA Accelerator — Monthly Membership', purpose: 'membership', priceCents: 15900, recurring: true },
-  'claude-master':   { code: 'claude-master',   label: 'Master Claude in 7 Days',        purpose: 'course',     priceCents: 4500,  recurring: false },
-  'all-access':      { code: 'all-access',      label: 'All Access (RoadMap + Claude)',  purpose: 'membership', priceCents: 19900, recurring: false },
+  'aaa-accelerator': { code: 'aaa-accelerator', label: 'AAA Accelerator ($159/mo, Claude Included)', purpose: 'membership', priceCents: 15900, recurring: true },
+  'claude-master':   { code: 'claude-master',   label: 'Master Claude in 7 Days (Included in Accelerator)', purpose: 'membership', priceCents: 15900, recurring: true },
+  'all-access':      { code: 'all-access',      label: 'AAA Accelerator — All Access ($159/mo)', purpose: 'membership', priceCents: 15900, recurring: true },
   'session-1on1':    { code: 'session-1on1',    label: '1:1 Private Session',            purpose: 'booking',    priceCents: 59900, recurring: false },
   'other':           { code: 'other',           label: 'Other / Manual',                 purpose: 'membership', priceCents: 0,     recurring: false },
 };

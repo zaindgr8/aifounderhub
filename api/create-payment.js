@@ -31,10 +31,12 @@ export async function createPayment(req, res) {
     const {
       fullName, email,
       advisorName,
-      productCode,
-      amount     = 15900, // cents ($159 default)
-      message    = (productCode === 'aaa-accelerator' ? 'AI Founder Hub — AAA Accelerator ($159/month)' : 'AI Founder Hub — Idea to Live Product Course'),
-      cancelPath = (productCode === 'aaa-accelerator' ? '/aaa-accelerator' : '/#membership'),
+      productCode = 'aaa-accelerator',
+      amount     = 15900, // cents ($159 default — single package)
+      message    = (advisorName
+        ? `AI Founder Hub — 1:1 Session with ${advisorName}`
+        : 'AI Founder Hub — AAA Accelerator ($159/month) · Includes Claude'),
+      cancelPath = '/progress',
     } = req.body ?? {};
     if (!fullName || !email) {
       return res.status(400).json({ ok: false, error: 'fullName and email are required' });

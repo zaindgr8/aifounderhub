@@ -301,9 +301,9 @@ const RANKS = [
 
 export function ProgressPage() {
   // ─── Supabase Auth ──────────────────────────────────────────────────────────
-  const { user, loading: authLoading, hasAccess, hasRoadmapAccess, hasClaudeAccess, accessLoading } = useAuth();
   const isUnlocked = hasRoadmapAccess;
-  const isClaudeUnlocked = hasClaudeAccess;
+  // There is only one package ($159/mo) which includes both RoadMap and Master Claude
+  const isClaudeUnlocked = hasClaudeAccess || hasRoadmapAccess || hasAccess;
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [lockedModalOpen, setLockedModalOpen] = useState(false);
@@ -763,8 +763,12 @@ export function ProgressPage() {
                   <div className="p-7">
                     {/* Badge */}
                     <div className="mb-4 flex items-center justify-between">
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
-                        <BadgeCheck className="h-3 w-3" /> Enrolled
+                      <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${
+                        isUnlocked
+                          ? 'border-volt/30 bg-volt/10 text-volt'
+                          : 'border-white/10 bg-white/5 text-zinc-400'
+                      }`}>
+                        <BadgeCheck className="h-3 w-3" /> {isUnlocked ? 'Enrolled · $159/mo' : 'Stage 1 Free'}
                       </span>
                       <span className="font-mono text-[10px] text-zinc-600">6 Stages · 21 Quests</span>
                     </div>
@@ -847,11 +851,12 @@ export function ProgressPage() {
                     {/* Price badge */}
                     <div className="mb-4 flex items-center justify-between">
                       <span className="inline-flex items-center gap-1.5 rounded-full border border-purple-400/30 bg-purple-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-purple-300">
-                        <Star className="h-3 w-3" /> New Course
+                        <Sparkles className="h-3 w-3 text-purple-400" /> Included Course
                       </span>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-mono text-[11px] text-zinc-600 line-through">$175</span>
-                        <span className="rounded-lg bg-volt px-2.5 py-0.5 font-mono text-[11px] font-extrabold text-void">$45</span>
+                        <span className="rounded-lg bg-volt/15 border border-volt/30 px-2.5 py-1 font-mono text-[10.5px] font-extrabold text-volt">
+                          {isClaudeUnlocked ? "Included · Unlocked" : "Part of $159/mo Package"}
+                        </span>
                       </div>
                     </div>
 
@@ -874,10 +879,10 @@ export function ProgressPage() {
                     {/* What's included */}
                     <div className="mb-6 space-y-2">
                       {[
-                        '7 daily structured modules',
-                        'Prompt engineering mastery',
-                        'Real automation projects',
-                        'Lifetime access + updates',
+                        'Included inside the $159/month all-in-one package',
+                        '7 daily structured modules (No-Code & Engineer)',
+                        'Prompt engineering mastery & commercial prompts',
+                        'Full lifetime access + all future updates',
                       ].map(item => (
                         <div key={item} className="flex items-center gap-2 text-xs text-zinc-300">
                           <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-purple-300 font-bold text-[10px]">✓</div>
@@ -888,52 +893,30 @@ export function ProgressPage() {
 
                     {/* Launch button */}
                     {isClaudeUnlocked ? (
-                      <a
-                        href="/claude-master-in-7-days"
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/20 px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-purple-200 hover:bg-purple-500/30 transition cursor-pointer active:scale-95"
-                      >
-                        <Play className="h-3.5 w-3.5 fill-current" />
-                        Start Course
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </a>
+                      <div className="space-y-2">
+                        <a
+                          href="/claude-master-in-7-days"
+                          className="flex w-full items-center justify-center gap-2 rounded-xl border border-purple-400/40 bg-purple-500/20 px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-purple-200 hover:bg-purple-500/30 transition cursor-pointer active:scale-95"
+                        >
+                          <Play className="h-3.5 w-3.5 fill-current" />
+                          Start Course
+                          <ArrowRight className="h-3.5 w-3.5" />
+                        </a>
+                        <p className="text-center text-[10px] text-zinc-500">Included with your $159/mo membership</p>
+                      </div>
                     ) : (
                       <div className="space-y-2">
                         <button
-                          onClick={async () => {
+                          onClick={() => {
                             if (!user) { setAuthModalOpen(true); return; }
-                            setClaudePayLoading(true);
-                            setClaudePayError(null);
-                            try {
-                              const res: ZiinaPaymentResult = await initiateZiinaPayment({
-                                fullName: (user.user_metadata?.full_name as string) || (user.user_metadata?.name as string) || user.email || 'Student',
-                                email: user.email || '',
-                                amount: 4500,
-                                message: 'Master Claude in 7 Days — AI Founder Hub',
-                                cancelPath: '/progress',
-                                productCode: 'claude-master',
-                              });
-                              if (res.ok && res.redirect_url) {
-                                window.location.href = res.redirect_url;
-                              } else {
-                                setClaudePayError(res.error ?? 'Payment failed. Please try again.');
-                                setClaudePayLoading(false);
-                              }
-                            } catch {
-                              setClaudePayError('Network error. Please try again.');
-                              setClaudePayLoading(false);
-                            }
+                            setPaymentModalOpen(true);
                           }}
-                          disabled={claudePayLoading}
-                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-violet-600 px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-white shadow-[0_0_25px_rgba(168,85,247,0.35)] hover:shadow-[0_0_40px_rgba(168,85,247,0.55)] transition cursor-pointer active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="flex w-full items-center justify-center gap-2 rounded-xl bg-volt px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_25px_rgba(204,242,68,0.35)] hover:bg-[#d4fa4c] hover:shadow-[0_0_40px_rgba(204,242,68,0.55)] transition cursor-pointer active:scale-95"
                         >
-                          {claudePayLoading
-                            ? <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Processing...</>
-                            : <><ShoppingCart className="h-3.5 w-3.5" /> Enroll Now — $45 <span className="opacity-60 line-through ml-1">$175</span></>}
+                          <Zap className="h-3.5 w-3.5 fill-current" />
+                          <span>Unlock All-Access — $159/mo</span>
                         </button>
-                        {claudePayError && (
-                          <p className="text-center text-[11px] text-red-400">{claudePayError}</p>
-                        )}
-                        <p className="text-center text-[10px] text-zinc-600">Secure checkout via Ziina · One-time payment</p>
+                        <p className="text-center text-[10.5px] text-zinc-400">Only $159/mo total · Includes Claude + Full Agency Roadmap · Cancel anytime</p>
                       </div>
                     )}
                   </div>
@@ -1170,9 +1153,9 @@ export function ProgressPage() {
                     </h3>
                     <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed mb-6">
                       {user ? (
-                        <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks.</>
+                        <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. Only $159/mo unlocks all 6 agency stages, weekly live builds, community, and the full Master Claude in 7 Days course.</>
                       ) : (
-                        <>Stages 2 through 6 contain the exact system blueprints, outbound campaigns, and scaling frameworks to reach $50,000/mo.</>
+                        <>Only $159/mo unlocks all 6 stages, weekly live builds, community, and the full Master Claude in 7 Days course.</>
                       )}
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -1181,7 +1164,7 @@ export function ProgressPage() {
                         className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-volt px-6 py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.35)] hover:shadow-[0_0_50px_rgba(204,242,68,0.6)] active:scale-95 transition cursor-pointer"
                       >
                         <Zap className="h-4 w-4 fill-current" />
-                        <span>Unlock All Stages ($159/mo) →</span>
+                        <span>Unlock All Stages + Claude ($159/mo) →</span>
                       </button>
                       <button
                         onClick={() => setActiveLevelTab(1)}

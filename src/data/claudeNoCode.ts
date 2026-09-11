@@ -7,7 +7,7 @@
 
 import type { Day, DayZeroSpec } from "./claude7Days";
 
-export const NOCODE_MAX_XP = 1250;
+export const NOCODE_MAX_XP = 1350;
 
 /* ——— Day 0 ——— */
 export const NOCODE_DAY_ZERO: DayZeroSpec = {
@@ -29,6 +29,12 @@ export const NOCODE_DAY_ZERO: DayZeroSpec = {
   ],
   installHeading: "Get on the right surfaces",
   blocks: [
+    {
+      label: "Pick one email, before you install anything",
+      lang: "ui" as const,
+      code:
+        "One identity, every surface:\ndesktop app · mobile app · web · Chrome extension · every future one\n\nA second email signed up \"just to try something\" = a second Claude —\nno memory, no history, no connectors. Pick your main work email now\nand use it everywhere below.",
+    },
     {
       label: "Install the surfaces you'll actually use",
       lang: "ui" as const,
@@ -62,6 +68,7 @@ export const NOCODE_DAY_ZERO: DayZeroSpec = {
   },
   checks: [
     "I'm on a plan that includes Cowork — or I've consciously decided to run Days 1–3 on Free and upgrade before Day 6.",
+    "I'm using the same email on every surface I installed — desktop, mobile, web, Chrome extension.",
     "The desktop app is installed and signed in on the machine where my real work files live.",
     "Settings → Capabilities has code execution and file creation switched ON.",
     "I ran the setup prompt and Claude has written a profile of me to memory.",
@@ -209,6 +216,34 @@ export const NOCODE_DAYS: Day[] = [
           },
         ],
       },
+      {
+        id: "n1_research",
+        xp: 15,
+        title: "Switch on Research Mode for anything with more than one source",
+        body:
+          "A normal answer draws on what the model already knows, plus maybe one search. Fine for a fact. Not fine for \"who are our top three competitors doing right now, and how has their pricing moved this year\" — that needs Claude to actually go and check, across many sources, and cross-reference what it finds. That's Research Mode: switch it on instead of a quick search, expect it to take several minutes, and expect a sourced report back instead of a paragraph.",
+        callout: {
+          kind: "edge",
+          title: "Slow is the feature, not the bug",
+          body:
+            "Research Mode is the wrong tool for anything you need in thirty seconds. Reach for it only when the question genuinely needs multiple sources cross-checked against each other — a competitor landscape before a pitch, market sizing before a decision, due diligence before a hire. Run one real one today and read the sources it cites, not just the summary.",
+        },
+      },
+      {
+        id: "n1_voice",
+        xp: 15,
+        title: "Talk to it — capture raw input you'd never have typed",
+        body:
+          "Typing is the bottleneck between a thought and a usable document, not thinking itself. Claude takes audio directly through the built-in voice input in the app, or a dictation layer like Whisper Flow if you want it running everywhere you type. The point isn't speed — it's capture: the client-call debrief you'd never type up, the idea you had on a walk, the rambling explanation of a problem that's actually a strategy document once someone structures it.",
+        blocks: [
+          {
+            label: "Capture messy, structure later",
+            lang: "ui",
+            code:
+              "Record it raw:\na call debrief the moment you hang up\na voice memo walking to your car\na rant about what's wrong with the current process\n\nThen run the recording through the ugly-input prompt from the last\ndrill. The structuring is Claude's job, not yours.",
+          },
+        ],
+      },
     ],
     boss: {
       intro:
@@ -218,8 +253,10 @@ export const NOCODE_DAYS: Day[] = [
         "I have a six-part prompt written down and saved, not improvised in the moment.",
         "I ran the same question on two different models and can describe how the answers differed.",
         "I fed Claude a genuinely messy real input and got back something I sent to a person.",
+        "I ran one genuinely multi-source question through Research Mode and read what it cited, not just the summary.",
+        "I captured one real voice note — a call, a walk, a rant — and turned it into something structured.",
       ],
-      xp: 40,
+      xp: 60,
     },
     side: {
       text:
@@ -307,7 +344,15 @@ export const NOCODE_DAYS: Day[] = [
         xp: 15,
         title: "Take control of memory",
         body:
-          "Memory is what stops you reintroducing yourself every morning. It's project-scoped — each project keeps its own separate pool — and it's fully yours: you can view, edit and delete anything Claude has remembered. Go and read yours now; most people are surprised by what's in there and by what's wrong. And when you're working on something you don't want retained, start an incognito chat: it never saves to memory and doesn't appear in your history.",
+          "Memory is what stops you reintroducing yourself every morning. It's project-scoped — each project keeps its own separate pool — and it's fully yours: you can view, edit and delete anything Claude has remembered. Go and read yours now; most people are surprised by what's in there and by what's wrong. Before you switch devices, hand a teammate \"how Claude works with me\", or just want a paper trail of what it's picked up, run the export prompt below and save it as a Skill — a clean, dated record beats scrolling through Settings. And when you're working on something you don't want retained, start an incognito chat: it never saves to memory and doesn't appear in your history.",
+        blocks: [
+          {
+            label: "Export everything it remembers about you",
+            lang: "prompt",
+            code:
+              "Export all of my stored memories and any context you've learned about me\nfrom past conversations. Preserve my words verbatim where possible,\nespecially for instructions and preferences.\n\nCategories, in this order:\n1. Instructions — rules I've explicitly asked you to follow: tone, format,\n   \"always do X\", \"never do Y\", corrections to your behaviour.\n2. Identity — name, role, location, key relationships.\n3. Career — current and past roles, companies, skill areas.\n4. Projects — things I've meaningfully built or committed to, one entry\n   each: what it does, current status, key decisions.\n5. Preferences — opinions and working-style preferences.\n\nFormat each entry as [YYYY-MM-DD] - entry content, oldest first, use\n[unknown] if no date. Wrap the whole export in one code block, and say\nwhether this is everything or whether more remains.",
+          },
+        ],
         callout: {
           kind: "edge",
           title: "Memory rolled out in waves",
@@ -684,6 +729,27 @@ export const NOCODE_DAYS: Day[] = [
             "Live artifacts currently live on the device that created them and don't roam across your devices — so build the one that matters on the machine you actually work on. And a live artifact shared inside your org runs on the viewer's connector access, not yours, so a colleague may legitimately see less than you do.",
         },
       },
+      {
+        id: "n6_dispatch",
+        xp: 30,
+        title: "Dispatch — start it from your phone, let the desktop do the work",
+        body:
+          "Dispatch pairs your phone with your desktop as one continuous, persistent conversation. You send an instruction from your phone; Cowork carries it out on your desktop — with access to your local files, connectors and apps — and you come back to finished work waiting for you. Nothing leaves your machine: the desktop app just has to stay open and running. Send yourself one real instruction from your phone today, before you sit down, and see what's waiting when you do.",
+        blocks: [
+          {
+            label: "A Dispatch instruction worth testing",
+            lang: "prompt",
+            code:
+              "Pull my unread emails and today's calendar and give me a priority list\nfor the morning — what needs me before 10am, what can wait, and what\nlooks like it's actually someone else's job.",
+          },
+        ],
+        callout: {
+          kind: "trap",
+          title: "The desktop has to be on",
+          body:
+            "Dispatch runs on your desktop machine, not in the cloud — if it's asleep or the app is closed, nothing runs. Leave the machine on and the app open before you rely on it for a commute-time brief.",
+        },
+      },
     ],
     boss: {
       intro:
@@ -693,9 +759,10 @@ export const NOCODE_DAYS: Day[] = [
         "I read a plan, changed something in it, and then approved it.",
         "At least two of the four output types exist as real files I opened and checked properly.",
         "One live artifact exists and has refreshed with new data at least once.",
+        "I sent one real instruction from my phone with Dispatch and had finished work waiting when I got to my desktop.",
         "A deliverable Cowork produced has been sent to a real person.",
       ],
-      xp: 70,
+      xp: 90,
     },
     side: {
       text:
@@ -880,6 +947,12 @@ export const NOCODE_PROMPTS: { n: number; title: string; code: string }[] = [
     code:
       "Write the SOP for [the job we just did], for someone who has never done\nit. Include: which Claude surface to use, the exact prompt or skill, what\ntriggers it, what good output looks like, and the two mistakes a first\ntimer will make. One page.",
   },
+  {
+    n: 15,
+    title: "Export my memory",
+    code:
+      "Export all of my stored memories and any context you've learned about me\nfrom past conversations. Preserve my words verbatim where possible.\nCategories, in order: Instructions, Identity, Career, Projects,\nPreferences. One entry per line as [YYYY-MM-DD] - entry, oldest first.\nWrap it all in one code block and say whether this is everything.",
+  },
 ];
 
 /* ——— Appendix: templates ——— */
@@ -1008,6 +1081,7 @@ export const NOCODE_EXAM: string[] = [
   "A skill I wrote is being used by someone who isn't me.",
   "Cowork has produced a deliverable that left my machine and reached a real person.",
   "One live artifact or scheduled session runs without me starting it.",
+  "I've sent a real instruction from my phone with Dispatch and found finished work waiting on my desktop.",
   "Claude is live inside at least two apps I already had open every day.",
   "Three recurring jobs each have a named surface, a written prompt or skill, a trigger and a success check — written down where my team can read it.",
 ];

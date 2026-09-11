@@ -29,9 +29,7 @@ export const DEFAULT_COMMISSION_PCT = 15;
  */
 export const AFFILIATE_PRODUCTS = [
   { code: 'all',              label: 'Everything (universal link)', path: '/',                        blurb: 'Lands on the homepage. Earns on whatever they buy.' },
-  { code: 'claude-master',    label: 'Master Claude in 7 Days',     path: '/claude-master-in-7-days', blurb: '$45 one-time' },
-  { code: 'aaa-accelerator',  label: 'Road to $50K/mo AI Agency',   path: '/progress',                blurb: '$159/mo — earns on every renewal' },
-  { code: 'all-access',       label: 'All Access bundle',           path: '/#courses',                blurb: '$199 one-time' },
+  { code: 'aaa-accelerator',  label: 'AAA Accelerator ($159/mo)',  path: '/progress',                blurb: '$159/mo — earns on every renewal (Includes Claude)' },
   { code: 'session-1on1',     label: '1:1 Private Session',         path: '/#mentors',                blurb: '$599 one-time' },
 ];
 

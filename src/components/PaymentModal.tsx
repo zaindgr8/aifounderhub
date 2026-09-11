@@ -238,6 +238,10 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                 <div className="space-y-1.5 font-mono text-[10.5px] text-zinc-300">
                   <div className="flex items-center gap-2">
                     <span className="text-volt font-bold text-xs">✓</span>
+                    <span>Master Claude in 7 Days Full Course Included</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-volt font-bold text-xs">✓</span>
                     <span>AI Lead Management & Voice Agent Blueprints</span>
                   </div>
                   <div className="flex items-center gap-2">

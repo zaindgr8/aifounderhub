@@ -68,7 +68,7 @@ export default async function checkMember(req, res) {
 
     const hasAccess = activeRows.length > 0;
     const hasRoadmapAccess = activeRows.some((r) => !r.product_code || r.product_code === 'aaa-accelerator' || r.product_code === 'all-access');
-    const hasClaudeAccess = activeRows.some((r) => !r.product_code || r.product_code === 'claude-master' || r.product_code === 'all-access');
+    const hasClaudeAccess = activeRows.some((r) => !r.product_code || r.product_code === 'aaa-accelerator' || r.product_code === 'claude-master' || r.product_code === 'all-access');
     const products = activeRows.map((r) => r.product_code || 'aaa-accelerator');
 
     const primary = activeRows[0] || rows[0];

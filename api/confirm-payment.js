@@ -281,7 +281,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                               <tr>
                                 <td>
                                   <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">AAA Accelerator — Monthly Membership</p>
-                                  <p style="margin:4px 0 0;font-size:11px;color:#52525b;">All 6-Stage Blueprints · Private Community · Weekly Live Builds</p>
+                                  <p style="margin:4px 0 0;font-size:11px;color:#52525b;">All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds</p>
                                 </td>
                                 <td align="right">
                                   <p style="margin:0;font-size:15px;font-weight:800;color:#ccf244;">$159.00</p>
@@ -315,6 +315,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
               <p style="margin:0 0 14px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">What's Unlocked In Your Membership</p>
               <table width="100%" cellpadding="0" cellspacing="0">
                 ${[
+    ['⚡', 'Master Claude in 7 Days — Complete Course & Prompt Engineering Systems'],
     ['🤖', 'Production AI Lead Management System & Retell / Vapi Voice Prompts'],
     ['📦', 'Complete n8n & Make.com CRM Synchronization Workflows'],
     ['🎯', 'High-Converting Cold Outreach Campaigns & Email Templates'],
