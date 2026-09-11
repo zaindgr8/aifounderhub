@@ -301,6 +301,7 @@ const RANKS = [
 
 export function ProgressPage() {
   // ─── Supabase Auth ──────────────────────────────────────────────────────────
+  const { user, loading: authLoading, hasAccess, hasRoadmapAccess, hasClaudeAccess, accessLoading } = useAuth();
   const isUnlocked = hasRoadmapAccess;
   // There is only one package ($159/mo) which includes both RoadMap and Master Claude
   const isClaudeUnlocked = hasClaudeAccess || hasRoadmapAccess || hasAccess;
