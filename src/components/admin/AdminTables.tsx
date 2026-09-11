@@ -546,6 +546,7 @@ function RecordPaymentModal({ onClose, onSaved }: { onClose: () => void; onSaved
               onChange={(e) => {
                 setProductCode(e.target.value);
                 setAmount(
+                  e.target.value === 'aaa-accelerator-yearly' ? '1590' :
                   e.target.value === 'session-1on1' ? '599' :
                   e.target.value === 'claude-master' ? '159' :
                   e.target.value === 'all-access' ? '159' :
@@ -555,6 +556,7 @@ function RecordPaymentModal({ onClose, onSaved }: { onClose: () => void; onSaved
               className="w-full rounded-xl border border-edge bg-panel px-3 py-2.5 text-sm text-zinc-200 focus:border-volt/40 focus:outline-none"
             >
               <option value="aaa-accelerator">AAA Accelerator (Monthly Membership, Includes Claude) — $159/mo</option>
+              <option value="aaa-accelerator-yearly">AAA Accelerator (Annual Membership, 2 Mo Free) — $1,590/yr</option>
               <option value="claude-master">Master Claude in 7 Days (Included in Accelerator) — $159/mo</option>
               <option value="session-1on1">1:1 Private Session — $599</option>
               <option value="other">Other / custom</option>
@@ -650,7 +652,8 @@ function ApproveAccountModal({ onClose, onApproved }: { onClose: () => void; onA
               onChange={(e) => setProductCode(e.target.value)}
               className="w-full rounded-xl border border-edge bg-panel px-3 py-2.5 text-sm text-zinc-200 focus:border-volt/40 focus:outline-none"
             >
-              <option value="aaa-accelerator">🗺️ 50K RoadMap (AAA Accelerator)</option>
+              <option value="aaa-accelerator">🗺️ 50K RoadMap (AAA Accelerator - Monthly)</option>
+              <option value="aaa-accelerator-yearly">🗺️ 50K RoadMap (AAA Accelerator - Annual / 2 Mo Free)</option>
               <option value="claude-master">⚡ Master Claude in 7 Days</option>
               <option value="all-access">👑 All Access (50K RoadMap + Master Claude)</option>
             </select>

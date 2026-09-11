@@ -47,6 +47,7 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
   const [email, setEmail]           = useState("");
   const [phone, setPhone]           = useState("");
   const [country, setCountry]       = useState<Country>(COUNTRIES[0]);
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [error, setError]           = useState<string | null>(null);
   const [loading, setLoading]       = useState(false);
@@ -138,7 +139,9 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
     setLoading(true);
 
     try {
-      const product = PRODUCTS["aaa-accelerator"];
+      const product = billingCycle === 'yearly'
+        ? PRODUCTS["aaa-accelerator-yearly"]
+        : PRODUCTS["aaa-accelerator"];
       trackBeginCheckout({ product: product.code, value: product.priceCents / 100 });
 
       const result = await initiateZiinaPayment({
@@ -213,12 +216,51 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                 </p>
               </div>
 
+              {/* Billing Cycle Toggle */}
+              <div className="mx-7 mt-4">
+                <div className="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-white/[0.04] p-1.5 backdrop-blur-sm">
+                  <button
+                    type="button"
+                    onClick={() => setBillingCycle("monthly")}
+                    className={`flex items-center justify-center gap-2 rounded-xl py-2.5 font-display text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                      billingCycle === "monthly"
+                        ? "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]"
+                        : "text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    <span>Monthly</span>
+                    <span className={`font-mono text-[10.5px] ${billingCycle === "monthly" ? "text-void/80 font-bold" : "text-zinc-500"}`}>
+                      $159/mo
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setBillingCycle("yearly")}
+                    className={`relative flex items-center justify-center gap-1.5 rounded-xl py-2.5 font-display text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                      billingCycle === "yearly"
+                        ? "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]"
+                        : "text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    <span>Yearly</span>
+                    <span className={`rounded-full px-2 py-0.5 font-mono text-[9px] font-extrabold ${
+                      billingCycle === "yearly"
+                        ? "bg-void text-volt"
+                        : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    }`}>
+                      2 Months Free
+                    </span>
+                  </button>
+                </div>
+              </div>
+
               {/* Subscription & Price badge */}
-              <div className="mx-7 mt-5 rounded-xl border border-volt/25 bg-volt/[0.06] p-4">
+              <div className="mx-7 mt-3.5 rounded-xl border border-volt/25 bg-volt/[0.06] p-4">
                 <div className="flex items-start justify-between border-b border-volt/15 pb-3 mb-3">
                   <div>
                     <span className="inline-flex items-center gap-1.5 rounded-md bg-volt/20 border border-volt/30 px-2 py-0.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
-                      ⚡ Monthly Membership
+                      {billingCycle === 'yearly' ? '🔥 Annual Membership · 2 Months Free' : '⚡ Monthly Membership'}
                     </span>
                     <h3 className="font-display text-base font-black uppercase text-white mt-1.5">
                       AAA Accelerator Program
@@ -228,10 +270,22 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="font-display text-2xl font-black text-volt">
-                      {formatPrice(PRODUCTS["aaa-accelerator"].priceCents)}
-                    </p>
-                    <p className="font-mono text-[8px] text-zinc-500">per month · cancel anytime</p>
+                    {billingCycle === 'yearly' ? (
+                      <div>
+                        <div className="flex items-center justify-end gap-1.5">
+                          <span className="font-mono text-xs text-zinc-500 line-through">$1,908</span>
+                          <span className="font-display text-2xl font-black text-volt">$1,590</span>
+                        </div>
+                        <p className="font-mono text-[8px] text-emerald-400 font-bold">pay 10 mos · 2 free · save $318</p>
+                      </div>
+                    ) : (
+                      <div>
+                        <p className="font-display text-2xl font-black text-volt">
+                          $159
+                        </p>
+                        <p className="font-mono text-[8px] text-zinc-500">per month · cancel anytime</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -386,7 +440,11 @@ export function PaymentModal({ open, onClose }: PaymentModalProps) {
                     </>
                   ) : (
                     <>
-                      <span className="relative">Subscribe for $159/mo</span>
+                      <span className="relative">
+                        {billingCycle === 'yearly'
+                          ? 'Subscribe Yearly — $1,590/yr (Save $318)'
+                          : 'Subscribe for $159/mo'}
+                      </span>
                       <ArrowRight className="relative h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </>
                   )}

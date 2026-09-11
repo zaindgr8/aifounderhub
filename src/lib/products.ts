@@ -29,10 +29,17 @@ export const PRODUCTS = {
     checkoutMessage: "AI Founder Hub — AAA Accelerator ($159/month)",
     cancelPath: "/aaa-accelerator",
   },
+  "aaa-accelerator-yearly": {
+    code: "aaa-accelerator-yearly",
+    label: "AAA Accelerator — Annual Membership (2 Months Free)",
+    priceCents: 159_000, // $1,590/year (10 months paid, 2 months free)
+    checkoutMessage: "AI Founder Hub — AAA Accelerator (Annual - $1,590/yr)",
+    cancelPath: "/aaa-accelerator",
+  },
   "claude-master": {
     code: "claude-master",
     label: "Master Claude in 7 Days (Included in Accelerator)",
-    priceCents: 15_900, // Included inside the single $159/mo package
+    priceCents: 15_900, // Included inside the accelerator package
     checkoutMessage: "AI Founder Hub — AAA Accelerator ($159/month)",
     cancelPath: "/claude-master-in-7-days",
   },

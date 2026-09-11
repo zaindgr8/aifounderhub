@@ -32,9 +32,11 @@ export async function createPayment(req, res) {
       fullName, email,
       advisorName,
       productCode = 'aaa-accelerator',
-      amount     = 15900, // cents ($159 default — single package)
+      amount     = (productCode === 'aaa-accelerator-yearly' ? 159000 : 15900),
       message    = (advisorName
         ? `AI Founder Hub — 1:1 Session with ${advisorName}`
+        : productCode === 'aaa-accelerator-yearly'
+        ? 'AI Founder Hub — AAA Accelerator (Annual - $1,590/yr · 2 Mo Free) · Includes Claude'
         : 'AI Founder Hub — AAA Accelerator ($159/month) · Includes Claude'),
       cancelPath = '/progress',
     } = req.body ?? {};

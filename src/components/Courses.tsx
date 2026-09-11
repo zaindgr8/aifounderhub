@@ -48,11 +48,11 @@ const COURSES: CourseItem[] = [
     badgeTone: "purple",
     originalPrice: "$175 Value",
     currentPrice: "INCLUDED",
-    priceNote: "Part of the $159/month package · Claude is fully included",
+    priceNote: "Part of the $159/mo or $1,590/yr package · Claude is fully included",
     description:
       "Master Claude in 7 Days is included inside the single $159/month all-in-one membership. Pick your track: run your business on the Claude app with Projects, Artifacts, Connectors, Skills and Cowork — no code at all — or go deep on Claude Code with CLAUDE.md, subagents, hooks and headless automation.",
     highlights: [
-      "Fully included in the single $159/mo AAA Accelerator package",
+      "Fully included in the single $159/mo or $1,590/yr AAA Accelerator package",
       "No-code track: Projects, Artifacts, Connectors, Skills, Cowork",
       "Developer track: CLAUDE.md, subagents, hooks, worktrees, headless",
       "Claude in Excel, Word, PowerPoint, Outlook, Chrome & Slack",
@@ -68,14 +68,15 @@ const COURSES: CourseItem[] = [
     id: "aaa-roadmap",
     title: "AAA Accelerator",
     subtitle: "All-In-One Package · Full Agency System + Claude Included",
-    badge: "🔥 ONLY $159/MO · ALL-IN-ONE",
+    badge: "🔥 $159/MO OR $1,590/YR",
     badgeTone: "volt",
     originalPrice: "$250/Mo",
     currentPrice: "$159",
-    priceNote: "Only $159 per month total · Claude is included · cancel anytime",
+    priceNote: "$159/month or $1,590/year (2 months free) · Claude included · cancel anytime",
     description:
-      "The complete all-in-one package for $159/month. Build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. Master Claude in 7 Days, weekly live builds, complete blueprints, and private builders community all included.",
+      "The complete all-in-one package for $159/month or $1,590/year (pay 10 months, get 2 months free). Build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. Master Claude in 7 Days, weekly live builds, complete blueprints, and private builders community all included.",
     highlights: [
+      "Monthly ($159/mo) or Annual ($1,590/yr — 2 months free)",
       "Master Claude in 7 Days full course included",
       "Weekly live build sessions & direct feedback",
       "Private 1:1 onboarding & pipeline review",

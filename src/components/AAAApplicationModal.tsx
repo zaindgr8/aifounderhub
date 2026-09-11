@@ -56,7 +56,8 @@ const STAGES = [
 ];
 
 export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const product = PRODUCTS["aaa-accelerator"];
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
+  const product = billingCycle === 'yearly' ? PRODUCTS["aaa-accelerator-yearly"] : PRODUCTS["aaa-accelerator"];
 
   const [step, setStep] = useState<1 | 2>(1);
   const [fullName, setFullName] = useState("");
@@ -364,25 +365,79 @@ export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose:
                   </p>
                 </div>
 
+                {/* Billing Cycle Toggle */}
+                <div className="grid grid-cols-2 gap-1 rounded-2xl border border-white/10 bg-white/[0.04] p-1.5 backdrop-blur-sm">
+                  <button
+                    type="button"
+                    onClick={() => setBillingCycle("monthly")}
+                    className={`flex items-center justify-center gap-2 rounded-xl py-2.5 font-display text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                      billingCycle === "monthly"
+                        ? "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]"
+                        : "text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    <span>Monthly</span>
+                    <span className={`font-mono text-[10.5px] ${billingCycle === "monthly" ? "text-void/80 font-bold" : "text-zinc-500"}`}>
+                      $159/mo
+                    </span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setBillingCycle("yearly")}
+                    className={`relative flex items-center justify-center gap-1.5 rounded-xl py-2.5 font-display text-xs font-black uppercase tracking-wider transition-all duration-200 cursor-pointer ${
+                      billingCycle === "yearly"
+                        ? "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]"
+                        : "text-zinc-400 hover:text-white"
+                    }`}
+                  >
+                    <span>Yearly</span>
+                    <span className={`rounded-full px-2 py-0.5 font-mono text-[9px] font-extrabold ${
+                      billingCycle === "yearly"
+                        ? "bg-void text-volt"
+                        : "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    }`}>
+                      2 Months Free
+                    </span>
+                  </button>
+                </div>
+
                 <div className="rounded-2xl border border-edge bg-void/60 p-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <h3 className="font-display text-[15px] font-extrabold uppercase text-white">
+                      <span className="inline-flex items-center gap-1.5 rounded-md bg-volt/20 border border-volt/30 px-2 py-0.5 font-mono text-[9.5px] font-extrabold uppercase text-volt mb-1">
+                        {billingCycle === 'yearly' ? '🔥 Annual · 2 Months Free' : '⚡ Monthly Membership'}
+                      </span>
+                      <h3 className="font-display text-[15px] font-extrabold uppercase text-white mt-1">
                         {product.label}
                       </h3>
                       <p className="mt-1 font-mono text-[10.5px] text-zinc-500">
-                        Weekly live builds + agency blueprints
+                        Weekly live builds + agency blueprints + Claude course
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-display text-2xl font-black text-volt">{formatPrice(product.priceCents)}</p>
-                      <p className="font-mono text-[8.5px] text-zinc-500">per month · cancel anytime</p>
+                      {billingCycle === 'yearly' ? (
+                        <div>
+                          <div className="flex items-center justify-end gap-1.5">
+                            <span className="font-mono text-xs text-zinc-500 line-through">$1,908</span>
+                            <span className="font-display text-2xl font-black text-volt">$1,590</span>
+                          </div>
+                          <p className="font-mono text-[8px] text-emerald-400 font-bold">pay 10 mos · 2 free</p>
+                        </div>
+                      ) : (
+                        <div>
+                          <p className="font-display text-2xl font-black text-volt">$159</p>
+                          <p className="font-mono text-[8.5px] text-zinc-500">per month · cancel anytime</p>
+                        </div>
+                      )}
                     </div>
                   </div>
 
                   <div className="mt-4 space-y-1.5 border-t border-edge pt-4 font-mono text-[11px] text-zinc-400">
                     <p>
-                      $159/month billed via Ziina. Cancel anytime from inside your dashboard.
+                      {billingCycle === 'yearly'
+                        ? "$1,590/year (save $318, 2 months free) billed via Ziina. Cancel anytime."
+                        : "$159/month billed via Ziina. Cancel anytime from inside your dashboard."}
                     </p>
                     <p>Tool costs (Retell AI, Twilio, Cal.com, Clay) are billed by those providers, not by us.</p>
                   </div>
@@ -403,7 +458,10 @@ export function AAAApplicationModal({ open, onClose }: { open: boolean; onClose:
                     <Loader2 className="h-4 w-4 animate-spin" />
                   ) : (
                     <>
-                      <Lock className="h-4 w-4" /> Subscribe for {formatPrice(product.priceCents)}/mo · Instant Access
+                      <Lock className="h-4 w-4" />
+                      {billingCycle === 'yearly'
+                        ? 'Subscribe Yearly — $1,590/yr (Save $318)'
+                        : 'Subscribe for $159/mo · Instant Access'}
                     </>
                   )}
                 </button>

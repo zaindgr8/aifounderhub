@@ -63,7 +63,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-volt"></span>
                 </span>
-                Monthly Membership · Instant Access
+                Monthly & Annual · Instant Access
               </span>
             </div>
           </Reveal>
@@ -129,7 +129,7 @@ export function Membership({ onPay }: { onPay?: () => void }) {
               <div className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                 <div className="flex items-center gap-1.5 whitespace-nowrap">
                   <ShieldCheck className="h-3.5 w-3.5 text-volt flex-shrink-0" />
-                  <span>$159/month · cancel anytime · instant access · Claude course included</span>
+                  <span>$159/mo or $1,590/yr (2 months free) · cancel anytime · Claude included</span>
                 </div>
               </div>
             </div>

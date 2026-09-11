@@ -915,9 +915,9 @@ export function ProgressPage() {
                           className="flex w-full items-center justify-center gap-2 rounded-xl bg-volt px-4 py-3 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_25px_rgba(204,242,68,0.35)] hover:bg-[#d4fa4c] hover:shadow-[0_0_40px_rgba(204,242,68,0.55)] transition cursor-pointer active:scale-95"
                         >
                           <Zap className="h-3.5 w-3.5 fill-current" />
-                          <span>Unlock All-Access — $159/mo</span>
+                          <span>Unlock All-Access — $159/mo or $1,590/yr</span>
                         </button>
-                        <p className="text-center text-[10.5px] text-zinc-400">Only $159/mo total · Includes Claude + Full Agency Roadmap · Cancel anytime</p>
+                        <p className="text-center text-[10.5px] text-zinc-400">Monthly ($159/mo) or Yearly ($1,590/yr · 2 months free) · Claude included · Cancel anytime</p>
                       </div>
                     )}
                   </div>
@@ -1154,9 +1154,9 @@ export function ProgressPage() {
                     </h3>
                     <p className="text-xs text-zinc-400 max-w-md mx-auto leading-relaxed mb-6">
                       {user ? (
-                        <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. Only $159/mo unlocks all 6 agency stages, weekly live builds, community, and the full Master Claude in 7 Days course.</>
+                        <>You are signed in as <span className="text-volt font-bold">{user.email}</span>. $159/mo or $1,590/yr (2 months free) unlocks all 6 agency stages, weekly live builds, community, and the full Master Claude in 7 Days course.</>
                       ) : (
-                        <>Only $159/mo unlocks all 6 stages, weekly live builds, community, and the full Master Claude in 7 Days course.</>
+                        <>Only $159/mo or $1,590/yr (2 months free) unlocks all 6 stages, weekly live builds, community, and the full Master Claude in 7 Days course.</>
                       )}
                     </p>
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -1165,7 +1165,7 @@ export function ProgressPage() {
                         className="w-full sm:w-auto flex items-center justify-center gap-2 rounded-full bg-volt px-6 py-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-void shadow-[0_0_30px_rgba(204,242,68,0.35)] hover:shadow-[0_0_50px_rgba(204,242,68,0.6)] active:scale-95 transition cursor-pointer"
                       >
                         <Zap className="h-4 w-4 fill-current" />
-                        <span>Unlock All Stages + Claude ($159/mo) →</span>
+                        <span>Unlock All Stages + Claude ($159/mo or $1,590/yr) →</span>
                       </button>
                       <button
                         onClick={() => setActiveLevelTab(1)}

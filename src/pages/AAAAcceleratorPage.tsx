@@ -99,7 +99,7 @@ const INCLUSIONS = {
     "Master Claude in 7 Days full course & curriculum included",
     "Full access to AI Founder Hub community & build archives",
     "In-person Dubai meetups with active AAA builders",
-    "$159/month subscription — cancel anytime, no lock-in",
+    "$159/month or $1,590/year (2 months free) — cancel anytime, no lock-in",
   ],
 };
 
@@ -134,7 +134,7 @@ const PROGRAM_INFO = [
   { label: "Program", value: "AAA Accelerator — AI Automation Agency Accelerator" },
   { label: "Access", value: "Instant Access Upon Subscription" },
   { label: "Format", value: "Weekly Live Zoom Builds + Community Access" },
-  { label: "Investment", value: "$159/month — cancel anytime" },
+  { label: "Investment", value: "$159/mo or $1,590/yr (2 months free)" },
   { label: "Commitment", value: "8–10 hours per week recommended" },
   { label: "Recordings", value: "All sessions recorded and yours to keep" },
 ];
@@ -162,7 +162,7 @@ const FAQS = [
   },
   {
     q: "How does the subscription work?",
-    a: "It is a straightforward $159/month subscription. As long as you remain subscribed, you have complete access to weekly live builds, new agent blueprints, the private builders group, and Dubai meetups. You can cancel anytime from inside your dashboard with no lock-in.",
+    a: "You can choose either Monthly ($159/month) or Annual ($1,590/year, which pays for 10 months and gives you 2 months free — saving $318). Both options include full access to weekly live builds, new agent blueprints, Master Claude in 7 Days, the private builders group, and Dubai meetups. You can cancel anytime with zero lock-in.",
   },
   {
     q: "Can I cancel anytime?",
@@ -248,7 +248,7 @@ export function AAAAcceleratorPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-volt opacity-70" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-volt" />
                 </span>
-                Monthly Membership · $159/mo · Instant Access
+                Monthly & Annual · $159/mo or $1,590/yr · Instant Access
               </div>
             </Reveal>
             <Reveal delay={0.06}>
@@ -277,7 +277,7 @@ export function AAAAcceleratorPage() {
                     { label: "Access", value: "Instant", icon: Zap },
                     { label: "Format", value: "Weekly Live", icon: Clock },
                     { label: "Community", value: "Online + Dubai", icon: Users },
-                    { label: "Investment", value: "$159/mo", icon: DollarSign },
+                    { label: "Investment", value: "$159/mo or $1,590/yr", icon: DollarSign },
                   ].map((s) => (
                     <div key={s.label} className="flex flex-col items-center gap-1 px-4 py-4">
                       <s.icon className="h-4 w-4 text-volt mb-1" />
@@ -316,7 +316,7 @@ export function AAAAcceleratorPage() {
                   </button>
                 </div>
                 <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">
-                  $159/month · Cancel anytime · Instant access · Direct checkout via Ziina
+                  $159/mo or $1,590/yr (2 months free) · Cancel anytime · Instant access · Direct checkout via Ziina
                 </span>
               </div>
             </Reveal>
@@ -533,13 +533,35 @@ export function AAAAcceleratorPage() {
                       $4,277
                     </span>
                   </div>
-                  <div className="flex items-center justify-between px-5 py-4">
-                    <span className="font-display text-[16px] font-extrabold uppercase text-volt">
-                      Monthly Membership
-                    </span>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-5 py-4 border-b border-volt/15">
+                    <div>
+                      <span className="font-display text-[15px] font-extrabold uppercase text-volt">
+                        Monthly Membership
+                      </span>
+                      <span className="block font-mono text-[11px] text-zinc-400">Cancel anytime</span>
+                    </div>
                     <span className="font-display text-2xl font-black text-volt">
-                      $159 / mo
+                      $159 <span className="text-sm font-semibold text-zinc-400">/ mo</span>
                     </span>
+                  </div>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-5 py-4 bg-volt/[0.04]">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-display text-[15px] font-extrabold uppercase text-white">
+                          Annual Membership
+                        </span>
+                        <span className="rounded-full bg-volt/20 border border-volt/40 px-2 py-0.5 font-mono text-[9px] font-extrabold uppercase text-volt">
+                          2 Months Free
+                        </span>
+                      </div>
+                      <span className="block font-mono text-[11px] text-zinc-400">Pay for 10 months · Save $318/yr</span>
+                    </div>
+                    <div className="text-right">
+                      <span className="font-display text-2xl font-black text-white">
+                        $1,590 <span className="text-sm font-semibold text-zinc-400">/ yr</span>
+                      </span>
+                      <span className="block font-mono text-[10px] text-zinc-400 line-through">$1,908</span>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -549,8 +571,8 @@ export function AAAAcceleratorPage() {
             <Reveal delay={0.18}>
               <div className="mt-5 space-y-2">
                 {[
-                  "Billing: $159 per month. You can cancel at any time from inside your account with zero lock-in.",
-                  "Full access included: Weekly live build sessions, six vertical prompt libraries, complete agency templates, and private builders community.",
+                  "Billing: $159 per month or $1,590 per year (2 months free — save $318). You can cancel at any time from inside your account with zero lock-in.",
+                  "Full access included: Weekly live build sessions, six vertical prompt libraries, complete agency templates, Master Claude in 7 Days, and private builders community.",
                   "Tool costs are separate: budget roughly $50–$120 a month for Retell AI, Twilio, Cal.com and Clay while you build and demo. Those providers bill you directly, not us.",
                   "Refunds: seven days from subscription if it's not the right fit. Cancel anytime.",
                   "One client at $2,000 setup covers the entire year of membership.",
@@ -756,8 +778,8 @@ export function AAAAcceleratorPage() {
             </Reveal>
             <Reveal delay={0.12}>
               <p className="mx-auto mt-5 max-w-lg text-[14px] text-zinc-400 leading-relaxed">
-                Join the AAA Accelerator for $159/month. Instant access to the complete agency blueprints,
-                weekly live build sessions, private community, and sales playbooks. Cancel anytime.
+                Join the AAA Accelerator for $159/month or $1,590/year (2 months free). Instant access to the complete agency blueprints,
+                weekly live build sessions, private community, Master Claude in 7 Days, and sales playbooks. Cancel anytime.
               </p>
             </Reveal>
             <Reveal delay={0.18}>
@@ -784,7 +806,7 @@ export function AAAAcceleratorPage() {
                 <div className="flex items-center gap-3 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                   <span>Instant access</span>
                   <span className="h-1 w-1 rounded-full bg-zinc-600" />
-                  <span>$159/mo subscription</span>
+                  <span>$159/mo or $1,590/yr (2 mo free)</span>
                   <span className="h-1 w-1 rounded-full bg-zinc-600" />
                   <span>Cancel anytime</span>
                 </div>

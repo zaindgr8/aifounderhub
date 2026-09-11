@@ -30,11 +30,12 @@ async function upsertMember(email, { fullName, pkg } = {}) {
   }
 
   const code = pkg?.code || 'aaa-accelerator';
-  // One-time courses do not lapse; the monthly RoadMap gets a 31-day window
-  // that each renewal payment extends.
+  const isYearly = code === 'aaa-accelerator-yearly';
+  const durationMs = isYearly ? 370 * 24 * 60 * 60 * 1000 : 31 * 24 * 60 * 60 * 1000;
+  // One-time courses do not lapse; monthly gets 31 days, yearly gets 370 days
   const expiresAt = pkg && pkg.recurring === false
     ? null
-    : new Date(Date.now() + 31 * 24 * 60 * 60 * 1000).toISOString();
+    : new Date(Date.now() + durationMs).toISOString();
 
   try {
     // grant_member_product() upserts on (email, product) atomically. Posting
@@ -205,7 +206,20 @@ function setCors(res) {
 }
 
 // ─── Email template ────────────────────────────────────────────────────────────
-function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
+function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg }) {
+  const isYearly = pkg?.code === 'aaa-accelerator-yearly' || (amount && amount >= 150000);
+  const planTitle = isYearly
+    ? 'Annual Subscription ($1,590/yr · 2 Months Free) · Instant Access'
+    : 'Monthly Subscription ($159/mo) · Instant Access';
+  const planDesc = isYearly
+    ? 'All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds · 2 Months Free'
+    : 'All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds';
+  const itemPrice = isYearly ? '$1,590.00' : '$159.00';
+  const totalPaid = isYearly ? '$1,590.00 USD / yr' : '$159.00 USD / mo';
+  const subMessage = isYearly
+    ? 'Your <strong style="color:#ccf244;">annual subscription (with 2 months free)</strong> is active with instant access.'
+    : 'Your <strong style="color:#ccf244;">monthly subscription</strong> is active with instant access.';
+
   const dateStr = new Date().toLocaleString('en-GB', {
     timeZone: 'Asia/Dubai',
     hour12: true,
@@ -235,7 +249,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
             <td style="background:linear-gradient(135deg,#0d0d14 0%,#12121c 100%);padding:40px 40px 32px;border-bottom:1px solid #1e1e2a;text-align:center;">
               <span style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ccf244;text-transform:uppercase;">⚡ AI Founder Hub</span>
               <h1 style="margin:16px 0 8px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;line-height:1.2;">Welcome to AAA Accelerator! 🎉</h1>
-              <p style="margin:0;font-size:15px;color:#a1a1aa;line-height:1.6;">Your <strong style="color:#ccf244;">monthly subscription</strong> is active with instant access.</p>
+              <p style="margin:0;font-size:15px;color:#a1a1aa;line-height:1.6;">${subMessage}</p>
             </td>
           </tr>
 
@@ -261,7 +275,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                 <tr>
                   <td style="padding-bottom:20px;">
                     <p style="margin:0 0 4px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">Membership Plan</p>
-                    <p style="margin:0;font-size:14px;font-weight:700;color:#ffffff;">Monthly Subscription ($159/mo) · Instant Access</p>
+                    <p style="margin:0;font-size:14px;font-weight:700;color:#ffffff;">${planTitle}</p>
                   </td>
                 </tr>
 
@@ -280,11 +294,11 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                             <table width="100%" cellpadding="0" cellspacing="0">
                               <tr>
                                 <td>
-                                  <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">AAA Accelerator — Monthly Membership</p>
-                                  <p style="margin:4px 0 0;font-size:11px;color:#52525b;">All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds</p>
+                                  <p style="margin:0;font-size:13px;font-weight:600;color:#e4e4e7;">${pkg?.label || (isYearly ? 'AAA Accelerator — Annual Membership' : 'AAA Accelerator — Monthly Membership')}</p>
+                                  <p style="margin:4px 0 0;font-size:11px;color:#52525b;">${planDesc}</p>
                                 </td>
                                 <td align="right">
-                                  <p style="margin:0;font-size:15px;font-weight:800;color:#ccf244;">$159.00</p>
+                                  <p style="margin:0;font-size:15px;font-weight:800;color:#ccf244;">${itemPrice}</p>
                                 </td>
                               </tr>
                             </table>
@@ -295,7 +309,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId }) {
                             <table width="100%" cellpadding="0" cellspacing="0">
                               <tr>
                                 <td><p style="margin:0;font-size:12px;font-weight:700;color:#71717a;">TOTAL PAID</p></td>
-                                <td align="right"><p style="margin:0;font-size:18px;font-weight:900;color:#ffffff;">$159.00 USD / mo</p></td>
+                                <td align="right"><p style="margin:0;font-size:18px;font-weight:900;color:#ffffff;">${totalPaid}</p></td>
                               </tr>
                             </table>
                           </td>
@@ -465,7 +479,7 @@ export async function confirmPayment(req, res) {
           subject: isSession
             ? `🗓️ Session Booked — 1:1 with ${advisorName} · AI Founder Hub`
             : '🎉 Payment Confirmed — AI Founder Hub Course Access',
-          html:    buildConfirmationEmail({ fullName, email, paymentIntentId }),
+          html:    buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg }),
         }),
       );
     }
