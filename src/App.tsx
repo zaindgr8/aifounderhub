@@ -1,7 +1,8 @@
 import React, { useState, useEffect, Suspense, lazy } from "react";
 import { Nav } from "./components/Nav";
 import { Hero } from "./components/Hero";
-import { ToolsMarquee, TerminalShowcase } from "./components/TerminalShowcase";
+import { ToolsMarquee } from "./components/TerminalShowcase";
+import { FounderStory } from "./components/FounderStory";
 import { Courses } from "./components/Courses";
 import { Workshops } from "./components/Workshops";
 import { Membership } from "./components/Membership";
@@ -152,8 +153,11 @@ export default function App() {
       <main>
         <Hero onOpenModal={setActiveModal} />
         <ToolsMarquee />
-        <TerminalShowcase />
-        {/* <StatsBand /> */}
+        <FounderStory
+          onOpenModal={setActiveModal}
+          onOpenClaudeModal={() => setClaudePopupOpen(true)}
+        />
+        <CircuitDivider />
         <Courses />
         <CircuitDivider />
         <Workshops />
