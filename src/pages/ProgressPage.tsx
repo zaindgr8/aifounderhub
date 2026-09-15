@@ -27,6 +27,7 @@ import {
   ChevronDown,
   ExternalLink,
   BookOpen,
+  FileText,
   Map,
   Settings,
   Play,
@@ -510,6 +511,33 @@ export function ProgressPage() {
                   <div className="invisible opacity-0 translate-y-2 group-hover/res:visible group-hover/res:opacity-100 group-hover/res:translate-y-0 transition-all duration-200 ease-out absolute right-0 top-full pt-2 z-50 pointer-events-none group-hover/res:pointer-events-auto">
                     <div className="w-80 sm:w-88 rounded-2xl border border-volt/30 bg-[#0e0e18]/95 p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-xl relative overflow-hidden text-left space-y-2.5">
                       <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-volt/10 blur-[40px]" />
+
+                      {/* Claude Mastery Resource */}
+                      <a
+                        href="https://docs.google.com/document/d/1lFrm3UR9Dw7rXoq3NuGJ-jyq7WsyCgdADpHkubDNLvc/edit?usp=sharing"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/item flex items-start gap-3 rounded-xl border border-purple-500/30 bg-purple-500/[0.06] p-3 transition-all duration-200 hover:border-purple-400 hover:bg-purple-500/[0.12] cursor-pointer"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-purple-400/30 bg-purple-500/15 text-purple-300 group-hover/item:bg-purple-500 group-hover/item:text-white transition-colors">
+                          <FileText className="h-4.5 w-4.5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="font-display text-xs font-black uppercase tracking-tight text-white group-hover/item:text-purple-300 transition-colors truncate">
+                              Claude Mastery (12th Sept)
+                            </span>
+                            <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-purple-300 shrink-0 transition-colors" />
+                          </div>
+                          <p className="font-mono text-[11px] font-semibold text-purple-200/90 mt-1 leading-snug group-hover/item:text-white transition-colors">
+                            CLAUDE: LEVEL 1 → LEVEL 3
+                          </p>
+                          <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-purple-300">
+                            <span>Open Google Doc</span>
+                            <span>→</span>
+                          </div>
+                        </div>
+                      </a>
 
                       {/* 5th Sept Resource */}
                       <a

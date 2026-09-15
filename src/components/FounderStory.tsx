@@ -211,7 +211,7 @@ export function FounderStory({ onOpenModal, onOpenClaudeModal }: FounderStoryPro
         {/* 2-Column Content Grid: Left Story/Proof + Right Video Player */}
         <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-14">
           
-          {/* Left Column: Authentic Story, Philosophy & Credentials (7 cols) */}
+          {/* Left Column: Minimalist Headings & Core Pillars (7 cols) */}
           <div className="lg:col-span-7">
             <Reveal delay={0.05}>
               <h2 className="font-display text-3xl sm:text-5xl lg:text-[54px] font-black uppercase leading-[0.96] tracking-tight text-white">
@@ -223,97 +223,72 @@ export function FounderStory({ onOpenModal, onOpenClaudeModal }: FounderStoryPro
             </Reveal>
 
             <Reveal delay={0.1}>
-              <p className="mt-5 text-base sm:text-lg leading-relaxed text-zinc-300 font-normal">
-                The internet is flooded with "AI gurus" selling slide decks who have never
-                written a production workflow or closed a real retainer.
+              <p className="mt-4 text-base sm:text-xl font-light text-zinc-300">
+                Real production systems. Zero fluff. Built by an active agency operator.
               </p>
             </Reveal>
 
-            {/* Founder Quote Card */}
-            <Reveal delay={0.15}>
-              <div className="mt-6 relative rounded-2xl border border-volt/20 bg-panel/80 p-5 sm:p-6 backdrop-blur-xl shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
-                <div className="absolute -left-1 top-6 h-10 w-1.5 rounded-r-full bg-volt" />
-                <p className="font-serif text-lg sm:text-xl italic text-zinc-100 leading-relaxed">
-                  "I don’t teach from textbooks. I run Devmate Solutions from Dubai daily, building
-                  real AI automations and SaaS architectures for 40+ brands worldwide. AI Founder Hub
-                  exists so you can bypass tutorial hell and start shipping real systems that clients
-                  pay $2k to $5k a month for."
-                </p>
-                <div className="mt-4 flex items-center justify-between border-t border-edge/60 pt-3">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src="/me.svg"
-                      alt="Zain Ul Abideen"
-                      className="h-10 w-10 rounded-full border border-volt/40 object-cover bg-[#13131c]"
-                    />
-                    <div>
-                      <h4 className="font-display text-sm font-bold text-white tracking-tight">
-                        Zain Ul Abideen
-                      </h4>
-                      <p className="font-mono text-[10.5px] text-zinc-400">
-                        Founder &amp; CEO · AI Founder Hub | Devmate Solutions
-                      </p>
-                    </div>
-                  </div>
-                  <div className="hidden sm:flex items-center gap-1.5 font-mono text-[10px] text-volt bg-volt/10 border border-volt/25 rounded-md px-2.5 py-1">
-                    <span>🇦🇪 Dubai, UAE</span>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            {/* 3 Pillars of Authenticity */}
-            <div className="mt-8 space-y-3.5">
-              <Reveal delay={0.2}>
-                <div className="group flex items-start gap-3.5 rounded-xl border border-edge bg-panel/40 p-3.5 transition-colors hover:border-volt/30 hover:bg-panel/70">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-volt/10 text-volt transition-transform group-hover:scale-105">
+            {/* Minimalist Key Titles */}
+            <div className="mt-8 space-y-3">
+              <Reveal delay={0.15}>
+                <div className="group flex items-center gap-3.5 rounded-xl border border-edge/80 bg-panel/50 px-4 py-3.5 backdrop-blur-md transition-all hover:border-volt/40 hover:bg-panel/80">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-volt/10 text-volt">
                     <Code2 className="h-4 w-4" />
                   </div>
-                  <div>
-                    <h5 className="font-display text-sm font-bold uppercase tracking-tight text-white">
-                      Active Agency Operator, Not a Theorist
-                    </h5>
-                    <p className="mt-0.5 text-xs sm:text-[13px] leading-relaxed text-zinc-400">
-                      Every prompt, subagent hook, Make scenario, and Voice AI flow comes straight from working client systems.
-                    </p>
+                  <h3 className="font-display text-sm sm:text-base font-bold uppercase tracking-tight text-white">
+                    Active Agency Operator, Not a Theorist
+                  </h3>
+                </div>
+              </Reveal>
+
+              <Reveal delay={0.2}>
+                <div className="group flex items-center gap-3.5 rounded-xl border border-edge/80 bg-panel/50 px-4 py-3.5 backdrop-blur-md transition-all hover:border-volt/40 hover:bg-panel/80">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-lilac/10 text-lilac">
+                    <Zap className="h-4 w-4" />
                   </div>
+                  <h3 className="font-display text-sm sm:text-base font-bold uppercase tracking-tight text-white">
+                    Battle-Tested Production Blueprints
+                  </h3>
                 </div>
               </Reveal>
 
               <Reveal delay={0.25}>
-                <div className="group flex items-start gap-3.5 rounded-xl border border-edge bg-panel/40 p-3.5 transition-colors hover:border-volt/30 hover:bg-panel/70">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-lilac/10 text-lilac transition-transform group-hover:scale-105">
-                    <Zap className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h5 className="font-display text-sm font-bold uppercase tracking-tight text-white">
-                      Idea ➔ Build ➔ Launch Velocity
-                    </h5>
-                    <p className="mt-0.5 text-xs sm:text-[13px] leading-relaxed text-zinc-400">
-                      From zero to signed client in 90 days. You get copy-paste proposals, pricing sheets, and technical blueprints.
-                    </p>
-                  </div>
-                </div>
-              </Reveal>
-
-              <Reveal delay={0.3}>
-                <div className="group flex items-start gap-3.5 rounded-xl border border-edge bg-panel/40 p-3.5 transition-colors hover:border-volt/30 hover:bg-panel/70">
-                  <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-400 transition-transform group-hover:scale-105">
+                <div className="group flex items-center gap-3.5 rounded-xl border border-edge/80 bg-panel/50 px-4 py-3.5 backdrop-blur-md transition-all hover:border-volt/40 hover:bg-panel/80">
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-400">
                     <Users className="h-4 w-4" />
                   </div>
-                  <div>
-                    <h5 className="font-display text-sm font-bold uppercase tracking-tight text-white">
-                      Direct 1-on-1 Founder Working Sessions
-                    </h5>
-                    <p className="mt-0.5 text-xs sm:text-[13px] leading-relaxed text-zinc-400">
-                      Private 40-minute deep-dives with Zain to unblock your build, validate your offer, and position your agency.
-                    </p>
-                  </div>
+                  <h3 className="font-display text-sm sm:text-base font-bold uppercase tracking-tight text-white">
+                    Direct 1-on-1 Founder Working Sessions
+                  </h3>
                 </div>
               </Reveal>
             </div>
 
-            {/* CTAs & Social Links */}
+            {/* Founder Signature Pill */}
+            <Reveal delay={0.3}>
+              <div className="mt-7 flex items-center gap-3.5 rounded-xl border border-white/10 bg-white/[0.03] p-3 backdrop-blur-sm max-w-fit">
+                <img
+                  src="/me.svg"
+                  alt="Zain Ul Abideen"
+                  className="h-10 w-10 rounded-full border border-volt/40 object-cover bg-[#13131c]"
+                />
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-display text-sm font-bold text-white tracking-tight">
+                      Zain Ul Abideen
+                    </h4>
+                    <span className="font-mono text-[10px] text-volt bg-volt/10 border border-volt/20 rounded px-1.5 py-0.5">
+                      🇦🇪 Dubai, UAE
+                    </span>
+                  </div>
+                  <p className="font-mono text-[11px] text-zinc-400">
+                    Founder &amp; CEO · Devmate Solutions &amp; AI Founder Hub
+                  </p>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* CTAs */}
             <Reveal delay={0.35}>
               <div className="mt-8 flex flex-wrap items-center gap-4">
                 <Magnetic strength={0.2}>
