@@ -108,7 +108,7 @@ export function FreeMasterclassPage() {
           countryCode: country.code,
           fullPhoneNumber,
           goal: "workshop",
-          workshopTitle: "Claude Mastery: From Level 1 to Level 3",
+          workshopTitle: "Never Lose A Lead: Build & Sell 5-Sec AI Callbacks",
           source: "freemasterclass-direct-page",
           submittedAt: new Date().toISOString(),
           ticketNumber: generatedTicket,
@@ -252,29 +252,29 @@ export function FreeMasterclassPage() {
               {/* Top Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase text-volt mb-3">
                 <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
-                <span>Next Live Class: This Saturday (Limited Seats)</span>
+                <span>NEXT LIVE CLASS: THIS SATURDAY (LIMITED SEATS)</span>
               </div>
 
               {/* Title & Core Hook */}
               <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                <span className="text-volt">CLAUDE MASTERY</span>: FROM LEVEL 1 TO LEVEL 3
+                <span className="text-volt">NEVER LOSE A LEAD</span>: BUILD &amp; SELL 5-SEC AI CALLBACKS
               </h1>
               <p className="mt-2 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                Join our free live masterclass this Saturday. We'll break down the 3 levels of Claude mastery — memory, models, and skills; connectors and browsing; and full agentic workflows with Cowork and Dispatch — then set it all up live, end to end, so you leave running Claude like the top 1% of users. Most people never make it past Level 1. This Saturday, you will.
+                Over 70% of website leads bounce to a competitor simply because nobody reached out fast enough. In this free live masterclass, we’ll build an end-to-end AI voice system that calls new leads within 5 seconds, qualifies them, and books appointments 24/7. Then, we’ll hand you the exact blueprint to package and sell this high-ticket automation to businesses hungry for speed-to-lead.
               </p>
 
               {/* Highlights Bar */}
               <div className="my-5 grid grid-cols-3 gap-2 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-3 text-center">
                 <div className="border-r border-zinc-800/80 pr-1">
-                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">Format</p>
-                  <p className="text-xs font-bold text-white mt-0.5">Live + Q&amp;A</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">FORMAT</p>
+                  <p className="text-xs font-bold text-white mt-0.5">Live Build + Q&amp;A</p>
                 </div>
                 <div className="border-r border-zinc-800/80 px-1">
-                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">You Leave With</p>
-                  <p className="text-xs font-bold text-volt mt-0.5">A fully set-up Claude</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU LEAVE WITH</p>
+                  <p className="text-xs font-bold text-volt mt-0.5">Ready-to-Deploy System</p>
                 </div>
                 <div className="pl-1">
-                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">Access</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">ACCESS</p>
                   <p className="text-xs font-bold text-white mt-0.5">100% Free</p>
                 </div>
               </div>
@@ -452,7 +452,7 @@ export function FreeMasterclassPage() {
                     </span>
                   ) : (
                     <>
-                      <span>CLAIM FREE SEAT</span>
+                      <span>CLAIM FREE SPOT</span>
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </>
                   )}

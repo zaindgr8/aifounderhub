@@ -4,11 +4,10 @@ import { Magnetic, Reveal } from "./shared";
 import { WorkshopRegistrationModal } from "./WorkshopRegistrationModal";
 
 const FREE_MASTERCLASS = {
-  title: "Free Master Class",
-  desc:  "Your front-row seat to the AI builder revolution — live, free, and hands-on.",
+  title: "NEVER LOSE A LEAD: BUILD & SELL 5-SEC AI CALLBACKS",
+  desc:  "Over 70% of website leads bounce to a competitor simply because nobody reached out fast enough. In this free live masterclass, we’ll build an end-to-end AI voice system that calls new leads within 5 seconds, qualifies them, and books appointments 24/7. Then, we’ll hand you the exact blueprint to package and sell this high-ticket automation to businesses hungry for speed-to-lead.",
   emoji: "⚡",
-  tagline:
-    "We'll email you the next session link, calendar invite, and everything you need to join live.",
+  tagline: "Live Build + Q&A · Ready-to-Deploy System · 100% Free",
 };
 
 export function FinalCta() {

@@ -301,32 +301,32 @@ export function WorkshopRegistrationModal({
                           {workshop?.emoji}
                         </span>
                         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-volt">
-                          Free Masterclass
+                          ● NEXT LIVE CLASS: THIS SATURDAY (LIMITED SEATS)
                         </span>
                       </div>
 
                       <h2 className="font-display text-xl font-extrabold uppercase leading-tight tracking-tight text-white">
                         {workshop?.title}
                       </h2>
-                      <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-500">
-                        {workshop?.tagline}
+                      <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-400">
+                        {workshop?.desc || workshop?.tagline}
                       </p>
                     </div>
 
-                    {/* Trust strip */}
-                    <div className="flex items-center justify-around border-b border-white/5 bg-white/[0.02] px-7 py-2.5">
-                      {[
-                        { icon: Zap,      label: "100% Free" },
-                        { icon: Calendar, label: "Live Session" },
-                        { icon: Bell,     label: "Get Updates" },
-                      ].map(({ icon: Icon, label }) => (
-                        <div key={label} className="flex items-center gap-1.5">
-                          <Icon className="h-3 w-3 text-volt" />
-                          <span className="font-mono text-[9px] font-bold uppercase tracking-wider text-zinc-500">
-                            {label}
-                          </span>
-                        </div>
-                      ))}
+                    {/* Info / Feature Boxes (3 Columns) */}
+                    <div className="grid grid-cols-3 gap-2 border-b border-white/5 bg-white/[0.02] px-7 py-2.5 text-center">
+                      <div className="border-r border-zinc-800/80 pr-1">
+                        <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">FORMAT</p>
+                        <p className="text-[11px] font-bold text-white mt-0.5">Live Build + Q&amp;A</p>
+                      </div>
+                      <div className="border-r border-zinc-800/80 px-1">
+                        <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU LEAVE WITH</p>
+                        <p className="text-[11px] font-bold text-volt mt-0.5">Ready-to-Deploy System</p>
+                      </div>
+                      <div className="pl-1">
+                        <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">ACCESS</p>
+                        <p className="text-[11px] font-bold text-white mt-0.5">100% Free</p>
+                      </div>
                     </div>
 
                     {/* Form */}
@@ -467,7 +467,7 @@ export function WorkshopRegistrationModal({
                           </>
                         ) : (
                           <>
-                            <span className="relative">Reserve My Free Seat</span>
+                            <span className="relative">Claim Free Spot</span>
                             <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
                           </>
                         )}

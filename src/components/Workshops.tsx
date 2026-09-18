@@ -9,10 +9,10 @@ import { Reveal, SectionTag } from "./shared";
 import { WorkshopRegistrationModal } from "./WorkshopRegistrationModal";
 
 const FREE_MASTERCLASS_DETAILS = {
-  title: "Weekly AI Automation Agency (AAA) Masterclass",
-  desc: "Live, hands-on masterclass where we build AI voice assistants, chatbots, and CRM automations from scratch using Retell AI, Vapi, and n8n.",
+  title: "NEVER LOSE A LEAD: BUILD & SELL 5-SEC AI CALLBACKS",
+  desc: "Over 70% of website leads bounce to a competitor simply because nobody reached out fast enough. In this free live masterclass, we’ll build an end-to-end AI voice system that calls new leads within 5 seconds, qualifies them, and books appointments 24/7. Then, we’ll hand you the exact blueprint to package and sell this high-ticket automation to businesses hungry for speed-to-lead.",
   emoji: "⚡",
-  tagline: "Free live weekly masterclass covering voice agents, chatbots, automations, and lead generation.",
+  tagline: "Live Build + Q&A · Ready-to-Deploy System · 100% Free",
 };
 
 const MARKET_STATS = [
