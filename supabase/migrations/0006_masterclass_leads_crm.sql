@@ -8,11 +8,21 @@ do $$ begin
     'new',
     'contacted',
     'interested',
+    'meeting_booked',
+    'closed',
     'not_interested',
     'enrolled',
     'lost'
   );
 exception when duplicate_object then null; end $$;
+
+-- Add new enum values if type already existed
+alter type lead_crm_status add value if not exists 'meeting_booked';
+alter type lead_crm_status add value if not exists 'closed';
+
+-- Convert status column to text so all custom statuses (e.g. Meeting Booked, Closed) work seamlessly
+alter table masterclass_leads alter column status type text using status::text;
+alter table masterclass_leads alter column status set default 'new';
 
 -- 2. Intent level enum
 do $$ begin

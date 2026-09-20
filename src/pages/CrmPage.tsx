@@ -36,7 +36,7 @@ const crmSupabase = createClient(
 );
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
-type LeadStatus = 'new' | 'contacted' | 'interested' | 'not_interested' | 'enrolled' | 'lost';
+type LeadStatus = 'new' | 'contacted' | 'interested' | 'meeting_booked' | 'closed' | 'not_interested' | 'enrolled' | 'lost' | string;
 type LeadIntent = 'hot' | 'warm' | 'cold' | null;
 type AutomationStatus = 'pending' | 'queued' | 'in_progress' | 'completed' | 'failed' | 'opted_out';
 
@@ -108,14 +108,31 @@ function extractSubjectAndBody(raw: string | null | undefined): { subject: strin
 }
 
 // ─── Constants ─────────────────────────────────────────────────────────────────
-const STATUS_CONFIG: Record<LeadStatus, { label: string; color: string; bg: string; icon: React.ElementType }> = {
+const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; icon: React.ElementType }> = {
   new:            { label: 'New',            color: '#a78bfa', bg: 'rgba(167,139,250,0.12)', icon: Inbox },
   contacted:      { label: 'Contacted',      color: '#60a5fa', bg: 'rgba(96,165,250,0.12)',  icon: Mail },
-  interested:     { label: 'Interested',     color: '#34d399', bg: 'rgba(52,211,153,0.12)',  icon: Star },
+  interested:     { label: 'Interested',     color: '#34d399', bg: 'rgba(52,211,153,0.15)',  icon: Star },
+  meeting_booked: { label: 'Meeting Booked', color: '#38bdf8', bg: 'rgba(56,189,248,0.15)',  icon: Calendar },
+  closed:         { label: 'Closed',         color: '#ccf244', bg: 'rgba(204,242,68,0.15)',  icon: CheckCircle },
+  enrolled:       { label: 'Enrolled',       color: '#10b981', bg: 'rgba(16,185,129,0.15)',  icon: CheckCircle },
   not_interested: { label: 'Not Interested', color: '#f87171', bg: 'rgba(248,113,113,0.12)', icon: XCircle },
-  enrolled:       { label: 'Enrolled',       color: '#ccf244', bg: 'rgba(204,242,68,0.12)',  icon: CheckCircle },
   lost:           { label: 'Lost',           color: '#6b7280', bg: 'rgba(107,114,128,0.12)', icon: X },
 };
+
+// Preset Interest Tags requested by user
+const PRESET_TAGS = [
+  { id: 'Free Master',     label: 'Free Master',     color: '#ccf244', bg: 'rgba(204,242,68,0.15)', border: 'rgba(204,242,68,0.3)', icon: Sparkles },
+  { id: 'Business',        label: 'Business',        color: '#60a5fa', bg: 'rgba(96,165,250,0.15)', border: 'rgba(96,165,250,0.3)', icon: Target },
+  { id: 'AAA Accelerator', label: 'AAA Accelerator', color: '#a78bfa', bg: 'rgba(167,139,250,0.15)', border: 'rgba(167,139,250,0.3)', icon: Zap },
+  { id: 'Affiliate',       label: 'Affiliate',       color: '#f59e0b', bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', icon: TrendingUp },
+  { id: '1:1 Session',     label: '1:1 Session',     color: '#34d399', bg: 'rgba(52,211,153,0.15)', border: 'rgba(52,211,153,0.3)', icon: Users },
+] as const;
+
+function tagCfg(tag: string) {
+  const found = PRESET_TAGS.find(t => t.id.toLowerCase() === tag.toLowerCase() || t.label.toLowerCase() === tag.toLowerCase());
+  if (found) return found;
+  return { id: tag, label: tag, color: '#9ca3af', bg: 'rgba(156,163,175,0.12)', border: 'rgba(156,163,175,0.25)', icon: Tag };
+}
 
 const INTENT_CONFIG: Record<string, { label: string; color: string; bg: string; emoji: string }> = {
   hot:  { label: 'Hot',  color: '#f97316', bg: 'rgba(249,115,22,0.15)',  emoji: '🔥' },
@@ -249,14 +266,43 @@ function LeadModal({
     lead_score: lead.lead_score ?? 0,
     email_status: lead.email_status || 'new',
     notes: lead.notes || '',
-    tags: (lead.tags || []).join(', '),
     interested: lead.interested ?? false,
     goal: lead.goal || '',
     profession: lead.profession || '',
     company: lead.company || '',
     follow_up_at: lead.follow_up_at ? lead.follow_up_at.split('T')[0] : '',
   });
+  const [tagsList, setTagsList] = useState<string[]>(lead.tags || []);
+  const [customTag, setCustomTag] = useState('');
   const [saving, setSaving] = useState(false);
+
+  const toggleTag = (tagId: string) => {
+    setTagsList(prev => {
+      const exists = prev.some(t => t.toLowerCase() === tagId.toLowerCase());
+      if (exists) return prev.filter(t => t.toLowerCase() !== tagId.toLowerCase());
+      return [...prev, tagId];
+    });
+  };
+
+  const addCustomTag = () => {
+    const trimmed = customTag.trim();
+    if (!trimmed) return;
+    if (!tagsList.some(t => t.toLowerCase() === trimmed.toLowerCase())) {
+      setTagsList(prev => [...prev, trimmed]);
+    }
+    setCustomTag('');
+  };
+
+  const setFollowUpDays = (days: number) => {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    setForm(f => ({ ...f, follow_up_at: d.toISOString().split('T')[0] }));
+  };
+
+  const insertTimestamp = () => {
+    const stamp = `[${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}]: `;
+    setForm(f => ({ ...f, notes: f.notes ? `${f.notes}\n${stamp}` : stamp }));
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -266,7 +312,7 @@ function LeadModal({
       lead_score: Number(form.lead_score),
       email_status: form.email_status,
       notes: form.notes || null,
-      tags: form.tags ? form.tags.split(',').map(t => t.trim()).filter(Boolean) : [],
+      tags: tagsList,
       interested: form.interested,
       goal: form.goal || null,
       profession: form.profession || null,
@@ -333,7 +379,7 @@ function LeadModal({
           marginBottom: 20, padding: 14, background: '#08080d', border: '1px solid #1e1e2a', borderRadius: 12,
         }}>
           <div style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: 8, fontWeight: 600 }}>
-            Personalization Profile (Collected at Signup)
+            Personalization Profile (From Registration)
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, fontSize: 12 }}>
             <div>
@@ -391,11 +437,99 @@ function LeadModal({
           </div>
         )}
 
+        {/* ── What They Are Interested In (Manual Tagging) ── */}
+        <div style={{
+          marginBottom: 24, padding: 16, background: '#08080d', border: '1px solid #1e1e2a', borderRadius: 14,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+            <label style={{ fontSize: 11, color: '#ccf244', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 700, display: 'flex', alignItems: 'center', gap: 5 }}>
+              <Tag size={12} /> What They Are Interested In (Client Tags)
+            </label>
+            <span style={{ fontSize: 11, color: '#71717a' }}>Click to toggle</span>
+          </div>
+
+          {/* Preset Buttons */}
+          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+            {PRESET_TAGS.map(pt => {
+              const active = tagsList.some(t => t.toLowerCase() === pt.id.toLowerCase());
+              const Icon = pt.icon;
+              return (
+                <button
+                  key={pt.id}
+                  type="button"
+                  onClick={() => toggleTag(pt.id)}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 6,
+                    background: active ? pt.bg : 'rgba(255,255,255,0.03)',
+                    border: `1px solid ${active ? pt.color : '#1e1e2a'}`,
+                    color: active ? pt.color : '#9ca3af',
+                    borderRadius: 9, padding: '6px 12px', fontSize: 12, fontWeight: active ? 700 : 500,
+                    cursor: 'pointer', transition: 'all 0.15s',
+                  }}
+                >
+                  <Icon size={12} style={{ color: active ? pt.color : '#6b7280' }} />
+                  {pt.label}
+                  {active && <Check size={11} style={{ marginLeft: 2 }} />}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Custom tag add + current tags */}
+          <div style={{ display: 'flex', gap: 8 }}>
+            <input
+              value={customTag}
+              onChange={e => setCustomTag(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomTag(); } }}
+              placeholder="Add custom tag (e.g. VIP, Dubai, Urgent)..."
+              style={{
+                flex: 1, background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 9,
+                padding: '7px 12px', color: '#f4f4f5', fontSize: 12, outline: 'none',
+              }}
+            />
+            <button
+              type="button"
+              onClick={addCustomTag}
+              style={{
+                background: 'rgba(255,255,255,0.06)', border: '1px solid #1e1e2a', borderRadius: 9,
+                padding: '7px 14px', color: '#e4e4e7', fontSize: 12, cursor: 'pointer', fontWeight: 600,
+              }}
+            >
+              + Add
+            </button>
+          </div>
+
+          {/* Active Tags display */}
+          {tagsList.length > 0 && (
+            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 10 }}>
+              {tagsList.map(tag => {
+                const cfg = tagCfg(tag);
+                return (
+                  <span key={tag} style={{
+                    display: 'inline-flex', alignItems: 'center', gap: 4,
+                    background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color,
+                    borderRadius: 6, padding: '3px 8px', fontSize: 11, fontWeight: 600,
+                  }}>
+                    {tag}
+                    <button
+                      type="button"
+                      onClick={() => toggleTag(tag)}
+                      style={{ background: 'none', border: 'none', color: cfg.color, cursor: 'pointer', padding: 0, marginLeft: 2 }}
+                    >
+                      ×
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
         {/* Form grid */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
           {/* Status */}
           <div>
-            <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Status</label>
+            <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Lead Status</label>
             <select
               value={form.status}
               onChange={e => setForm(f => ({ ...f, status: e.target.value as LeadStatus }))}
@@ -450,8 +584,33 @@ function LeadModal({
           </div>
 
           {/* Follow Up */}
-          <div>
-            <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Follow Up Date</label>
+          <div style={{ gridColumn: 'span 2' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+              <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Follow Up Date</label>
+              <div style={{ display: 'flex', gap: 6 }}>
+                <button
+                  type="button"
+                  onClick={() => setFollowUpDays(1)}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #1e1e2a', borderRadius: 6, padding: '2px 8px', fontSize: 10, color: '#9ca3af', cursor: 'pointer' }}
+                >
+                  Tomorrow
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFollowUpDays(3)}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #1e1e2a', borderRadius: 6, padding: '2px 8px', fontSize: 10, color: '#9ca3af', cursor: 'pointer' }}
+                >
+                  +3 Days
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setFollowUpDays(7)}
+                  style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid #1e1e2a', borderRadius: 6, padding: '2px 8px', fontSize: 10, color: '#9ca3af', cursor: 'pointer' }}
+                >
+                  +1 Week
+                </button>
+              </div>
+            </div>
             <input
               type="date"
               value={form.follow_up_at}
@@ -459,39 +618,26 @@ function LeadModal({
               style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '8px 12px', color: '#f4f4f5', fontSize: 13 }}
             />
           </div>
-
-          {/* Goal */}
-          <div>
-            <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Goal</label>
-            <input
-              value={form.goal}
-              onChange={e => setForm(f => ({ ...f, goal: e.target.value }))}
-              placeholder="e.g. Start Agency, Build SaaS..."
-              style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '8px 12px', color: '#f4f4f5', fontSize: 13 }}
-            />
-          </div>
-        </div>
-
-        {/* Tags */}
-        <div style={{ marginBottom: 16 }}>
-          <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Tags (comma-separated)</label>
-          <input
-            value={form.tags}
-            onChange={e => setForm(f => ({ ...f, tags: e.target.value }))}
-            placeholder="e.g. VIP, hot-prospect, dubai..."
-            style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '8px 12px', color: '#f4f4f5', fontSize: 13 }}
-          />
         </div>
 
         {/* Notes */}
         <div style={{ marginBottom: 20 }}>
-          <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'block', marginBottom: 6 }}>Notes</label>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+            <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', fontWeight: 600 }}>Notes & Follow-up Log</label>
+            <button
+              type="button"
+              onClick={insertTimestamp}
+              style={{ background: 'none', border: 'none', color: '#ccf244', fontSize: 11, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 4 }}
+            >
+              <Clock size={11} /> + Timestamp
+            </button>
+          </div>
           <textarea
             value={form.notes}
             onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-            rows={3}
-            placeholder="Internal notes about this lead..."
-            style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '8px 12px', color: '#f4f4f5', fontSize: 13, resize: 'vertical', fontFamily: 'inherit' }}
+            rows={4}
+            placeholder="Internal notes, call details, meeting summaries, what client said..."
+            style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '10px 12px', color: '#f4f4f5', fontSize: 13, resize: 'vertical', fontFamily: 'inherit', boxSizing: 'border-box' }}
           />
         </div>
 
@@ -512,7 +658,7 @@ function LeadModal({
               transition: 'left 0.2s',
             }} />
           </button>
-          <span style={{ fontSize: 13, color: '#e4e4e7' }}>Mark as Interested</span>
+          <span style={{ fontSize: 13, color: '#e4e4e7' }}>Mark as Interested (Starred)</span>
         </div>
 
         {/* Actions */}
@@ -531,6 +677,129 @@ function LeadModal({
           }}>
             {saving ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Check size={14} />}
             {saving ? 'Saving…' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Quick Notes Modal ─────────────────────────────────────────────────────────
+function NotesModal({
+  lead,
+  onClose,
+  onSave,
+  showToast,
+}: {
+  lead: MasterclassLead;
+  onClose: () => void;
+  onSave: (notes: string) => Promise<void>;
+  showToast: (msg: string, type: 'success' | 'error') => void;
+}) {
+  const [noteText, setNoteText] = useState(lead.notes || '');
+  const [saving, setSaving] = useState(false);
+
+  const handleSave = async () => {
+    setSaving(true);
+    try {
+      await onSave(noteText.trim());
+      showToast('Note updated successfully', 'success');
+      onClose();
+    } catch {
+      showToast('Failed to save note', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const insertTimestamp = () => {
+    const stamp = `[${new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}, ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}]: `;
+    setNoteText(prev => prev ? `${prev}\n${stamp}` : stamp);
+  };
+
+  return (
+    <div style={{
+      position: 'fixed', inset: 0, zIndex: 1200,
+      background: 'rgba(0,0,0,0.85)',
+      backdropFilter: 'blur(8px)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 20,
+    }} onClick={onClose}>
+      <div style={{
+        width: '100%', maxWidth: 540,
+        background: '#0d0d14',
+        border: '1px solid #1e1e2a',
+        borderRadius: 20,
+        boxShadow: '0 30px 60px rgba(0,0,0,0.8)',
+        padding: 28,
+      }} onClick={e => e.stopPropagation()}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{
+              width: 36, height: 36, borderRadius: 10,
+              background: 'rgba(234,179,8,0.15)', border: '1px solid rgba(234,179,8,0.3)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#eab308',
+            }}>
+              <MessageSquare size={16} />
+            </div>
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 700, color: '#f4f4f5' }}>Lead Notes & Follow-up</div>
+              <div style={{ fontSize: 12, color: '#71717a' }}>
+                {lead.full_name || 'Lead'} · {lead.email_address || '—'}
+              </div>
+            </div>
+          </div>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#71717a' }}>
+            <X size={18} />
+          </button>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+          <span style={{ fontSize: 11, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+            Internal CRM Log
+          </span>
+          <button
+            type="button"
+            onClick={insertTimestamp}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 4,
+              background: 'rgba(255,255,255,0.05)', border: '1px solid #1e1e2a',
+              borderRadius: 6, padding: '3px 8px', color: '#e4e4e7', fontSize: 11, cursor: 'pointer',
+            }}
+          >
+            <Clock size={11} /> + Timestamp
+          </button>
+        </div>
+
+        <textarea
+          value={noteText}
+          onChange={e => setNoteText(e.target.value)}
+          rows={6}
+          placeholder="e.g. Call booked for Thursday at 3 PM. Interested in AAA Accelerator agency package. Follow up on WhatsApp..."
+          style={{
+            width: '100%', background: '#08080d', border: '1px solid #1e1e2a', borderRadius: 12,
+            padding: 14, color: '#f4f4f5', fontSize: 13, lineHeight: 1.6,
+            resize: 'vertical', boxSizing: 'border-box', outline: 'none', fontFamily: 'inherit',
+          }}
+          autoFocus
+        />
+
+        <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
+          <button onClick={onClose} style={{
+            padding: '9px 18px', borderRadius: 10, background: 'none', border: '1px solid #1e1e2a',
+            color: '#9ca3af', fontSize: 13, cursor: 'pointer',
+          }}>Cancel</button>
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            style={{
+              padding: '9px 20px', borderRadius: 10, background: '#ccf244', border: 'none',
+              color: '#07070b', fontSize: 13, fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer',
+              display: 'flex', alignItems: 'center', gap: 6,
+            }}
+          >
+            {saving ? <Loader2 size={13} style={{ animation: 'spin 1s linear infinite' }} /> : <Check size={13} />}
+            Save Note
           </button>
         </div>
       </div>
@@ -1042,6 +1311,7 @@ function CrmDashboard() {
   // Filters
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [tagFilter, setTagFilter] = useState('all');
   const [intentFilter, setIntentFilter] = useState('all');
   const [personaFilter, setPersonaFilter] = useState('all');
   const [emailFilter, setEmailFilter] = useState<'all' | 'ready' | 'needs_draft' | 'sent' | 'new'>('all');
@@ -1056,6 +1326,8 @@ function CrmDashboard() {
   // Selection & modals
   const [selected, setSelected] = useState<Set<string | number>>(new Set());
   const [editingLead, setEditingLead] = useState<MasterclassLead | null>(null);
+  const [notesModalLead, setNotesModalLead] = useState<MasterclassLead | null>(null);
+  const [activeTagMenuLeadId, setActiveTagMenuLeadId] = useState<string | number | null>(null);
   const [campaignModalLead, setCampaignModalLead] = useState<MasterclassLead | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [bulkLoading, setBulkLoading] = useState(false);
@@ -1080,6 +1352,10 @@ function CrmDashboard() {
       if (statusFilter !== 'all') {
         q = q.eq('status', statusFilter);
       }
+      // Interest Tag filter
+      if (tagFilter !== 'all') {
+        q = q.contains('tags', [tagFilter]);
+      }
       // Email / Campaign filter
       if (emailFilter === 'ready') {
         q = q.not('next_campaign', 'is', null);
@@ -1095,7 +1371,7 @@ function CrmDashboard() {
         q = q.or(
           `full_name.ilike.%${search}%,email_address.ilike.%${search}%,` +
           `country.ilike.%${search}%,why_they_signed_up.ilike.%${search}%,` +
-          `next_campaign.ilike.%${search}%`
+          `notes.ilike.%${search}%,next_campaign.ilike.%${search}%`
         );
       }
 
@@ -1112,7 +1388,7 @@ function CrmDashboard() {
     } finally {
       setLoading(false);
     }
-  }, [search, statusFilter, intentFilter, personaFilter, emailFilter, sortBy, sortAsc, page]);
+  }, [search, statusFilter, tagFilter, intentFilter, personaFilter, emailFilter, sortBy, sortAsc, page]);
 
   // ── Fetch stats ───────────────────────────────────────────────────────────
   const fetchStats = useCallback(async () => {
@@ -1220,7 +1496,7 @@ function CrmDashboard() {
       fetchLeads();
     }, 300);
     return () => clearTimeout(searchDebounce.current);
-  }, [search, statusFilter, intentFilter, personaFilter, emailFilter, sortBy, sortAsc]);
+  }, [search, statusFilter, tagFilter, intentFilter, personaFilter, emailFilter, sortBy, sortAsc]);
 
   useEffect(() => {
     fetchLeads();
@@ -1231,7 +1507,7 @@ function CrmDashboard() {
     try {
       const { error: err } = await crmSupabase
         .from('masterclass_leads')
-        .update(updates)
+        .update({ ...updates, updated_at: new Date().toISOString() })
         .eq('id', id);
       if (err) throw err;
 
@@ -1239,10 +1515,74 @@ function CrmDashboard() {
       setEditingLead(null);
       showToast('Lead updated successfully', 'success');
       fetchStats();
-    } catch (e) {
-      showToast(e instanceof Error ? e.message : 'Update failed', 'error');
+    } catch (e: any) {
+      if (e?.message?.includes('lead_crm_status')) {
+        showToast('Run migration 0006 in Supabase SQL editor to allow new status', 'error');
+      } else {
+        showToast(e instanceof Error ? e.message : 'Update failed', 'error');
+      }
     }
   }, [fetchStats]);
+
+  // ── Quick Status Dropdown Change ──────────────────────────────────────────
+  const handleQuickStatusChange = useCallback(async (leadId: string | number, newStatus: LeadStatus) => {
+    try {
+      const updates: Partial<MasterclassLead> = {
+        status: newStatus,
+        updated_at: new Date().toISOString(),
+        ...(newStatus === 'interested' ? { interested: true } : {}),
+      };
+      const { error: err } = await crmSupabase
+        .from('masterclass_leads')
+        .update(updates)
+        .eq('id', leadId);
+
+      if (err) throw err;
+      setLeads(prev => prev.map(l => String(l.id) === String(leadId) ? { ...l, ...updates } : l));
+      showToast(`Status updated to ${STATUS_CONFIG[newStatus]?.label || newStatus}`, 'success');
+      fetchStats();
+    } catch (e: any) {
+      if (e?.message?.includes('lead_crm_status')) {
+        showToast('Run migration 0006 in Supabase SQL editor to enable this status', 'error');
+      } else {
+        showToast(e instanceof Error ? e.message : 'Status update failed', 'error');
+      }
+    }
+  }, [fetchStats]);
+
+  // ── Quick Tag Toggle on Lead ───────────────────────────────────────────────
+  const handleToggleTag = useCallback(async (lead: MasterclassLead, tagToToggle: string) => {
+    const currentTags = lead.tags || [];
+    const exists = currentTags.some(t => t.toLowerCase() === tagToToggle.toLowerCase());
+    const newTags = exists
+      ? currentTags.filter(t => t.toLowerCase() !== tagToToggle.toLowerCase())
+      : [...currentTags, tagToToggle];
+
+    try {
+      const { error: err } = await crmSupabase
+        .from('masterclass_leads')
+        .update({ tags: newTags, updated_at: new Date().toISOString() })
+        .eq('id', lead.id);
+
+      if (err) throw err;
+      setLeads(prev => prev.map(l => l.id === lead.id ? { ...l, tags: newTags } : l));
+      showToast(`${exists ? 'Removed' : 'Added'} tag "${tagToToggle}"`, 'success');
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : 'Tag update failed', 'error');
+    }
+  }, []);
+
+  // ── Quick Save Note ───────────────────────────────────────────────────────
+  const handleSaveNote = useCallback(async (leadId: string | number, newNotes: string) => {
+    const updates = { notes: newNotes, updated_at: new Date().toISOString() };
+    const { error: err } = await crmSupabase
+      .from('masterclass_leads')
+      .update(updates)
+      .eq('id', leadId);
+
+    if (err) throw err;
+    setLeads(prev => prev.map(l => String(l.id) === String(leadId) ? { ...l, notes: newNotes } : l));
+  }, []);
 
   // ── Bulk actions ──────────────────────────────────────────────────────────
   const bulkUpdate = useCallback(async (updates: Partial<MasterclassLead>, label: string) => {
@@ -1393,8 +1733,21 @@ function CrmDashboard() {
         />
       )}
 
+      {/* ── Quick Notes Modal ──────────────────────────────────────────────── */}
+      {notesModalLead && (
+        <NotesModal
+          lead={notesModalLead}
+          onClose={() => setNotesModalLead(null)}
+          onSave={notes => handleSaveNote(notesModalLead.id, notes)}
+          showToast={showToast}
+        />
+      )}
+
       {/* ── Page content ──────────────────────────────────────────────────── */}
-      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '32px 24px' }}>
+      <div
+        onClick={() => { if (activeTagMenuLeadId) setActiveTagMenuLeadId(null); }}
+        style={{ maxWidth: 1400, margin: '0 auto', padding: '32px 24px' }}
+      >
 
         {/* ─── Header ──────────────────────────────────────────────────────── */}
         <div style={{ marginBottom: 32, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
@@ -1446,7 +1799,7 @@ function CrmDashboard() {
         </div>
 
         {/* ─── Stats Grid ───────────────────────────────────────────────────── */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 16, marginBottom: 28 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(170px, 1fr))', gap: 16, marginBottom: 28 }}>
           <StatTile label="Total Leads" value={statsLoading ? '…' : stats?.total ?? 0} icon={Users} color="#a78bfa" accent />
           <StatTile
             label="Campaigns Ready"
@@ -1456,19 +1809,18 @@ function CrmDashboard() {
           />
           <StatTile
             label="Interested"
-            value={statsLoading ? '…' : stats?.interested ?? 0}
-            sub={stats ? `${Math.round(((stats.interested || 0) / Math.max(stats.total, 1)) * 100)}% of total` : undefined}
+            value={statsLoading ? '…' : (stats?.byStatus?.['interested'] || stats?.interested || 0)}
             icon={Star} color="#34d399"
           />
           <StatTile
-            label="Hot Leads"
-            value={statsLoading ? '…' : stats?.byIntent?.['hot'] ?? 0}
-            icon={Flame} color="#f97316"
+            label="Meeting Booked"
+            value={statsLoading ? '…' : stats?.byStatus?.['meeting_booked'] ?? 0}
+            icon={Calendar} color="#38bdf8"
           />
           <StatTile
-            label="Avg Score"
-            value={statsLoading ? '…' : stats?.avgScore ?? 0}
-            icon={TrendingUp} color="#60a5fa"
+            label="Closed"
+            value={statsLoading ? '…' : stats?.byStatus?.['closed'] ?? 0}
+            icon={CheckCircle} color="#ccf244"
           />
           <StatTile
             label="Emails Sent"
@@ -1523,7 +1875,7 @@ function CrmDashboard() {
             <input
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search by name, email, country, campaign copy..."
+              placeholder="Search by name, email, country, notes, tags..."
               style={{
                 width: '100%', paddingLeft: 36, paddingRight: 12, paddingTop: 9, paddingBottom: 9,
                 background: '#0d0d14', border: '1px solid #1e1e2a', borderRadius: 10,
@@ -1533,29 +1885,28 @@ function CrmDashboard() {
             />
           </div>
 
+          {/* Interest Tag filter */}
+          <select
+            value={tagFilter}
+            onChange={e => { setTagFilter(e.target.value); setPage(1); }}
+            style={{ background: '#0d0d14', border: '1px solid #1e1e2a', borderRadius: 10, padding: '9px 12px', color: '#e4e4e7', fontSize: 13, minWidth: 175 }}
+          >
+            <option value="all">🏷️ All Interest Tags</option>
+            {PRESET_TAGS.map(pt => (
+              <option key={pt.id} value={pt.label}>{pt.label}</option>
+            ))}
+          </select>
+
           {/* Persona filter — based on real column */}
           <select
             value={personaFilter}
             onChange={e => { setPersonaFilter(e.target.value); setPage(1); }}
-            style={{ background: '#0d0d14', border: '1px solid #1e1e2a', borderRadius: 10, padding: '9px 12px', color: '#e4e4e7', fontSize: 13, minWidth: 190 }}
+            style={{ background: '#0d0d14', border: '1px solid #1e1e2a', borderRadius: 10, padding: '9px 12px', color: '#e4e4e7', fontSize: 13, minWidth: 185 }}
           >
             <option value="all">All Personas</option>
             {Object.entries(PERSONA_COLORS).map(([persona, cfg]) => (
               <option key={persona} value={persona}>{cfg.emoji} {persona}</option>
             ))}
-          </select>
-
-          {/* Email / Campaign filter */}
-          <select
-            value={emailFilter}
-            onChange={e => { setEmailFilter(e.target.value as any); setPage(1); }}
-            style={{ background: '#0d0d14', border: '1px solid #1e1e2a', borderRadius: 10, padding: '9px 12px', color: '#e4e4e7', fontSize: 13, minWidth: 170 }}
-          >
-            <option value="all">All Email Status</option>
-            <option value="ready">✉️ Draft Ready ({stats?.campaignsReady || 0})</option>
-            <option value="needs_draft">Needs Draft</option>
-            <option value="sent">Sent ({stats?.emailsSent || 0})</option>
-            <option value="new">New (Pending)</option>
           </select>
 
           {/* Status filter */}
@@ -1568,6 +1919,19 @@ function CrmDashboard() {
             {Object.entries(STATUS_CONFIG).map(([k, v]) => (
               <option key={k} value={k}>{v.label}</option>
             ))}
+          </select>
+
+          {/* Email / Campaign filter */}
+          <select
+            value={emailFilter}
+            onChange={e => { setEmailFilter(e.target.value as any); setPage(1); }}
+            style={{ background: '#0d0d14', border: '1px solid #1e1e2a', borderRadius: 10, padding: '9px 12px', color: '#e4e4e7', fontSize: 13, minWidth: 160 }}
+          >
+            <option value="all">All Email Status</option>
+            <option value="ready">✉️ Draft Ready ({stats?.campaignsReady || 0})</option>
+            <option value="needs_draft">Needs Draft</option>
+            <option value="sent">Sent ({stats?.emailsSent || 0})</option>
+            <option value="new">New (Pending)</option>
           </select>
 
           {/* Bulk actions */}
@@ -1638,7 +2002,7 @@ function CrmDashboard() {
               <Inbox size={40} style={{ marginBottom: 16, opacity: 0.5 }} />
               <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8, color: '#9ca3af' }}>No leads found</div>
               <div style={{ fontSize: 13, marginBottom: 20 }}>
-                {search || statusFilter !== 'all' || intentFilter !== 'all'
+                {search || statusFilter !== 'all' || tagFilter !== 'all' || intentFilter !== 'all'
                   ? 'Try adjusting your filters.'
                   : 'Add leads from Zoho Mail or click "Seed Demo Data" to test the dashboard.'}
               </div>
@@ -1654,7 +2018,7 @@ function CrmDashboard() {
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000 }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #1e1e2a' }}>
                     <th style={{ padding: '12px 16px', width: 40 }}>
@@ -1667,11 +2031,13 @@ function CrmDashboard() {
                     </th>
                     {[
                       { key: 'full_name',                 label: 'Lead' },
+                      { key: 'tags',                      label: 'Interest Tags' },
+                      { key: 'status',                    label: 'Status' },
+                      { key: 'notes',                     label: 'Notes & Follow-up' },
                       { key: 'what_best_describes_them',  label: 'Persona' },
                       { key: 'enrolled_for',              label: 'Enrolled For' },
                       { key: 'why_they_signed_up',        label: 'Why Signed Up' },
                       { key: 'next_campaign',             label: 'Personalized Campaign' },
-                      { key: 'status',                    label: 'Status' },
                       { key: 'created_at',                label: 'Added' },
                       { key: 'country',                   label: 'Location' },
                     ].map(col => (
@@ -1693,16 +2059,15 @@ function CrmDashboard() {
                         </span>
                       </th>
                     ))}
-                    <th style={{ padding: '12px 16px', width: 80 }} />
+                    <th style={{ padding: '12px 16px', width: 90 }} />
                   </tr>
                 </thead>
                 <tbody>
                   {leads.map((lead, idx) => {
                     const isSelected = selected.has(lead.id);
                     const statusCfg = STATUS_CONFIG[lead.status] || STATUS_CONFIG.new;
-                    const intentCfg = lead.intent ? INTENT_CONFIG[lead.intent] : null;
-                    const autoCfg = AUTOMATION_CONFIG[lead.email_automation_status] || AUTOMATION_CONFIG.pending;
                     const bg = avatarColor(lead.email_address);
+                    const isTagMenuOpen = activeTagMenuLeadId === lead.id;
 
                     return (
                       <tr
@@ -1732,7 +2097,7 @@ function CrmDashboard() {
                         </td>
 
                         {/* Lead name + email */}
-                        <td style={{ padding: '12px 16px', minWidth: 200 }}>
+                        <td style={{ padding: '12px 16px', minWidth: 180 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div style={{
                               width: 34, height: 34, borderRadius: 10, background: bg, flexShrink: 0,
@@ -1742,25 +2107,169 @@ function CrmDashboard() {
                             <div>
                               <div style={{ fontSize: 13, fontWeight: 600, color: '#e4e4e7', display: 'flex', alignItems: 'center', gap: 6 }}>
                                 {lead.full_name || 'Unknown'}
-                                {lead.interested && <span style={{ fontSize: 10, color: '#34d399' }}>★</span>}
+                                {lead.interested && <span style={{ fontSize: 10, color: '#34d399' }} title="Starred / Interested">★</span>}
                               </div>
                               <div style={{ fontSize: 11, color: '#6b7280' }}>{lead.email_address || '—'}</div>
                               {lead.phone_number && (
                                 <div style={{ fontSize: 10, color: '#4b5563', marginTop: 1 }}>{lead.phone_number}</div>
                               )}
-                              {(lead.tags || []).length > 0 && (
-                                <div style={{ display: 'flex', gap: 4, marginTop: 3, flexWrap: 'wrap' }}>
-                                  {(lead.tags || []).slice(0, 2).map(tag => (
-                                    <span key={tag} style={{
-                                      fontSize: 9, padding: '1px 6px', borderRadius: 4,
-                                      background: 'rgba(167,139,250,0.15)', color: '#a78bfa',
-                                      fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
-                                    }}>{tag}</span>
-                                  ))}
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* Interest Tags (Manual Tagging) */}
+                        <td style={{ padding: '12px 16px', minWidth: 200, position: 'relative' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexWrap: 'wrap' }}>
+                            {(lead.tags || []).map(tag => {
+                              const cfg = tagCfg(tag);
+                              return (
+                                <span
+                                  key={tag}
+                                  style={{
+                                    display: 'inline-flex', alignItems: 'center', gap: 3,
+                                    fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 6,
+                                    background: cfg.bg, border: `1px solid ${cfg.border}`, color: cfg.color,
+                                    whiteSpace: 'nowrap',
+                                  }}
+                                >
+                                  {tag}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => { e.stopPropagation(); handleToggleTag(lead, tag); }}
+                                    title="Remove tag"
+                                    style={{ background: 'none', border: 'none', color: cfg.color, cursor: 'pointer', padding: 0, fontSize: 11, lineHeight: 1, opacity: 0.7 }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '0.7'; }}
+                                  >
+                                    ×
+                                  </button>
+                                </span>
+                              );
+                            })}
+
+                            {/* Quick Add Tag Popover Trigger */}
+                            <div style={{ position: 'relative' }} onClick={e => e.stopPropagation()}>
+                              <button
+                                type="button"
+                                onClick={() => setActiveTagMenuLeadId(isTagMenuOpen ? null : lead.id)}
+                                style={{
+                                  display: 'inline-flex', alignItems: 'center', gap: 3,
+                                  background: 'rgba(255,255,255,0.04)', border: '1px solid #1e1e2a',
+                                  borderRadius: 6, padding: '2px 7px', fontSize: 10, color: '#9ca3af',
+                                  cursor: 'pointer', fontWeight: 600,
+                                }}
+                                title="Tag client interest"
+                              >
+                                <Tag size={10} /> + Tag
+                              </button>
+
+                              {/* Popover */}
+                              {isTagMenuOpen && (
+                                <div style={{
+                                  position: 'absolute', top: '100%', left: 0, zIndex: 100, marginTop: 4,
+                                  background: '#0d0d14', border: '1px solid #27273a', borderRadius: 10,
+                                  boxShadow: '0 10px 30px rgba(0,0,0,0.8)', padding: 6, minWidth: 170,
+                                }}>
+                                  <div style={{ fontSize: 10, color: '#71717a', textTransform: 'uppercase', letterSpacing: '0.05em', padding: '4px 8px', fontWeight: 700 }}>
+                                    Client Interest Tags
+                                  </div>
+                                  {PRESET_TAGS.map(pt => {
+                                    const hasTag = (lead.tags || []).some(t => t.toLowerCase() === pt.id.toLowerCase());
+                                    return (
+                                      <button
+                                        key={pt.id}
+                                        type="button"
+                                        onClick={() => handleToggleTag(lead, pt.label)}
+                                        style={{
+                                          width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                          background: hasTag ? pt.bg : 'none', border: 'none',
+                                          borderRadius: 6, padding: '6px 8px', fontSize: 11, color: hasTag ? pt.color : '#d4d4d8',
+                                          cursor: 'pointer', textAlign: 'left', fontWeight: hasTag ? 600 : 400,
+                                        }}
+                                      >
+                                        <span>{pt.label}</span>
+                                        {hasTag && <Check size={11} style={{ color: pt.color }} />}
+                                      </button>
+                                    );
+                                  })}
                                 </div>
                               )}
                             </div>
                           </div>
+                        </td>
+
+                        {/* Status (Interactive Quick Dropdown) */}
+                        <td style={{ padding: '12px 16px' }}>
+                          <select
+                            value={lead.status || 'new'}
+                            onChange={e => handleQuickStatusChange(lead.id, e.target.value as LeadStatus)}
+                            style={{
+                              background: statusCfg.bg,
+                              color: statusCfg.color,
+                              border: `1px solid ${statusCfg.color}40`,
+                              borderRadius: 8,
+                              padding: '5px 8px',
+                              fontSize: 11,
+                              fontWeight: 600,
+                              cursor: 'pointer',
+                              outline: 'none',
+                            }}
+                          >
+                            {Object.entries(STATUS_CONFIG).map(([k, v]) => (
+                              <option key={k} value={k} style={{ background: '#0d0d14', color: v.color }}>
+                                {v.label}
+                              </option>
+                            ))}
+                          </select>
+                        </td>
+
+                        {/* Notes & Follow-up */}
+                        <td style={{ padding: '12px 16px', maxWidth: 210 }}>
+                          {lead.notes ? (
+                            <div
+                              onClick={() => setNotesModalLead(lead)}
+                              style={{
+                                cursor: 'pointer',
+                                padding: '6px 10px',
+                                borderRadius: 8,
+                                background: 'rgba(255,255,255,0.03)',
+                                border: '1px solid #1e1e2a',
+                                transition: 'border-color 0.15s',
+                              }}
+                              title="Click to view or edit notes"
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#ccf244'; }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#1e1e2a'; }}
+                            >
+                              <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginBottom: 2 }}>
+                                <MessageSquare size={11} style={{ color: '#eab308' }} />
+                                <span style={{ fontSize: 10, color: '#eab308', fontWeight: 600, textTransform: 'uppercase' }}>CRM Note</span>
+                                {lead.follow_up_at && (
+                                  <span style={{ fontSize: 10, color: '#9ca3af', marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 3 }}>
+                                    <Calendar size={10} /> {lead.follow_up_at}
+                                  </span>
+                                )}
+                              </div>
+                              <div style={{
+                                fontSize: 11, color: '#d4d4d8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                              }}>
+                                {lead.notes}
+                              </div>
+                            </div>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => setNotesModalLead(lead)}
+                              style={{
+                                display: 'inline-flex', alignItems: 'center', gap: 5,
+                                background: 'none', border: '1px dashed #27273a', borderRadius: 7,
+                                padding: '4px 9px', color: '#71717a', fontSize: 11, cursor: 'pointer',
+                              }}
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#ccf244'; (e.currentTarget as HTMLElement).style.color = '#ccf244'; }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#27273a'; (e.currentTarget as HTMLElement).style.color = '#71717a'; }}
+                            >
+                              <MessageSquare size={11} /> + Add Note
+                            </button>
+                          )}
                         </td>
 
                         {/* Persona */}
@@ -1780,7 +2289,7 @@ function CrmDashboard() {
                         </td>
 
                         {/* Enrolled For */}
-                        <td style={{ padding: '12px 16px', maxWidth: 190 }}>
+                        <td style={{ padding: '12px 16px', maxWidth: 180 }}>
                           <span style={{
                             fontSize: 11, color: '#ccf244', fontWeight: 500,
                             display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -1792,7 +2301,7 @@ function CrmDashboard() {
                         </td>
 
                         {/* Why They Signed Up */}
-                        <td style={{ padding: '12px 16px', maxWidth: 180 }}>
+                        <td style={{ padding: '12px 16px', maxWidth: 170 }}>
                           <span style={{
                             fontSize: 12, color: '#9ca3af', fontStyle: 'italic',
                             display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
@@ -1804,7 +2313,7 @@ function CrmDashboard() {
                         </td>
 
                         {/* Personalized Campaign (next_campaign + email_status) */}
-                        <td style={{ padding: '12px 16px', minWidth: 220, maxWidth: 260 }}>
+                        <td style={{ padding: '12px 16px', minWidth: 200, maxWidth: 240 }}>
                           {lead.next_campaign ? (() => {
                             const { subject } = extractSubjectAndBody(lead.next_campaign);
                             const isSent = lead.email_status === 'sent';
@@ -1835,7 +2344,7 @@ function CrmDashboard() {
                                 </div>
                                 <span style={{
                                   fontSize: 11, color: '#9ca3af', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                                  maxWidth: 240, display: 'block',
+                                  maxWidth: 220, display: 'block',
                                 }} title={subject}>
                                   {subject || 'Personalized copy prepared'}
                                 </span>
@@ -1845,24 +2354,6 @@ function CrmDashboard() {
                             <span style={{ fontSize: 11, color: '#4b5563', fontStyle: 'italic' }}>
                               No Draft
                             </span>
-                          )}
-                        </td>
-
-                        {/* Status */}
-                        <td style={{ padding: '12px 16px' }}>
-                          {lead.status ? (
-                            <span style={{
-                              display: 'inline-flex', alignItems: 'center', gap: 5,
-                              fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 8,
-                              background: STATUS_CONFIG[lead.status]?.bg, color: STATUS_CONFIG[lead.status]?.color,
-                            }}>
-                              {lead.status}
-                            </span>
-                          ) : (
-                            <span style={{
-                              fontSize: 11, fontWeight: 600, padding: '4px 10px', borderRadius: 8,
-                              background: 'rgba(167,139,250,0.12)', color: '#a78bfa',
-                            }}>New</span>
                           )}
                         </td>
 
@@ -1902,6 +2393,20 @@ function CrmDashboard() {
                                 <Mail size={13} />
                               </button>
                             )}
+                            <button
+                              onClick={() => setNotesModalLead(lead)}
+                              title="Quick Notes"
+                              style={{
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                width: 30, height: 30, borderRadius: 8,
+                                background: lead.notes ? 'rgba(234,179,8,0.1)' : 'rgba(255,255,255,0.05)',
+                                border: `1px solid ${lead.notes ? 'rgba(234,179,8,0.3)' : '#1e1e2a'}`,
+                                cursor: 'pointer', color: lead.notes ? '#eab308' : '#9ca3af',
+                                transition: 'all 0.15s',
+                              }}
+                            >
+                              <MessageSquare size={13} />
+                            </button>
                             <button
                               onClick={() => setEditingLead(lead)}
                               title="Edit Lead"
