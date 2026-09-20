@@ -1664,34 +1664,7 @@ function CrmDashboard() {
     a.click();
   };
 
-  // ── Seed demo data ────────────────────────────────────────────────────────
-  const seedDemoData = async () => {
-    const demoLeads = [
-      { full_name: 'Ahmad Al-Rashid', email_address: 'ahmad.rashid@example.com', phone_number: '+971501234567', country: 'UAE', status: 'interested', intent: 'hot', lead_score: 87, source: 'zoho', interested: true, email_automation_status: 'pending', goal: 'Build AI Agency', tags: ['VIP', 'hot-prospect'] },
-      { full_name: 'Fatima Hassan', email_address: 'fatima.hassan@example.com', phone_number: '+966501234568', country: 'Saudi Arabia', status: 'new', intent: 'warm', lead_score: 62, source: 'zoho', interested: true, email_automation_status: 'pending', goal: 'Freelancer', tags: ['warm-lead'] },
-      { full_name: 'Mohammed Al-Zaabi', email_address: 'mzaabi@example.com', phone_number: '+971521234569', country: 'UAE', status: 'contacted', intent: 'warm', lead_score: 55, source: 'zoho', interested: false, email_automation_status: 'queued', goal: 'SaaS Founder', tags: [] },
-      { full_name: 'Sara Khalid', email_address: 'sara.k@example.com', phone_number: '+974501234570', country: 'Qatar', status: 'interested', intent: 'hot', lead_score: 93, source: 'zoho', interested: true, email_automation_status: 'completed', goal: 'Scale Agency', tags: ['VIP', 'enrolled-soon'] },
-      { full_name: 'Omar Benali', email_address: 'omar.benali@example.com', phone_number: '+213501234571', country: 'Algeria', status: 'not_interested', intent: 'cold', lead_score: 12, source: 'zoho', interested: false, email_automation_status: 'opted_out', goal: 'Explore', tags: [] },
-      { full_name: 'Rania Mahmoud', email_address: 'rania.m@example.com', phone_number: '+201001234572', country: 'Egypt', status: 'new', intent: 'warm', lead_score: 45, source: 'zoho', interested: false, email_automation_status: 'pending', goal: 'Freelancer', tags: ['needs-follow-up'] },
-      { full_name: 'Khalid Al-Mansoori', email_address: 'khalid.m@example.com', phone_number: '+971551234573', country: 'UAE', status: 'enrolled', intent: 'hot', lead_score: 100, source: 'zoho', interested: true, email_automation_status: 'completed', goal: 'AI Agency', tags: ['enrolled', 'VIP'] },
-      { full_name: 'Nour Eldin Youssef', email_address: 'nour.youssef@example.com', phone_number: '+249912345674', country: 'Sudan', status: 'contacted', intent: 'cold', lead_score: 28, source: 'zoho', interested: false, email_automation_status: 'in_progress', goal: 'Explore', tags: [] },
-      { full_name: 'Layla Al-Sayed', email_address: 'layla.alsayed@example.com', phone_number: '+96512345675', country: 'Kuwait', status: 'interested', intent: 'hot', lead_score: 76, source: 'zoho', interested: true, email_automation_status: 'queued', goal: 'Build SaaS', tags: ['hot-prospect'] },
-      { full_name: 'Tariq Ibrahim', email_address: 'tariq.ibrahim@example.com', phone_number: '+96892345676', country: 'Oman', status: 'new', intent: null, lead_score: 0, source: 'zoho', interested: false, email_automation_status: 'pending', goal: null, tags: [] },
-    ];
 
-    try {
-      const { error } = await crmSupabase.from('masterclass_leads').insert(demoLeads);
-      if (error) {
-        showToast('Note: Some columns may need migration to run first. Error: ' + error.message, 'error');
-      } else {
-        showToast('Demo leads seeded successfully!', 'success');
-        fetchLeads();
-        fetchStats();
-      }
-    } catch (e) {
-      showToast(e instanceof Error ? e.message : 'Seed failed', 'error');
-    }
-  };
 
   // ─────────────────────────────────────────────────────────────────────────────
   return (
@@ -1786,15 +1759,6 @@ function CrmDashboard() {
             }}>
               <Download size={14} /> Export CSV
             </button>
-            {total === 0 && (
-              <button onClick={seedDemoData} style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.3)',
-                borderRadius: 10, color: '#a78bfa', cursor: 'pointer', padding: '8px 14px', fontSize: 13, fontWeight: 600,
-              }}>
-                <Sparkles size={14} /> Seed Demo Data
-              </button>
-            )}
           </div>
         </div>
 
@@ -2001,20 +1965,11 @@ function CrmDashboard() {
             <div style={{ padding: 64, textAlign: 'center', color: '#6b7280' }}>
               <Inbox size={40} style={{ marginBottom: 16, opacity: 0.5 }} />
               <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8, color: '#9ca3af' }}>No leads found</div>
-              <div style={{ fontSize: 13, marginBottom: 20 }}>
-                {search || statusFilter !== 'all' || tagFilter !== 'all' || intentFilter !== 'all'
-                  ? 'Try adjusting your filters.'
-                  : 'Add leads from Zoho Mail or click "Seed Demo Data" to test the dashboard.'}
+              <div style={{ fontSize: 13, color: '#71717a' }}>
+                {search || statusFilter !== 'all' || tagFilter !== 'all' || intentFilter !== 'all' || personaFilter !== 'all' || emailFilter !== 'all'
+                  ? 'Try adjusting your filters or search query.'
+                  : 'No leads are currently available in the database.'}
               </div>
-              {total === 0 && !search && statusFilter === 'all' && intentFilter === 'all' && (
-                <button onClick={seedDemoData} style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 6,
-                  background: 'rgba(167,139,250,0.15)', border: '1px solid rgba(167,139,250,0.3)',
-                  borderRadius: 10, color: '#a78bfa', cursor: 'pointer', padding: '10px 20px', fontSize: 13, fontWeight: 600,
-                }}>
-                  <Sparkles size={14} /> Seed Demo Leads
-                </button>
-              )}
             </div>
           ) : (
             <div style={{ overflowX: 'auto' }}>
