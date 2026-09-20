@@ -65,6 +65,7 @@ alter table masterclass_leads
   add column if not exists source text default 'zoho',
   add column if not exists tags text[] not null default '{}',
   add column if not exists notes text,
+  add column if not exists assigned_to text,
   add column if not exists goal text,
   add column if not exists profession text,
   add column if not exists company text,
@@ -106,6 +107,7 @@ where next_campaign is not null
 -- 6. Indexes for lightning-fast queries in CRM Dashboard & n8n polling
 create index if not exists masterclass_leads_email_status_idx on masterclass_leads (email_status);
 create index if not exists masterclass_leads_status_idx on masterclass_leads (status);
+create index if not exists masterclass_leads_assigned_to_idx on masterclass_leads (assigned_to);
 create index if not exists masterclass_leads_intent_idx on masterclass_leads (intent);
 create index if not exists masterclass_leads_email_idx on masterclass_leads (lower(email_address));
 create index if not exists masterclass_leads_persona_idx on masterclass_leads (what_best_describes_them);

@@ -69,6 +69,7 @@ interface MasterclassLead {
   source?: string | null;
   tags?: string[];
   notes?: string | null;
+  assigned_to?: string | null;
   goal?: string | null;
   profession?: string | null;
   company?: string | null;
@@ -266,6 +267,7 @@ function LeadModal({
     lead_score: lead.lead_score ?? 0,
     email_status: lead.email_status || 'new',
     notes: lead.notes || '',
+    assigned_to: lead.assigned_to || '',
     interested: lead.interested ?? false,
     goal: lead.goal || '',
     profession: lead.profession || '',
@@ -312,6 +314,7 @@ function LeadModal({
       lead_score: Number(form.lead_score),
       email_status: form.email_status,
       notes: form.notes || null,
+      assigned_to: form.assigned_to ? form.assigned_to.trim() : null,
       tags: tagsList,
       interested: form.interested,
       goal: form.goal || null,
@@ -580,6 +583,20 @@ function LeadModal({
               value={form.lead_score}
               onChange={e => setForm(f => ({ ...f, lead_score: Math.max(0, Math.min(100, Number(e.target.value))) }))}
               style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '8px 12px', color: '#f4f4f5', fontSize: 13 }}
+            />
+          </div>
+
+          {/* Assigned To */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <label style={{ fontSize: 11, color: '#71717a', letterSpacing: '0.05em', textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 5, marginBottom: 6 }}>
+              <Users size={12} /> Assigned To (Follow-up Owner)
+            </label>
+            <input
+              type="text"
+              value={form.assigned_to}
+              onChange={e => setForm(f => ({ ...f, assigned_to: e.target.value }))}
+              placeholder="Assign team member name (e.g. Zain, Sarah, Alex)..."
+              style={{ width: '100%', background: '#0a0a12', border: '1px solid #1e1e2a', borderRadius: 10, padding: '8px 12px', color: '#f4f4f5', fontSize: 13, boxSizing: 'border-box' }}
             />
           </div>
 
@@ -1328,6 +1345,8 @@ function CrmDashboard() {
   const [editingLead, setEditingLead] = useState<MasterclassLead | null>(null);
   const [notesModalLead, setNotesModalLead] = useState<MasterclassLead | null>(null);
   const [activeTagMenuLeadId, setActiveTagMenuLeadId] = useState<string | number | null>(null);
+  const [editingAssignLeadId, setEditingAssignLeadId] = useState<string | number | null>(null);
+  const [assignInputVal, setAssignInputVal] = useState('');
   const [campaignModalLead, setCampaignModalLead] = useState<MasterclassLead | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const [bulkLoading, setBulkLoading] = useState(false);
@@ -1371,7 +1390,7 @@ function CrmDashboard() {
         q = q.or(
           `full_name.ilike.%${search}%,email_address.ilike.%${search}%,` +
           `country.ilike.%${search}%,why_they_signed_up.ilike.%${search}%,` +
-          `notes.ilike.%${search}%,next_campaign.ilike.%${search}%`
+          `assigned_to.ilike.%${search}%,notes.ilike.%${search}%,next_campaign.ilike.%${search}%`
         );
       }
 
@@ -1584,6 +1603,24 @@ function CrmDashboard() {
     setLeads(prev => prev.map(l => String(l.id) === String(leadId) ? { ...l, notes: newNotes } : l));
   }, []);
 
+  // ── Quick Assign Team Member ──────────────────────────────────────────────
+  const handleQuickAssign = useCallback(async (leadId: string | number, name: string) => {
+    const assignedName = name.trim() || null;
+    try {
+      const updates = { assigned_to: assignedName, updated_at: new Date().toISOString() };
+      const { error: err } = await crmSupabase
+        .from('masterclass_leads')
+        .update(updates)
+        .eq('id', leadId);
+
+      if (err) throw err;
+      setLeads(prev => prev.map(l => String(l.id) === String(leadId) ? { ...l, assigned_to: assignedName } : l));
+      showToast(assignedName ? `Assigned to ${assignedName}` : 'Lead unassigned', 'success');
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : 'Failed to update assignment', 'error');
+    }
+  }, []);
+
   // ── Bulk actions ──────────────────────────────────────────────────────────
   const bulkUpdate = useCallback(async (updates: Partial<MasterclassLead>, label: string) => {
     if (!selected.size) return;
@@ -1642,6 +1679,7 @@ function CrmDashboard() {
       ID: l.id,
       Name: l.full_name || '',
       Email: l.email_address || '',
+      AssignedTo: l.assigned_to || '',
       Phone: l.phone_number || '',
       Country: l.country || '',
       Persona: l.what_best_describes_them || '',
@@ -1986,6 +2024,7 @@ function CrmDashboard() {
                     </th>
                     {[
                       { key: 'full_name',                 label: 'Lead' },
+                      { key: 'assigned_to',               label: 'Assigned To' },
                       { key: 'tags',                      label: 'Interest Tags' },
                       { key: 'status',                    label: 'Status' },
                       { key: 'notes',                     label: 'Notes & Follow-up' },
@@ -2070,6 +2109,95 @@ function CrmDashboard() {
                               )}
                             </div>
                           </div>
+                        </td>
+
+                        {/* Assigned To */}
+                        <td style={{ padding: '12px 16px', minWidth: 150 }}>
+                          {editingAssignLeadId === lead.id ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 4 }} onClick={e => e.stopPropagation()}>
+                              <input
+                                autoFocus
+                                value={assignInputVal}
+                                onChange={e => setAssignInputVal(e.target.value)}
+                                onKeyDown={e => {
+                                  if (e.key === 'Enter') {
+                                    handleQuickAssign(lead.id, assignInputVal);
+                                    setEditingAssignLeadId(null);
+                                  } else if (e.key === 'Escape') {
+                                    setEditingAssignLeadId(null);
+                                  }
+                                }}
+                                onBlur={() => {
+                                  if (assignInputVal.trim() !== (lead.assigned_to || '')) {
+                                    handleQuickAssign(lead.id, assignInputVal);
+                                  }
+                                  setEditingAssignLeadId(null);
+                                }}
+                                placeholder="Name..."
+                                style={{
+                                  width: 100, background: '#0a0a12', border: '1px solid #ccf244',
+                                  borderRadius: 7, padding: '3px 8px', color: '#f4f4f5', fontSize: 12, outline: 'none',
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.preventDefault();
+                                  handleQuickAssign(lead.id, assignInputVal);
+                                  setEditingAssignLeadId(null);
+                                }}
+                                style={{
+                                  background: '#ccf244', border: 'none', borderRadius: 6,
+                                  color: '#07070b', padding: '3px 6px', cursor: 'pointer', display: 'flex', alignItems: 'center',
+                                }}
+                              >
+                                <Check size={11} />
+                              </button>
+                            </div>
+                          ) : lead.assigned_to ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAssignInputVal(lead.assigned_to || '');
+                                setEditingAssignLeadId(lead.id);
+                              }}
+                              title="Click to change assignee"
+                              style={{
+                                display: 'inline-flex', alignItems: 'center', gap: 6,
+                                background: 'rgba(96,165,250,0.12)', border: '1px solid rgba(96,165,250,0.25)',
+                                borderRadius: 8, padding: '4px 10px', color: '#93c5fd', fontSize: 12,
+                                fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
+                              }}
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#60a5fa'; }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = 'rgba(96,165,250,0.25)'; }}
+                            >
+                              <span style={{
+                                width: 18, height: 18, borderRadius: 9, background: '#3b82f6',
+                                color: '#fff', fontSize: 10, fontWeight: 700,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                              }}>
+                                {lead.assigned_to.charAt(0).toUpperCase()}
+                              </span>
+                              <span>{lead.assigned_to}</span>
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAssignInputVal('');
+                                setEditingAssignLeadId(lead.id);
+                              }}
+                              style={{
+                                display: 'inline-flex', alignItems: 'center', gap: 4,
+                                background: 'none', border: '1px dashed #27273a', borderRadius: 7,
+                                padding: '3px 8px', color: '#71717a', fontSize: 11, cursor: 'pointer',
+                              }}
+                              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = '#60a5fa'; (e.currentTarget as HTMLElement).style.color = '#93c5fd'; }}
+                              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = '#27273a'; (e.currentTarget as HTMLElement).style.color = '#71717a'; }}
+                            >
+                              <Users size={11} /> + Assign
+                            </button>
+                          )}
                         </td>
 
                         {/* Interest Tags (Manual Tagging) */}
