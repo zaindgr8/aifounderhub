@@ -93,6 +93,10 @@ alter table masterclass_leads
   add column if not exists utm_medium text,
   add column if not exists utm_campaign text,
 
+  -- Lead category — segmenting for targeted ad campaigns
+  -- Values: free_class_registration (default), gumroad_course, afh_signup
+  add column if not exists lead_category text not null default 'free_class_registration',
+
   -- Timestamps
   add column if not exists created_at timestamptz default now(),
   add column if not exists updated_at timestamptz default now();
@@ -113,6 +117,7 @@ create index if not exists masterclass_leads_email_idx on masterclass_leads (low
 create index if not exists masterclass_leads_persona_idx on masterclass_leads (what_best_describes_them);
 create index if not exists masterclass_leads_created_at_idx on masterclass_leads (created_at desc);
 create index if not exists masterclass_leads_unsub_idx on masterclass_leads (unsubscribed);
+create index if not exists masterclass_leads_category_idx on masterclass_leads (lead_category);
 
 -- 7. Row Level Security policies
 alter table masterclass_leads enable row level security;
@@ -131,3 +136,87 @@ drop policy if exists "masterclass_leads_update" on masterclass_leads;
 create policy "masterclass_leads_update"
   on masterclass_leads for update
   using (true);
+
+-- 8. Funnel Level Hierarchy & Email Deduplication
+-- Level 1: afh_signup (Top Level / Most mature)
+-- Level 2: free_class_registration (Mid Level)
+-- Level 3: gumroad_course (Low Level)
+--
+-- Rule: Do not insert duplicate records for the same email.
+-- When a lead upgrades their level (e.g. Level 3 -> Level 2 or 1, or Level 2 -> Level 1),
+-- the lead_category is updated to the higher level, removing them from the lower level.
+
+create or replace function upsert_masterclass_lead_funnel(
+  p_email text,
+  p_full_name text default null,
+  p_phone text default null,
+  p_country text default null,
+  p_category text default 'afh_signup',
+  p_status text default 'new',
+  p_notes text default null
+) returns jsonb as $$
+declare
+  v_clean_email text := lower(trim(p_email));
+  v_existing record;
+  v_existing_rank int;
+  v_target_rank int;
+  v_result jsonb;
+begin
+  -- Rank mapping: 1 is top, 3 is low
+  v_target_rank := case p_category
+    when 'afh_signup' then 1
+    when 'free_class_registration' then 2
+    when 'gumroad_course' then 3
+    else 2
+  end;
+
+  -- Check existing lead
+  select * into v_existing
+  from masterclass_leads
+  where lower(email_address) = v_clean_email
+  limit 1;
+
+  if found then
+    v_existing_rank := case v_existing.lead_category
+      when 'afh_signup' then 1
+      when 'free_class_registration' then 2
+      when 'gumroad_course' then 3
+      else 2
+    end;
+
+    if v_target_rank < v_existing_rank then
+      -- Upgrade level!
+      update masterclass_leads
+      set lead_category = p_category,
+          full_name = coalesce(p_full_name, full_name),
+          phone_number = coalesce(p_phone, phone_number),
+          country = coalesce(p_country, country),
+          notes = case when p_notes is not null then coalesce(notes || ' | ' || p_notes, p_notes) else notes end,
+          updated_at = now()
+      where id = v_existing.id;
+
+      v_result := jsonb_build_object('id', v_existing.id, 'status', 'upgraded', 'from_level', v_existing_rank, 'to_level', v_target_rank);
+    else
+      -- Equal or higher level already exists — update details without downgrading or duplicating
+      update masterclass_leads
+      set full_name = coalesce(p_full_name, full_name),
+          phone_number = coalesce(p_phone, phone_number),
+          country = coalesce(p_country, country),
+          notes = case when p_notes is not null then coalesce(notes || ' | ' || p_notes, p_notes) else notes end,
+          updated_at = now()
+      where id = v_existing.id;
+
+      v_result := jsonb_build_object('id', v_existing.id, 'status', 'retained', 'level', v_existing_rank);
+    end if;
+  else
+    -- Insert new single record
+    insert into masterclass_leads (
+      full_name, email_address, phone_number, country, lead_category, status, notes, created_at, updated_at
+    ) values (
+      p_full_name, v_clean_email, p_phone, p_country, p_category, p_status, p_notes, now(), now()
+    ) returning jsonb_build_object('id', id, 'status', 'inserted', 'level', v_target_rank) into v_result;
+  end if;
+
+  return v_result;
+end;
+$$ language plpgsql security definer;

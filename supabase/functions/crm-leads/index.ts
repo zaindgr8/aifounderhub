@@ -161,6 +161,104 @@ serve(async (req) => {
       return json({ queued: ids.length, message: 'Leads queued for email automation' });
     }
 
+    // ── UPSERT / ADD LEAD (with email deduplication & funnel level upgrade) ──
+    if ((action === 'upsert-lead' || action === 'add-lead') && req.method === 'POST') {
+      const body = await req.json();
+      const email = String(body.email || body.email_address || '').trim().toLowerCase();
+      if (!email) return json({ error: 'email is required' }, 400);
+
+      const targetCategory = (body.lead_category || body.leadCategory || 'afh_signup') as string;
+      const LEAD_LEVEL_RANKS: Record<string, number> = {
+        afh_signup: 1,              // Level 1: Top Level / Most mature
+        free_class_registration: 2, // Level 2: Mid Level
+        gumroad_course: 3,          // Level 3: Low Level
+      };
+
+      // Check existing lead by email
+      const { data: existingRows, error: searchErr } = await db
+        .from('masterclass_leads')
+        .select('*')
+        .ilike('email_address', email)
+        .limit(1);
+
+      if (searchErr) return json({ error: searchErr.message }, 400);
+
+      const existing = existingRows && existingRows.length > 0 ? existingRows[0] : null;
+
+      if (existing) {
+        // Lead already exists — do NOT insert duplicate!
+        const currentCat = existing.lead_category || 'free_class_registration';
+        const currentRank = LEAD_LEVEL_RANKS[currentCat] ?? 2;
+        const targetRank = LEAD_LEVEL_RANKS[targetCategory] ?? 2;
+        const isUpgrade = targetRank < currentRank; // 1 is top rank
+
+        const updates: Record<string, any> = {
+          updated_at: new Date().toISOString(),
+        };
+
+        if (body.full_name || body.fullName) updates.full_name = body.full_name || body.fullName;
+        if (body.phone_number || body.phone) updates.phone_number = body.phone_number || body.phone;
+        if (body.country) updates.country = body.country;
+        if (body.notes) {
+          updates.notes = existing.notes ? `${existing.notes} | ${body.notes}` : body.notes;
+        }
+
+        if (isUpgrade) {
+          // Upgrade level and remove from previous level
+          updates.lead_category = targetCategory;
+        }
+
+        const { data: updated, error: updErr } = await db
+          .from('masterclass_leads')
+          .update(updates)
+          .eq('id', existing.id)
+          .select()
+          .single();
+
+        if (updErr) return json({ error: updErr.message }, 400);
+
+        return json({
+          lead: updated,
+          wasDuplicate: true,
+          upgraded: isUpgrade,
+          fromLevel: currentRank,
+          toLevel: isUpgrade ? targetRank : currentRank,
+          message: isUpgrade
+            ? `Upgraded from Level ${currentRank} to Level ${targetRank} (${targetCategory}). Removed from Level ${currentRank}.`
+            : `Lead already exists at Level ${currentRank}. Updated existing record without duplicate.`,
+        });
+      }
+
+      // New lead — insert single record
+      const newLead = {
+        full_name: body.full_name || body.fullName || null,
+        email_address: email,
+        phone_number: body.phone_number || body.phone || null,
+        country: body.country || null,
+        lead_category: targetCategory,
+        status: body.status || 'new',
+        notes: body.notes || null,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data: inserted, error: insErr } = await db
+        .from('masterclass_leads')
+        .insert(newLead)
+        .select()
+        .single();
+
+      if (insErr) return json({ error: insErr.message }, 400);
+
+      return json({
+        lead: inserted,
+        wasDuplicate: false,
+        upgraded: false,
+        level: LEAD_LEVEL_RANKS[targetCategory] ?? 2,
+        message: `New Level ${LEAD_LEVEL_RANKS[targetCategory] ?? 2} lead created.`,
+      });
+    }
+
     return json({ error: 'Unknown action' }, 400);
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);

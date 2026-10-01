@@ -4,3 +4,7 @@ curl -fsSL https://claude.ai/install.sh | bash     # macOS/Linux/WSL
 
 # 2. Open Antigravity's integrated terminal, cd to your project, run:
 claude
+
+
+CRM - Leads
+http://localhost:3000/crm
