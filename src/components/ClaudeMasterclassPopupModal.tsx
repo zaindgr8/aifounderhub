@@ -286,11 +286,14 @@ export function ClaudeMasterclassPopupModal({
 
                   {/* Title & Core Hook */}
                   <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                    BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP
+                    BUILD YOUR FIRST STARTUP WITH AI — FROM IDEA TO LIVE APP
                   </h2>
-                  <p className="mt-1.5 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                    What if you could turn your startup idea into a working application without spending months learning to code? In this free live class, we’ll Vibe Code a full-stack application from scratch using AI — building the UI, backend, database, authentication, APIs and deployment. You’ll see the exact workflow we use to go from idea → code → working product → launch. No endless tutorials. No copying random AI-generated code. Build it. Understand it. Launch it. Bring your startup idea and build with us live.
-                  </p>
+                                                                                                            {/* Description */}
+                  <div className="mt-2 space-y-2 text-xs sm:text-[13px] text-zinc-400 leading-relaxed">
+                    <p>Most startup ideas die in a notes app because founders think they need a technical co-founder or a $30K agency. You don’t anymore.</p>
+                    <p>In this free live class, we’ll build a real full-stack app from scratch, with frontend, database, user logins, and payments, using AI and plain English.</p>
+                    <p>Then we’ll take it live on a real domain, ready for your first paying users. No coding experience needed, just an idea worth building.</p>
+                  </div>
 
                   {/* Highlights bar */}
                   <div className="my-4 grid grid-cols-3 gap-2 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-2.5 text-center">
