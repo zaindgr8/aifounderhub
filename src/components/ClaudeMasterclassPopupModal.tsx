@@ -286,7 +286,7 @@ export function ClaudeMasterclassPopupModal({
 
                   {/* Title & Core Hook */}
                   <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                    BUILD YOUR FIRST STARTUP WITH AI — FROM IDEA TO LIVE APP
+                    BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP
                   </h2>
                                                                                                             {/* Description */}
                   <div className="mt-2 space-y-2 text-xs sm:text-[13px] text-zinc-400 leading-relaxed">
