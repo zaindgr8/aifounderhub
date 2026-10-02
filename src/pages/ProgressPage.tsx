@@ -530,9 +530,9 @@ export function ProgressPage() {
                             <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-volt shrink-0 transition-colors" />
                           </div>
                           <p className="font-mono text-[11px] font-medium text-zinc-200 mt-1 leading-snug group-hover/item:text-white transition-colors">
-                            Never Lose a Lead
+                            Build Your Startup With AI
                             <span className="block text-[10.5px] text-zinc-400 group-hover/item:text-zinc-200">
-                              Build &amp; Sell 5-Sec AI Callbacks
+                              From Idea to Live App
                             </span>
                           </p>
                           <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">

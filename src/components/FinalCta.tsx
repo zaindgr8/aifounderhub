@@ -4,10 +4,10 @@ import { Magnetic, Reveal } from "./shared";
 import { WorkshopRegistrationModal } from "./WorkshopRegistrationModal";
 
 const FREE_MASTERCLASS = {
-  title: "NEVER LOSE A LEAD: BUILD & SELL 5-SEC AI CALLBACKS",
-  desc:  "Over 70% of website leads bounce to a competitor simply because nobody reached out fast enough. In this free live masterclass, we’ll build an end-to-end AI voice system that calls new leads within 5 seconds, qualifies them, and books appointments 24/7. Then, we’ll hand you the exact blueprint to package and sell this high-ticket automation to businesses hungry for speed-to-lead.",
+  title: "BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP",
+  desc:  "What if you could turn your startup idea into a working application without spending months learning to code? In this free live class, we’ll Vibe Code a full-stack application from scratch using AI — building the UI, backend, database, authentication, APIs and deployment. You’ll see the exact workflow we use to go from idea → code → working product → launch. No endless tutorials. No copying random AI-generated code. Build it. Understand it. Launch it. Bring your startup idea and build with us live.",
   emoji: "⚡",
-  tagline: "Live Build + Q&A · Ready-to-Deploy System · 100% Free",
+  tagline: "Live Build + Q&A · A Working Full-Stack App · 100% Free",
 };
 
 export function FinalCta() {

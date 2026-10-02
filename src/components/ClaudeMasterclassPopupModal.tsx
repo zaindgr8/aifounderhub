@@ -150,7 +150,7 @@ export function ClaudeMasterclassPopupModal({
           countryCode:     country.code,
           fullPhoneNumber,
           goal:            "workshop",
-          workshopTitle:   "Never Lose A Lead: Build & Sell 5-Sec AI Callbacks",
+          workshopTitle:   "Build Your Startup With AI — From Idea to Live App",
           source:          "timed-popup-modal",
           submittedAt:     new Date().toISOString(),
           ticketNumber:    generatedTicket,
@@ -286,10 +286,10 @@ export function ClaudeMasterclassPopupModal({
 
                   {/* Title & Core Hook */}
                   <h2 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                    <span className="text-volt">NEVER LOSE A LEAD</span>: BUILD &amp; SELL 5-SEC AI CALLBACKS
+                    BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP
                   </h2>
                   <p className="mt-1.5 text-xs sm:text-sm text-zinc-400 font-medium leading-relaxed">
-                    Over 70% of website leads bounce to a competitor simply because nobody reached out fast enough. In this free live masterclass, we’ll build an end-to-end AI voice system that calls new leads within 5 seconds, qualifies them, and books appointments 24/7. Then, we’ll hand you the exact blueprint to package and sell this high-ticket automation to businesses hungry for speed-to-lead.
+                    What if you could turn your startup idea into a working application without spending months learning to code? In this free live class, we’ll Vibe Code a full-stack application from scratch using AI — building the UI, backend, database, authentication, APIs and deployment. You’ll see the exact workflow we use to go from idea → code → working product → launch. No endless tutorials. No copying random AI-generated code. Build it. Understand it. Launch it. Bring your startup idea and build with us live.
                   </p>
 
                   {/* Highlights bar */}
@@ -300,7 +300,7 @@ export function ClaudeMasterclassPopupModal({
                     </div>
                     <div className="border-r border-zinc-800/80 px-1">
                       <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU LEAVE WITH</p>
-                      <p className="text-[11px] font-bold text-volt mt-0.5">Ready-to-Deploy System</p>
+                      <p className="text-[11px] font-bold text-volt mt-0.5">A Working Full-Stack App</p>
                     </div>
                     <div className="pl-1">
                       <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">ACCESS</p>
