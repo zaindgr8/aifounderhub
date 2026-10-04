@@ -37,6 +37,8 @@ import {
   Star,
   BadgeCheck,
   Share2,
+  Search,
+  Copy,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
@@ -300,6 +302,131 @@ const RANKS = [
   { minXP: 5000, title: "AAA Agency Tycoon ($50K MRR)", icon: Crown, color: "text-volt" },
 ];
 
+interface SavedResource {
+  id: string;
+  date: string;
+  badge: string;
+  title: string;
+  subtitle: string;
+  category: 'drive' | 'doc';
+  typeLabel: string;
+  link: string;
+  icon: React.ElementType;
+  borderColor: string;
+  shadowHover: string;
+  glowBg: string;
+  accentGradient: string;
+  badgeStyle: string;
+  iconBoxStyle: string;
+  checkCircleStyle: string;
+  buttonStyle: string;
+  highlights: string[];
+  tags: string[];
+}
+
+const SAVED_RESOURCES: SavedResource[] = [
+  {
+    id: "startup-ai-19th-sept",
+    date: "19th Sept 2024",
+    badge: "Full-Stack AI Project",
+    title: "Build Your Startup With AI: From Idea to Live App",
+    subtitle: "Complete repository, prompt files, and production deployment checklist for shipping full-stack apps.",
+    category: "drive",
+    typeLabel: "Google Drive Folder",
+    link: "https://drive.google.com/drive/folders/1t-s4FgflNauMNmA5yK6HBFnzkdRAtzL9?usp=sharing",
+    icon: FolderOpen,
+    borderColor: "border-volt/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
+    glowBg: "bg-volt/10",
+    accentGradient: "from-volt via-[#d4fa4c] to-emerald-400",
+    badgeStyle: "border-volt/30 bg-volt/10 text-volt",
+    iconBoxStyle: "border-volt/30 bg-volt/10 text-volt",
+    checkCircleStyle: "bg-volt/20 text-volt",
+    buttonStyle: "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c]",
+    highlights: [
+      "Full-stack AI starter template & architecture diagrams",
+      "Production deployment checklist & environment config",
+      "Claude & OpenAI system prompts used in live build",
+    ],
+    tags: ["Startup", "Full-Stack", "App Build", "Prompts"],
+  },
+  {
+    id: "claude-mastery-12th-sept",
+    date: "12th Sept 2024",
+    badge: "Masterclass Document",
+    title: "Claude Mastery: Prompt Engineering & Commercial Prompts",
+    subtitle: "CLAUDE: LEVEL 1 → LEVEL 3 comprehensive master guide with production prompts and agency workflows.",
+    category: "doc",
+    typeLabel: "Google Doc Master Guide",
+    link: "https://docs.google.com/document/d/1lFrm3UR9Dw7rXoq3NuGJ-jyq7WsyCgdADpHkubDNLvc/edit?usp=sharing",
+    icon: FileText,
+    borderColor: "border-purple-500/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(168,85,247,0.18)]",
+    glowBg: "bg-purple-500/10",
+    accentGradient: "from-purple-500 via-violet-400 to-pink-400",
+    badgeStyle: "border-purple-400/30 bg-purple-500/10 text-purple-300",
+    iconBoxStyle: "border-purple-400/30 bg-purple-500/10 text-purple-300",
+    checkCircleStyle: "bg-purple-500/20 text-purple-300",
+    buttonStyle: "bg-gradient-to-r from-purple-500 to-violet-600 text-white shadow-[0_0_20px_rgba(168,85,247,0.25)] hover:brightness-110",
+    highlights: [
+      "Level 1 to Level 3 prompt engineering progression",
+      "Commercial prompt templates for agency deliverables",
+      "System prompt patterns for enterprise chatbots",
+    ],
+    tags: ["Claude AI", "Prompting", "Commercial Prompts", "Docs"],
+  },
+  {
+    id: "money-making-automations-5th-sept",
+    date: "5th Sept 2024",
+    badge: "Agency Blueprints",
+    title: "6 Money Making Automations To Sell To Local Businesses",
+    subtitle: "High-demand n8n & Make automation workflows, pitch scripts, and pricing calculators ready to resell.",
+    category: "drive",
+    typeLabel: "Google Drive Folder",
+    link: "https://drive.google.com/drive/folders/16XK81K-fk-cVdzlJOLQ19sjIM-YrbjOd?usp=sharing",
+    icon: FolderOpen,
+    borderColor: "border-emerald-500/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(52,211,153,0.15)]",
+    glowBg: "bg-emerald-500/10",
+    accentGradient: "from-emerald-400 via-teal-400 to-cyan-400",
+    badgeStyle: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+    iconBoxStyle: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+    checkCircleStyle: "bg-emerald-500/20 text-emerald-400",
+    buttonStyle: "bg-gradient-to-r from-emerald-500 to-teal-500 text-void font-extrabold shadow-[0_0_20px_rgba(52,211,153,0.25)] hover:brightness-110",
+    highlights: [
+      "6 ready-to-import n8n & Make JSON workflow blueprints",
+      "Client pitch decks & niche-specific value propositions",
+      "Pricing strategies & retainer proposal templates",
+    ],
+    tags: ["Automations", "n8n Workflows", "Local Business", "Sales Deck"],
+  },
+  {
+    id: "ai-call-assistant-29th-aug",
+    date: "29th Aug 2024",
+    badge: "Voice AI System",
+    title: "Build an AI Call Assistant & Sell for $2,000+",
+    subtitle: "Step-by-step Retell / Vapi voice agent architecture, Twilio telephony setup, and high-ticket sales script.",
+    category: "drive",
+    typeLabel: "Google Drive Folder",
+    link: "https://drive.google.com/drive/folders/1RWIfJyVNdDZC9lbwmWgryDLS1Ip8jssC?usp=sharing",
+    icon: FolderOpen,
+    borderColor: "border-cyan-500/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(6,182,212,0.15)]",
+    glowBg: "bg-cyan-500/10",
+    accentGradient: "from-cyan-400 via-blue-400 to-indigo-400",
+    badgeStyle: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
+    iconBoxStyle: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
+    checkCircleStyle: "bg-cyan-500/20 text-cyan-300",
+    buttonStyle: "bg-gradient-to-r from-cyan-500 to-blue-600 text-void font-extrabold shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:brightness-110",
+    highlights: [
+      "Voice AI bot prompt scripts & objection handling logic",
+      "Twilio SIP trunking & webhook integration guides",
+      "$2,000 setup + retainer agreement contract template",
+    ],
+    tags: ["Voice AI", "Call Assistant", "Vapi / Retell", "$2K Retainer"],
+  },
+];
+
 export function ProgressPage() {
   // ─── Supabase Auth ──────────────────────────────────────────────────────────
   const { user, loading: authLoading, hasAccess, hasRoadmapAccess, hasClaudeAccess, accessLoading } = useAuth();
@@ -314,9 +441,37 @@ export function ProgressPage() {
   const [showCelebration, setShowCelebration] = useState(false);
   const [progressSyncing, setProgressSyncing] = useState(false);
   // Dashboard top-level tab
-  const [dashTab, setDashTab] = useState<'courses' | 'roadmap' | 'affiliate' | 'settings'>('courses');
+  const [dashTab, setDashTab] = useState<'courses' | 'roadmap' | 'resources' | 'affiliate' | 'settings'>('courses');
   const [claudePayLoading, setClaudePayLoading] = useState(false);
   const [claudePayError, setClaudePayError] = useState<string | null>(null);
+
+  // Resources Tab State
+  const [resourceSearch, setResourceSearch] = useState('');
+  const [resourceCategory, setResourceCategory] = useState<'all' | 'drive' | 'doc'>('all');
+  const [copiedResourceId, setCopiedResourceId] = useState<string | null>(null);
+
+  const copyResourceLink = (id: string, url: string) => {
+    try {
+      navigator.clipboard.writeText(url);
+      setCopiedResourceId(id);
+      setTimeout(() => setCopiedResourceId(null), 2000);
+    } catch { /* ignore */ }
+  };
+
+  // Sync hash with active tab (e.g. #resources opens resources tab)
+  useEffect(() => {
+    const handleHash = () => {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      if (hash === 'resources') setDashTab('resources');
+      else if (hash === 'roadmap') setDashTab('roadmap');
+      else if (hash === 'courses') setDashTab('courses');
+      else if (hash === 'affiliate') setDashTab('affiliate');
+      else if (hash === 'settings') setDashTab('settings');
+    };
+    handleHash();
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // ─── Progress State ─────────────────────────────────────────────────────────
   // Starts from localStorage for instant render; syncs with Supabase when authed
@@ -496,135 +651,22 @@ export function ProgressPage() {
           <div className="flex items-center gap-2 sm:gap-2.5 flex-wrap justify-end">
             {user ? (
               <>
-                {/* Resources Dropdown */}
-                <div className="relative group/res">
-                  <button
-                    type="button"
-                    className="flex h-9 items-center gap-1.5 rounded-xl border border-volt/35 bg-volt/10 px-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-volt transition hover:bg-volt hover:text-void hover:shadow-[0_0_20px_rgba(204,242,68,0.3)] cursor-pointer"
-                  >
-                    <FolderOpen className="h-3.5 w-3.5" />
-                    <span>Resources</span>
-                    <ChevronDown className="h-3 w-3 transition-transform duration-200 group-hover/res:rotate-180" />
-                  </button>
-
-                  {/* Dropdown Card */}
-                  <div className="invisible opacity-0 translate-y-2 group-hover/res:visible group-hover/res:opacity-100 group-hover/res:translate-y-0 transition-all duration-200 ease-out absolute right-0 top-full pt-2 z-50 pointer-events-none group-hover/res:pointer-events-auto">
-                    <div className="w-80 sm:w-88 max-h-[calc(100vh-90px)] overflow-y-auto rounded-2xl border border-volt/30 bg-[#0e0e18]/95 p-3.5 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-xl relative text-left space-y-2.5">
-                      <div className="pointer-events-none absolute -right-12 -top-12 h-32 w-32 rounded-full bg-volt/10 blur-[40px]" />
-
-                      {/* 19th Sept Resource */}
-                      <a
-                        href="https://drive.google.com/drive/folders/1t-s4FgflNauMNmA5yK6HBFnzkdRAtzL9?usp=sharing"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/item flex items-start gap-3 rounded-xl border border-volt/35 bg-volt/[0.06] p-3 transition-all duration-200 hover:border-volt hover:bg-volt/[0.12] cursor-pointer"
-                      >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-volt/30 bg-volt/15 text-volt group-hover/item:bg-volt group-hover/item:text-void transition-colors">
-                          <FolderOpen className="h-4.5 w-4.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-display text-xs font-black uppercase tracking-tight text-white group-hover/item:text-volt transition-colors truncate">
-                              Resources Link (19th Sept)
-                            </span>
-                            <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-volt shrink-0 transition-colors" />
-                          </div>
-                          <p className="font-mono text-[11px] font-medium text-zinc-200 mt-1 leading-snug group-hover/item:text-white transition-colors">
-                            Build Your Startup With AI
-                            <span className="block text-[10.5px] text-zinc-400 group-hover/item:text-zinc-200">
-                              From Idea to Live App
-                            </span>
-                          </p>
-                          <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
-                            <span>Open Google Drive</span>
-                            <span>→</span>
-                          </div>
-                        </div>
-                      </a>
-
-                      {/* Claude Mastery Resource */}
-                      <a
-                        href="https://docs.google.com/document/d/1lFrm3UR9Dw7rXoq3NuGJ-jyq7WsyCgdADpHkubDNLvc/edit?usp=sharing"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/item flex items-start gap-3 rounded-xl border border-purple-500/30 bg-purple-500/[0.06] p-3 transition-all duration-200 hover:border-purple-400 hover:bg-purple-500/[0.12] cursor-pointer"
-                      >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-purple-400/30 bg-purple-500/15 text-purple-300 group-hover/item:bg-purple-500 group-hover/item:text-white transition-colors">
-                          <FileText className="h-4.5 w-4.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-display text-xs font-black uppercase tracking-tight text-white group-hover/item:text-purple-300 transition-colors truncate">
-                              Claude Mastery (12th Sept)
-                            </span>
-                            <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-purple-300 shrink-0 transition-colors" />
-                          </div>
-                          <p className="font-mono text-[11px] font-semibold text-purple-200/90 mt-1 leading-snug group-hover/item:text-white transition-colors">
-                            CLAUDE: LEVEL 1 → LEVEL 3
-                          </p>
-                          <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-purple-300">
-                            <span>Open Google Doc</span>
-                            <span>→</span>
-                          </div>
-                        </div>
-                      </a>
-
-                      {/* 5th Sept Resource */}
-                      <a
-                        href="https://drive.google.com/drive/folders/16XK81K-fk-cVdzlJOLQ19sjIM-YrbjOd?usp=sharing"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/item flex items-start gap-3 rounded-xl border border-white/10 bg-panel/80 p-3 transition-all duration-200 hover:border-volt/50 hover:bg-volt/[0.08] cursor-pointer"
-                      >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-300 group-hover/item:bg-volt group-hover/item:text-void transition-colors">
-                          <FolderOpen className="h-4.5 w-4.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-display text-xs font-black uppercase tracking-tight text-white group-hover/item:text-volt transition-colors truncate">
-                              Resources Link (5th Sept)
-                            </span>
-                            <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-volt shrink-0 transition-colors" />
-                          </div>
-                          <p className="font-mono text-[11px] font-medium text-zinc-300 mt-1 leading-snug group-hover/item:text-white transition-colors">
-                            6 Money Making Automations To Sell To Local Businesses
-                          </p>
-                          <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
-                            <span>Open Google Drive</span>
-                            <span>→</span>
-                          </div>
-                        </div>
-                      </a>
-
-                      {/* 29th Aug Resource */}
-                      <a
-                        href="https://drive.google.com/drive/folders/1RWIfJyVNdDZC9lbwmWgryDLS1Ip8jssC?usp=sharing"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/item flex items-start gap-3 rounded-xl border border-white/10 bg-panel/80 p-3 transition-all duration-200 hover:border-volt/50 hover:bg-volt/[0.08] cursor-pointer"
-                      >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-300 group-hover/item:bg-volt group-hover/item:text-void transition-colors">
-                          <FolderOpen className="h-4.5 w-4.5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="font-display text-xs font-black uppercase tracking-tight text-white group-hover/item:text-volt transition-colors truncate">
-                              Resources Link (29th Aug)
-                            </span>
-                            <ExternalLink className="h-3 w-3 text-zinc-400 group-hover/item:text-volt shrink-0 transition-colors" />
-                          </div>
-                          <p className="font-mono text-[11px] font-medium text-zinc-300 mt-1 leading-snug group-hover/item:text-white transition-colors">
-                            Build an AI Call Assistant &amp; Sell for $2,000+
-                          </p>
-                          <div className="mt-2 flex items-center gap-1.5 font-mono text-[9.5px] font-extrabold uppercase text-volt">
-                            <span>Open Google Drive</span>
-                            <span>→</span>
-                          </div>
-                        </div>
-                      </a>
-                    </div>
-                  </div>
-                </div>
+                {/* Resources Tab Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDashTab('resources');
+                    window.location.hash = 'resources';
+                  }}
+                  className={`flex h-9 items-center gap-1.5 rounded-xl border px-3.5 font-display text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${
+                    dashTab === 'resources'
+                      ? 'border-volt bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]'
+                      : 'border-volt/35 bg-volt/10 text-volt hover:bg-volt hover:text-void hover:shadow-[0_0_20px_rgba(204,242,68,0.3)]'
+                  }`}
+                >
+                  <FolderOpen className="h-3.5 w-3.5" />
+                  <span>Resources</span>
+                </button>
 
                 {/* User email badge */}
                 <div className="hidden lg:flex h-9 items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-950/30 px-3">
@@ -771,17 +813,21 @@ export function ProgressPage() {
             </div>
           </div>
 
-          {/* ── 3-Tab Nav ───────────────────────────────────────────── */}
-          <div className="mb-8 flex items-center gap-1 rounded-2xl border border-white/8 bg-[#0b0b14]/80 p-1.5 w-fit">
+          {/* ── Dashboard Tabs ───────────────────────────────────────────── */}
+          <div className="mb-8 flex items-center gap-1 rounded-2xl border border-white/8 bg-[#0b0b14]/80 p-1.5 w-fit flex-wrap">
             {([
               { id: 'courses',   label: 'Courses',   icon: BookOpen },
               { id: 'roadmap',   label: 'RoadMap',   icon: Map },
+              { id: 'resources', label: 'Resources', icon: FolderOpen },
               { id: 'affiliate', label: 'Affiliate', icon: Share2 },
               { id: 'settings',  label: 'Settings',  icon: Settings },
-            ] as { id: 'courses'|'roadmap'|'affiliate'|'settings'; label: string; icon: React.ElementType }[]).map(tab => (
+            ] as const).map(tab => (
               <button
                 key={tab.id}
-                onClick={() => setDashTab(tab.id)}
+                onClick={() => {
+                  setDashTab(tab.id);
+                  window.location.hash = tab.id;
+                }}
                 className={`flex items-center gap-2 rounded-xl px-5 py-2.5 font-display text-xs font-extrabold uppercase tracking-wider transition-all duration-200 cursor-pointer ${
                   dashTab === tab.id
                     ? 'bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.3)]'
@@ -806,7 +852,7 @@ export function ProgressPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-                {/* ── Card 1: Road to $50K ── */}
+                {/* ── Card 1: Land Your First Client in 90 Days ── */}
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -839,10 +885,10 @@ export function ProgressPage() {
                       </div>
                       <div>
                         <h3 className="font-display text-xl font-black uppercase tracking-tight text-white leading-tight">
-                          Road to <span className="text-volt">$50K/mo</span>
+                          Land Your First Client <span className="text-volt">in 90 Days</span>
                         </h3>
                         <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
-                          The AAA Agency gamified roadmap. Build, sell & scale your AI automation agency from $0.
+                          The AAA Agency gamified roadmap. Build, sell &amp; scale your AI automation agency from $0, with access to $20K+ worth of resources.
                         </p>
                       </div>
                     </div>
@@ -1335,8 +1381,189 @@ export function ProgressPage() {
           </div>)}
 
           {/* ═══════════════════════════════════════════════════════════
-              TAB: SETTINGS
+              TAB: RESOURCES
           ══════════════════════════════════════════════════════════ */}
+          {dashTab === 'resources' && (
+            <div>
+              {/* Header */}
+              <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt mb-3">
+                    <FolderOpen className="h-3 w-3" /> Member Resource Vault
+                  </div>
+                  <h2 className="font-display text-2xl font-black uppercase tracking-tight text-white">
+                    Saved Resources &amp; Downloads
+                  </h2>
+                  <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
+                    Access Google Drive folders, automation blueprints, masterclass documents, and client pitch decks from all live cohorts.
+                  </p>
+                </div>
+
+                {/* Search & Filter */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
+                    <input
+                      type="text"
+                      placeholder="Search resources..."
+                      value={resourceSearch}
+                      onChange={(e) => setResourceSearch(e.target.value)}
+                      className="h-9 w-full sm:w-56 rounded-xl border border-white/10 bg-[#0e0e18] pl-9 pr-3 text-xs text-white placeholder-zinc-500 focus:border-volt focus:outline-none transition-colors"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-1 rounded-xl border border-white/8 bg-[#0b0b14] p-1">
+                    {(['all', 'drive', 'doc'] as const).map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => setResourceCategory(cat)}
+                        className={`px-3 py-1.5 rounded-lg font-display text-[10px] font-extrabold uppercase tracking-wider transition cursor-pointer ${
+                          resourceCategory === cat
+                            ? 'bg-volt text-void shadow-[0_0_12px_rgba(204,242,68,0.25)]'
+                            : 'text-zinc-400 hover:text-white'
+                        }`}
+                      >
+                        {cat === 'all' ? 'All' : cat === 'drive' ? 'Drive' : 'Docs'}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Resources Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {SAVED_RESOURCES
+                  .filter(res => {
+                    const matchesCategory = resourceCategory === 'all' || res.category === resourceCategory;
+                    const q = resourceSearch.toLowerCase().trim();
+                    const matchesQuery = !q ||
+                      res.title.toLowerCase().includes(q) ||
+                      res.subtitle.toLowerCase().includes(q) ||
+                      res.tags.some(t => t.toLowerCase().includes(q)) ||
+                      res.date.toLowerCase().includes(q);
+                    return matchesCategory && matchesQuery;
+                  })
+                  .map((res, idx) => {
+                    const IconComponent = res.icon;
+                    return (
+                      <motion.div
+                        key={res.id}
+                        initial={{ opacity: 0, y: 16 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.05 }}
+                        className={`group relative rounded-3xl border ${res.borderColor} bg-[#0d0d16]/90 overflow-hidden ${res.shadowHover} transition-all duration-300 flex flex-col justify-between`}
+                      >
+                        {/* Ambient Glow */}
+                        <div className={`pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full ${res.glowBg} blur-[60px]`} />
+
+                        {/* Top Accent Line */}
+                        <div className={`h-1 w-full bg-gradient-to-r ${res.accentGradient}`} />
+
+                        <div className="p-6 flex-1 flex flex-col justify-between">
+                          <div>
+                            {/* Top Badges */}
+                            <div className="mb-4 flex items-center justify-between gap-2 flex-wrap">
+                              <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${res.badgeStyle}`}>
+                                <res.icon className="h-3 w-3" /> {res.date}
+                              </span>
+                              <span className="font-mono text-[10.5px] font-semibold text-zinc-400">
+                                {res.typeLabel}
+                              </span>
+                            </div>
+
+                            {/* Title & Subtitle */}
+                            <div className="flex items-start gap-3.5 mb-4">
+                              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${res.iconBoxStyle}`}>
+                                <IconComponent className="h-6 w-6" />
+                              </div>
+                              <div>
+                                <h3 className="font-display text-base sm:text-lg font-black uppercase tracking-tight text-white leading-snug group-hover:text-volt transition-colors">
+                                  {res.title}
+                                </h3>
+                                <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                                  {res.subtitle}
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Highlights / Inclusions */}
+                            <div className="my-4 space-y-2 rounded-2xl border border-white/6 bg-white/[0.02] p-3.5">
+                              {res.highlights.map((item, hIdx) => (
+                                <div key={hIdx} className="flex items-center gap-2 text-xs text-zinc-300">
+                                  <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${res.checkCircleStyle} font-bold text-[10px]`}>
+                                    ✓
+                                  </div>
+                                  <span className="leading-tight">{item}</span>
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Tags */}
+                            <div className="flex flex-wrap gap-1.5 mb-6">
+                              {res.tags.map((tag) => (
+                                <span
+                                  key={tag}
+                                  className="rounded-md border border-white/8 bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-zinc-400"
+                                >
+                                  #{tag}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2.5 pt-2">
+                            <a
+                              href={res.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 px-4 font-display text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${res.buttonStyle}`}
+                            >
+                              <span>{res.category === 'drive' ? 'Open Google Drive' : 'Open Google Doc'}</span>
+                              <ExternalLink className="h-3.5 w-3.5" />
+                            </a>
+
+                            <button
+                              type="button"
+                              onClick={() => copyResourceLink(res.id, res.link)}
+                              title="Copy resource link"
+                              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                            >
+                              {copiedResourceId === res.id ? (
+                                <Check className="h-4 w-4 text-volt" />
+                              ) : (
+                                <Copy className="h-4 w-4" />
+                              )}
+                            </button>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+              </div>
+
+              {/* Weekly drops banner */}
+              <div className="rounded-2xl border border-volt/20 bg-volt/[0.04] p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-3.5 text-left">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-volt/30 bg-volt/15 text-volt">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-display text-sm font-extrabold uppercase text-white tracking-wide">
+                      Weekly Asset Drops &amp; Updates
+                    </h4>
+                    <p className="text-xs text-zinc-400 mt-0.5">
+                      New workflows, client pitch decks, and prompts are dropped into this vault after each live cohort session.
+                    </p>
+                  </div>
+                </div>
+                <div className="font-mono text-xs font-bold text-volt whitespace-nowrap bg-volt/10 border border-volt/30 rounded-xl px-3.5 py-2">
+                  Updated Weekly
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* ═══════════════════════════════════════════════════════════
               TAB: AFFILIATE
           ══════════════════════════════════════════════════════════ */}
