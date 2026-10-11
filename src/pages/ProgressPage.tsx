@@ -39,6 +39,8 @@ import {
   Share2,
   Search,
   Copy,
+  LayoutGrid,
+  List,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
@@ -326,14 +328,14 @@ interface SavedResource {
 
 const SAVED_RESOURCES: SavedResource[] = [
   {
-    id: "startup-ai-19th-sept",
-    date: "19th Sept 2024",
+    id: "startup-ai-4th-oct",
+    date: "4th Oct",
     badge: "Full-Stack AI Project",
-    title: "Build Your Startup With AI: From Idea to Live App",
+    title: "BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP",
     subtitle: "Complete repository, prompt files, and production deployment checklist for shipping full-stack apps.",
     category: "drive",
     typeLabel: "Google Drive Folder",
-    link: "https://drive.google.com/drive/folders/1t-s4FgflNauMNmA5yK6HBFnzkdRAtzL9?usp=sharing",
+    link: "https://drive.google.com/drive/folders/1g0uE5JGnzegaA11NBQvCGS3ql-0PSHsw?usp=sharing",
     icon: FolderOpen,
     borderColor: "border-volt/30",
     shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
@@ -349,6 +351,31 @@ const SAVED_RESOURCES: SavedResource[] = [
       "Claude & OpenAI system prompts used in live build",
     ],
     tags: ["Startup", "Full-Stack", "App Build", "Prompts"],
+  },
+  {
+    id: "ai-call-assistant-19th-sept",
+    date: "19th Sept 2024",
+    badge: "AI Call Assistant",
+    title: "Get Call In 3 Seconds: Never Loose A Lead (AI Call Assistant)",
+    subtitle: "Instant speed-to-lead voice AI workflow, inbound webhook triggers, and automated telephony setup.",
+    category: "drive",
+    typeLabel: "Google Drive Folder",
+    link: "https://drive.google.com/drive/folders/1t-s4FgflNauMNmA5yK6HBFnzkdRAtzL9?usp=sharing",
+    icon: FolderOpen,
+    borderColor: "border-volt/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
+    glowBg: "bg-volt/10",
+    accentGradient: "from-volt via-[#d4fa4c] to-emerald-400",
+    badgeStyle: "border-volt/30 bg-volt/10 text-volt",
+    iconBoxStyle: "border-volt/30 bg-volt/10 text-volt",
+    checkCircleStyle: "bg-volt/20 text-volt",
+    buttonStyle: "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c]",
+    highlights: [
+      "Speed-to-lead instant inbound call triggers",
+      "Retell / Vapi voice assistant architecture",
+      "Webhook routing and appointment booking logic",
+    ],
+    tags: ["Voice AI", "Speed To Lead", "Call Assistant", "Automation"],
   },
   {
     id: "claude-mastery-12th-sept",
@@ -448,6 +475,7 @@ export function ProgressPage() {
   // Resources Tab State
   const [resourceSearch, setResourceSearch] = useState('');
   const [resourceCategory, setResourceCategory] = useState<'all' | 'drive' | 'doc'>('all');
+  const [resourceViewMode, setResourceViewMode] = useState<'grid' | 'list'>('grid');
   const [copiedResourceId, setCopiedResourceId] = useState<string | null>(null);
 
   const copyResourceLink = (id: string, url: string) => {
@@ -1385,22 +1413,19 @@ export function ProgressPage() {
           ══════════════════════════════════════════════════════════ */}
           {dashTab === 'resources' && (
             <div>
-              {/* Header */}
-              <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+              {/* Minimalist Header */}
+              <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
                 <div>
-                  <div className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-volt mb-3">
-                    <FolderOpen className="h-3 w-3" /> Member Resource Vault
-                  </div>
                   <h2 className="font-display text-2xl font-black uppercase tracking-tight text-white">
                     Saved Resources &amp; Downloads
                   </h2>
                   <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
-                    Access Google Drive folders, automation blueprints, masterclass documents, and client pitch decks from all live cohorts.
+                    Access Google Drive folders and masterclass documents from all live cohorts.
                   </p>
                 </div>
 
-                {/* Search & Filter */}
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+                {/* Minimalist Search & Controls */}
+                <div className="flex items-center gap-2 flex-wrap">
                   <div className="relative">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-zinc-500" />
                     <input
@@ -1408,18 +1433,28 @@ export function ProgressPage() {
                       placeholder="Search resources..."
                       value={resourceSearch}
                       onChange={(e) => setResourceSearch(e.target.value)}
-                      className="h-9 w-full sm:w-56 rounded-xl border border-white/10 bg-[#0e0e18] pl-9 pr-3 text-xs text-white placeholder-zinc-500 focus:border-volt focus:outline-none transition-colors"
+                      className="h-9 w-48 sm:w-56 rounded-xl border border-white/10 bg-[#0c0c14] pl-9 pr-7 text-xs text-white placeholder-zinc-500 focus:border-volt/60 focus:outline-none transition-colors"
                     />
+                    {resourceSearch && (
+                      <button
+                        onClick={() => setResourceSearch('')}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white text-xs cursor-pointer"
+                        title="Clear search"
+                      >
+                        ✕
+                      </button>
+                    )}
                   </div>
 
-                  <div className="flex items-center gap-1 rounded-xl border border-white/8 bg-[#0b0b14] p-1">
+                  {/* Category Filter */}
+                  <div className="flex items-center gap-1 rounded-xl border border-white/8 bg-[#0c0c14] p-1">
                     {(['all', 'drive', 'doc'] as const).map(cat => (
                       <button
                         key={cat}
                         onClick={() => setResourceCategory(cat)}
                         className={`px-3 py-1.5 rounded-lg font-display text-[10px] font-extrabold uppercase tracking-wider transition cursor-pointer ${
                           resourceCategory === cat
-                            ? 'bg-volt text-void shadow-[0_0_12px_rgba(204,242,68,0.25)]'
+                            ? 'bg-volt text-void shadow-[0_0_12px_rgba(204,242,68,0.2)]'
                             : 'text-zinc-400 hover:text-white'
                         }`}
                       >
@@ -1427,140 +1462,162 @@ export function ProgressPage() {
                       </button>
                     ))}
                   </div>
+
+                  {/* View Mode Toggle: Grid / List */}
+                  <div className="flex items-center gap-0.5 rounded-xl border border-white/8 bg-[#0c0c14] p-1">
+                    <button
+                      onClick={() => setResourceViewMode('grid')}
+                      className={`p-1.5 rounded-lg transition cursor-pointer ${
+                        resourceViewMode === 'grid'
+                          ? 'bg-white/10 text-volt'
+                          : 'text-zinc-500 hover:text-zinc-300'
+                      }`}
+                      title="Grid View"
+                    >
+                      <LayoutGrid className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setResourceViewMode('list')}
+                      className={`p-1.5 rounded-lg transition cursor-pointer ${
+                        resourceViewMode === 'list'
+                          ? 'bg-white/10 text-volt'
+                          : 'text-zinc-500 hover:text-zinc-300'
+                      }`}
+                      title="List View"
+                    >
+                      <List className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
 
-              {/* Resources Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                {SAVED_RESOURCES
-                  .filter(res => {
-                    const matchesCategory = resourceCategory === 'all' || res.category === resourceCategory;
-                    const q = resourceSearch.toLowerCase().trim();
-                    const matchesQuery = !q ||
-                      res.title.toLowerCase().includes(q) ||
-                      res.subtitle.toLowerCase().includes(q) ||
-                      res.tags.some(t => t.toLowerCase().includes(q)) ||
-                      res.date.toLowerCase().includes(q);
-                    return matchesCategory && matchesQuery;
-                  })
-                  .map((res, idx) => {
-                    const IconComponent = res.icon;
-                    return (
-                      <motion.div
-                        key={res.id}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.05 }}
-                        className={`group relative rounded-3xl border ${res.borderColor} bg-[#0d0d16]/90 overflow-hidden ${res.shadowHover} transition-all duration-300 flex flex-col justify-between`}
+              {/* Resources List or Grid */}
+              {(() => {
+                const filteredResources = SAVED_RESOURCES.filter(res => {
+                  const matchesCategory = resourceCategory === 'all' || res.category === resourceCategory;
+                  const q = resourceSearch.toLowerCase().trim();
+                  return matchesCategory && (!q ||
+                    res.title.toLowerCase().includes(q) ||
+                    res.subtitle.toLowerCase().includes(q) ||
+                    res.date.toLowerCase().includes(q));
+                });
+
+                if (filteredResources.length === 0) {
+                  return (
+                    <div className="text-center py-12 rounded-2xl border border-white/[0.06] bg-[#0c0c14]/50 mb-8">
+                      <FolderOpen className="h-8 w-8 text-zinc-600 mx-auto mb-2" />
+                      <p className="text-xs text-zinc-400 font-mono">No resources matching &ldquo;{resourceSearch}&rdquo;</p>
+                      <button
+                        onClick={() => { setResourceSearch(''); setResourceCategory('all'); }}
+                        className="mt-3 text-xs text-volt hover:underline cursor-pointer"
                       >
-                        {/* Ambient Glow */}
-                        <div className={`pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full ${res.glowBg} blur-[60px]`} />
+                        Reset filters
+                      </button>
+                    </div>
+                  );
+                }
 
-                        {/* Top Accent Line */}
-                        <div className={`h-1 w-full bg-gradient-to-r ${res.accentGradient}`} />
-
-                        <div className="p-6 flex-1 flex flex-col justify-between">
-                          <div>
-                            {/* Top Badges */}
-                            <div className="mb-4 flex items-center justify-between gap-2 flex-wrap">
-                              <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider ${res.badgeStyle}`}>
-                                <res.icon className="h-3 w-3" /> {res.date}
-                              </span>
-                              <span className="font-mono text-[10.5px] font-semibold text-zinc-400">
-                                {res.typeLabel}
-                              </span>
+                if (resourceViewMode === 'list') {
+                  return (
+                    <div className="space-y-2 mb-8">
+                      {filteredResources.map((res, idx) => (
+                        <motion.div
+                          key={res.id}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: idx * 0.03 }}
+                          className="group rounded-xl border border-white/[0.07] bg-[#0c0c14] hover:border-white/20 hover:bg-[#10101b] px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-200"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="font-mono text-xs text-zinc-500 mb-1">
+                              {res.date}
                             </div>
-
-                            {/* Title & Subtitle */}
-                            <div className="flex items-start gap-3.5 mb-4">
-                              <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border ${res.iconBoxStyle}`}>
-                                <IconComponent className="h-6 w-6" />
-                              </div>
-                              <div>
-                                <h3 className="font-display text-base sm:text-lg font-black uppercase tracking-tight text-white leading-snug group-hover:text-volt transition-colors">
-                                  {res.title}
-                                </h3>
-                                <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
-                                  {res.subtitle}
-                                </p>
-                              </div>
-                            </div>
-
-                            {/* Highlights / Inclusions */}
-                            <div className="my-4 space-y-2 rounded-2xl border border-white/6 bg-white/[0.02] p-3.5">
-                              {res.highlights.map((item, hIdx) => (
-                                <div key={hIdx} className="flex items-center gap-2 text-xs text-zinc-300">
-                                  <div className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-full ${res.checkCircleStyle} font-bold text-[10px]`}>
-                                    ✓
-                                  </div>
-                                  <span className="leading-tight">{item}</span>
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Tags */}
-                            <div className="flex flex-wrap gap-1.5 mb-6">
-                              {res.tags.map((tag) => (
-                                <span
-                                  key={tag}
-                                  className="rounded-md border border-white/8 bg-white/5 px-2 py-0.5 font-mono text-[10px] font-medium text-zinc-400"
-                                >
-                                  #{tag}
-                                </span>
-                              ))}
-                            </div>
+                            <h3 className="font-display text-sm sm:text-base font-bold text-white group-hover:text-volt transition-colors truncate">
+                              {res.title}
+                            </h3>
+                            <p className="text-xs text-zinc-400 mt-0.5 truncate">{res.subtitle}</p>
                           </div>
 
-                          {/* Action Buttons */}
-                          <div className="flex items-center gap-2.5 pt-2">
+                          <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                             <a
                               href={res.link}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 px-4 font-display text-xs font-extrabold uppercase tracking-wider transition cursor-pointer ${res.buttonStyle}`}
+                              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:border-volt hover:bg-volt hover:text-void transition-all cursor-pointer"
                             >
-                              <span>{res.category === 'drive' ? 'Open Google Drive' : 'Open Google Doc'}</span>
-                              <ExternalLink className="h-3.5 w-3.5" />
+                              <span>Open</span>
+                              <ExternalLink className="h-3 w-3" />
                             </a>
-
                             <button
                               type="button"
                               onClick={() => copyResourceLink(res.id, res.link)}
-                              title="Copy resource link"
-                              className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-zinc-400 hover:border-white/20 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                              className="flex h-7.5 w-7.5 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 transition cursor-pointer"
+                              title="Copy link"
                             >
                               {copiedResourceId === res.id ? (
-                                <Check className="h-4 w-4 text-volt" />
+                                <Check className="h-3.5 w-3.5 text-volt" />
                               ) : (
-                                <Copy className="h-4 w-4" />
+                                <Copy className="h-3.5 w-3.5" />
                               )}
                             </button>
                           </div>
+                        </motion.div>
+                      ))}
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 mb-8">
+                    {filteredResources.map((res, idx) => (
+                      <motion.div
+                        key={res.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: idx * 0.04 }}
+                        className="group relative rounded-2xl border border-white/[0.08] bg-[#0c0c14] hover:border-white/20 hover:bg-[#0f0f18] transition-all duration-200 p-5 flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="font-mono text-xs text-zinc-500 mb-2">
+                            {res.date}
+                          </div>
+                          <h3 className="font-display text-base font-bold text-white group-hover:text-volt transition-colors leading-snug">
+                            {res.title}
+                          </h3>
+                          <p className="text-xs text-zinc-400 leading-relaxed mt-2">
+                            {res.subtitle}
+                          </p>
+                        </div>
+
+                        {/* Action Buttons */}
+                        <div className="flex items-center gap-2 pt-4 mt-4 border-t border-white/[0.06]">
+                          <a
+                            href={res.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-semibold text-zinc-200 bg-white/[0.04] hover:bg-volt hover:text-void border border-white/10 hover:border-volt transition-all duration-200 cursor-pointer"
+                          >
+                            <span>Open</span>
+                            <ExternalLink className="h-3 w-3" />
+                          </a>
+                          <button
+                            type="button"
+                            onClick={() => copyResourceLink(res.id, res.link)}
+                            title="Copy link"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition cursor-pointer"
+                          >
+                            {copiedResourceId === res.id ? (
+                              <Check className="h-3.5 w-3.5 text-volt" />
+                            ) : (
+                              <Copy className="h-3.5 w-3.5" />
+                            )}
+                          </button>
                         </div>
                       </motion.div>
-                    );
-                  })}
-              </div>
-
-              {/* Weekly drops banner */}
-              <div className="rounded-2xl border border-volt/20 bg-volt/[0.04] p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3.5 text-left">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-volt/30 bg-volt/15 text-volt">
-                    <Sparkles className="h-5 w-5" />
+                    ))}
                   </div>
-                  <div>
-                    <h4 className="font-display text-sm font-extrabold uppercase text-white tracking-wide">
-                      Weekly Asset Drops &amp; Updates
-                    </h4>
-                    <p className="text-xs text-zinc-400 mt-0.5">
-                      New workflows, client pitch decks, and prompts are dropped into this vault after each live cohort session.
-                    </p>
-                  </div>
-                </div>
-                <div className="font-mono text-xs font-bold text-volt whitespace-nowrap bg-volt/10 border border-volt/30 rounded-xl px-3.5 py-2">
-                  Updated Weekly
-                </div>
-              </div>
+                );
+              })()}
             </div>
           )}
 
