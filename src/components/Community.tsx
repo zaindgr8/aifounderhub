@@ -114,7 +114,7 @@ export function Community() {
               <h2 className="mt-4 font-display text-3xl font-extrabold uppercase leading-[1.05] tracking-tight text-white sm:text-4xl md:text-[44px]">
                 Fastest Growing Community of{" "}
                 <span className="text-volt">AI Founders</span>, Entrepreneurs and Enthusiasts in{" "}
-                <span className="font-serif italic font-normal normal-case text-lilac">Dubai &amp; GCC</span>
+                <span className="font-serif italic font-normal normal-case text-volt">Dubai &amp; GCC</span>
               </h2>
             </Reveal>
 
