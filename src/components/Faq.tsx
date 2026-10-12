@@ -57,7 +57,7 @@ export function Faq() {
           {/* left intro */}
           <div className="space-y-5 lg:col-span-5">
             <Reveal>
-              <SectionTag index="06" label="Got questions?" />
+              <SectionTag index="07" label="Got questions?" />
             </Reveal>
             <Reveal delay={0.08}>
               <h3 className="font-display text-5xl font-extrabold uppercase leading-none tracking-tight text-white sm:text-6xl">

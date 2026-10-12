@@ -8,3 +8,6 @@ coverage/
 .env*
 !.env.example
 *-original*.mp4
+
+# Raw gallery originals (web copies live in public/gallery)
+src/Gallery/

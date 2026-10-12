@@ -17,7 +17,7 @@ import { AuthModal } from "./AuthModal";
 import { CommunityApplyModal, LUMA_URL } from "./CommunityPanel";
 
 const LINKS = [
-  { label: "COURSES", target: "courses" },
+  { label: "COMMUNITY", target: "community" },
   { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
   { label: "FOUNDERS", target: "mentors" },
