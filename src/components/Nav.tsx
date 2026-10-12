@@ -28,7 +28,6 @@ const LINKS: NavLink[] = [
   { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
   { label: "FOUNDERS", target: "mentors" },
-  { label: "TEAM", target: "team" },
   { label: "LAUNCH YOUR AI AGENCY", href: "/progress" },
 ];
 
