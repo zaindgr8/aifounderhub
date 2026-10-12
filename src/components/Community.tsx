@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import {
   ChevronLeft,
   ChevronRight,
-  MapPin,
   Play,
   X,
   MessageCircle,
@@ -15,19 +14,19 @@ import { Reveal, SectionTag } from "./shared";
 import { CommunityApplyModal, LUMA_URL } from "./CommunityPanel";
 import { useAuth } from "../hooks/useAuth";
 
-type Media = { type: "image" | "video"; src: string; poster?: string; alt: string; tag?: string };
+type Media = { type: "image" | "video"; src: string; poster?: string; alt: string };
 
 // Sources live in src/Gallery; web-optimised copies are in public/gallery.
 const MEDIA: Media[] = [
-  { type: "image", src: "/gallery/community-01.jpg", alt: "Founder circle at Dubai Founders HQ", tag: "Dubai Founders HQ" },
-  { type: "video", src: "/gallery/clip-01.mp4", poster: "/gallery/clip-01.jpg", alt: "Founders sharing their build stories", tag: "Live Build Story" },
-  { type: "video", src: "/gallery/clip-02.mp4", poster: "/gallery/clip-02.jpg", alt: "AI Founder Hub meetup moment", tag: "Dubai Meetup" },
-  { type: "image", src: "/gallery/community-02.jpg", alt: "AI Founder Hub community group photo", tag: "Founder Circle" },
-  { type: "video", src: "/gallery/clip-03.mp4", poster: "/gallery/clip-03.jpg", alt: "Open discussion at the meetup", tag: "Roundtable" },
-  { type: "video", src: "/gallery/clip-04.mp4", poster: "/gallery/clip-04.jpg", alt: "AI Founder Hub meetup moment", tag: "Workshop" },
-  { type: "video", src: "/gallery/clip-05.mp4", poster: "/gallery/clip-05.jpg", alt: "AI Founder Hub meetup moment", tag: "Demo Day" },
-  { type: "video", src: "/gallery/clip-06.mp4", poster: "/gallery/clip-06.jpg", alt: "AI Founder Hub meetup moment", tag: "Networking" },
-  { type: "video", src: "/gallery/clip-07.mp4", poster: "/gallery/clip-07.jpg", alt: "AI Founder Hub meetup moment", tag: "Masterclass" },
+  { type: "image", src: "/gallery/community-01.jpg", alt: "Founder circle at Dubai Founders HQ" },
+  { type: "video", src: "/gallery/clip-01.mp4", poster: "/gallery/clip-01.jpg", alt: "Founders sharing their build stories" },
+  { type: "video", src: "/gallery/clip-02.mp4", poster: "/gallery/clip-02.jpg", alt: "AI Founder Hub meetup moment" },
+  { type: "image", src: "/gallery/community-02.jpg", alt: "AI Founder Hub community group photo" },
+  { type: "video", src: "/gallery/clip-03.mp4", poster: "/gallery/clip-03.jpg", alt: "Open discussion at the meetup" },
+  { type: "video", src: "/gallery/clip-04.mp4", poster: "/gallery/clip-04.jpg", alt: "AI Founder Hub meetup moment" },
+  { type: "video", src: "/gallery/clip-05.mp4", poster: "/gallery/clip-05.jpg", alt: "AI Founder Hub meetup moment" },
+  { type: "video", src: "/gallery/clip-06.mp4", poster: "/gallery/clip-06.jpg", alt: "AI Founder Hub meetup moment" },
+  { type: "video", src: "/gallery/clip-07.mp4", poster: "/gallery/clip-07.jpg", alt: "AI Founder Hub meetup moment" },
 ];
 
 /** Muted looping clip that only plays while on screen. */
@@ -126,12 +125,8 @@ export function Community() {
                   Regular Events, Workshops &amp; Meetups
                 </span>
                 <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                  <MapPin className="h-3 w-3 text-volt" />
-                  Dubai Founders HQ &amp; UAE
-                </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-zinc-400">
                   <Users className="h-3 w-3 text-lilac" />
-                  Founders · Operators · Builders
+                  Connect. Build. Scale
                 </span>
               </div>
             </Reveal>
@@ -181,7 +176,7 @@ export function Community() {
           </Reveal>
         </div>
 
-        {/* Minimalist Horizontal Reel (Compact height, no massive vertical scrolling) */}
+        {/* Minimalist Horizontal Reel (Clean image/video cards without text overlays) */}
         <div className="mt-8">
           <div
             ref={scrollContainerRef}
@@ -208,27 +203,14 @@ export function Community() {
                       className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <>
-                      <InViewVideo
-                        src={m.src}
-                        poster={m.poster}
-                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <span className="pointer-events-none absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-void/80 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wider text-white backdrop-blur border border-white/10">
-                        <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
-                        Live Clip
-                      </span>
-                    </>
+                    <InViewVideo
+                      src={m.src}
+                      poster={m.poster}
+                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                   )}
 
-                  {/* Tag label */}
-                  {m.tag && (
-                    <span className="pointer-events-none absolute bottom-2.5 left-2.5 rounded-lg bg-void/85 border border-white/10 px-2.5 py-1 font-mono text-[9.5px] font-semibold text-zinc-300 backdrop-blur">
-                      {m.tag}
-                    </span>
-                  )}
-
-                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <span className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void/40 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </button>
               </div>
             ))}
@@ -237,7 +219,7 @@ export function Community() {
           {/* Subtext info bar */}
           <div className="mt-3 flex items-center justify-between text-xs text-zinc-500">
             <span className="font-mono text-[11px] uppercase tracking-wider">
-              Dubai Founders HQ · In-Person &amp; Virtual Meetups
+              In-Person &amp; Virtual Meetups
             </span>
             <span className="font-mono text-[10px] text-zinc-600 hidden sm:inline">
               Scroll horizontally or click to inspect
