@@ -16,13 +16,20 @@ import { useAuth } from "../hooks/useAuth";
 import { AuthModal } from "./AuthModal";
 import { CommunityApplyModal, LUMA_URL } from "./CommunityPanel";
 
-const LINKS = [
+interface NavLink {
+  label: string;
+  target?: string;
+  href?: string;
+  badge?: string;
+}
+
+const LINKS: NavLink[] = [
   { label: "COMMUNITY", target: "community" },
   { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
   { label: "FOUNDERS", target: "mentors" },
   { label: "TEAM", target: "team" },
-  { label: "ROADMAP", href: "/progress", isBadge: true },
+  { label: "LAUNCH YOUR AI AGENCY", href: "/progress" },
 ];
 
 interface NavProps {
@@ -153,7 +160,7 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
           </button>
 
           {/* Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 flex-shrink-0">
+          <nav className="hidden lg:flex items-center gap-5 xl:gap-7 flex-shrink-0">
             {LINKS.map((link) => {
               if (link.href) {
                 return (
@@ -163,9 +170,11 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
                     className="group relative flex items-center gap-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.18em] text-zinc-400 transition-colors hover:text-white whitespace-nowrap cursor-pointer"
                   >
                     <span>{link.label}</span>
-                    <span className="rounded-full bg-volt/15 border border-volt/30 px-1.5 py-0.2 text-[9px] font-extrabold text-volt">
-                      $50K
-                    </span>
+                    {link.badge && (
+                      <span className="rounded-full bg-volt/15 border border-volt/30 px-1.5 py-0.2 text-[9px] font-extrabold text-volt">
+                        {link.badge}
+                      </span>
+                    )}
                     <span className="absolute -bottom-1 left-0 h-px w-0 bg-volt transition-all duration-300 group-hover:w-full" />
                   </a>
                 );
@@ -329,9 +338,13 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
                         className="flex items-center justify-between rounded-xl border border-edge bg-white/[0.02] px-4 py-3.5 font-mono text-[12px] font-bold uppercase tracking-[0.16em] text-zinc-300 transition-colors hover:border-volt/40 hover:text-volt"
                       >
                         <span>{link.label}</span>
-                        <span className="rounded-full border border-volt/30 bg-volt/15 px-2 py-0.5 text-[10px] font-extrabold text-volt">
-                          $50K
-                        </span>
+                        {link.badge ? (
+                          <span className="rounded-full border border-volt/30 bg-volt/15 px-2 py-0.5 text-[10px] font-extrabold text-volt">
+                            {link.badge}
+                          </span>
+                        ) : (
+                          <ArrowUpRight className="h-3.5 w-3.5 text-zinc-600" />
+                        )}
                       </a>
                     ) : (
                       <button
