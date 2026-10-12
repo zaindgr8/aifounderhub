@@ -41,11 +41,14 @@ import {
   Copy,
   LayoutGrid,
   List,
+  Users,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
 import { LockedStageModal } from "../components/LockedStageModal";
 import { PaymentModal } from "../components/PaymentModal";
+import { ResourcePaymentModal } from "../components/ResourcePaymentModal";
+import { CommunityPanel } from "../components/CommunityPanel";
 import { useAuth } from "../hooks/useAuth";
 import { signOut } from "../lib/auth";
 import { initiateZiinaPayment } from "../lib/api";
@@ -324,9 +327,67 @@ interface SavedResource {
   buttonStyle: string;
   highlights: string[];
   tags: string[];
+  isPaid?: boolean;
+  price?: number;
+  productCode?: string;
 }
 
 const SAVED_RESOURCES: SavedResource[] = [
+  {
+    id: "ai-personalized-emails-free-12th-oct",
+    date: "12th Oct",
+    badge: "Free Lead System",
+    title: "(FREE) AI-Personalized Emails → 1000+ Leads",
+    subtitle: "Complete prompt architecture, bulk personalization workflow, and outreach templates to contact 1,000+ leads.",
+    category: "drive",
+    typeLabel: "Google Drive Folder · Free",
+    link: "https://drive.google.com/drive/folders/1DSYxcnSKDd4kQp2LWzrmsTZXFxB7yIc8?usp=sharing",
+    icon: FolderOpen,
+    isPaid: false,
+    price: 0,
+    borderColor: "border-volt/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
+    glowBg: "bg-volt/10",
+    accentGradient: "from-volt via-[#d4fa4c] to-emerald-400",
+    badgeStyle: "border-volt/30 bg-volt/10 text-volt",
+    iconBoxStyle: "border-volt/30 bg-volt/10 text-volt",
+    checkCircleStyle: "bg-volt/20 text-volt",
+    buttonStyle: "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c]",
+    highlights: [
+      "AI personalization prompt chains for high open & reply rates",
+      "Automated lead enrichment & 1,000+ leads email dispatch framework",
+      "Dynamic variable injection formulas and battle-tested copy",
+    ],
+    tags: ["Free", "Cold Email", "AI Outreach", "Lead Gen", "1000+ Leads"],
+  },
+  {
+    id: "supabase-email-leads-12th-oct",
+    date: "12th Oct",
+    badge: "$5 Premium Asset",
+    title: "(SupaBase) AI-Personalized Emails → 1000+ Leads",
+    subtitle: "Full Supabase database backend schema, automated webhook pipeline, and personalized email engine for 1,000+ leads.",
+    category: "drive",
+    typeLabel: "Google Drive Folder · $5 Lifetime Access",
+    link: "https://drive.google.com/drive/folders/128T9p-C7xiwPMjeZpbPS7jtyGeGvUIsA?usp=sharing",
+    icon: FolderOpen,
+    isPaid: true,
+    price: 5,
+    productCode: "supabase-email-leads",
+    borderColor: "border-emerald-500/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(52,211,153,0.2)]",
+    glowBg: "bg-emerald-500/10",
+    accentGradient: "from-emerald-400 via-teal-400 to-volt",
+    badgeStyle: "border-emerald-500/40 bg-emerald-500/15 text-emerald-400 font-bold",
+    iconBoxStyle: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+    checkCircleStyle: "bg-emerald-500/20 text-emerald-400",
+    buttonStyle: "bg-gradient-to-r from-emerald-500 to-teal-400 text-void font-extrabold shadow-[0_0_25px_rgba(52,211,153,0.3)] hover:brightness-110",
+    highlights: [
+      "Complete Supabase database SQL schema & leads pipeline tables",
+      "Automated AI enrichment & personalization sync directly in Supabase",
+      "Production-grade webhook integration & automated campaign triggers",
+    ],
+    tags: ["Supabase", "SQL Backend", "1000+ Leads", "Automation", "$5 Asset"],
+  },
   {
     id: "startup-ai-4th-oct",
     date: "4th Oct",
@@ -456,7 +517,7 @@ const SAVED_RESOURCES: SavedResource[] = [
 
 export function ProgressPage() {
   // ─── Supabase Auth ──────────────────────────────────────────────────────────
-  const { user, loading: authLoading, hasAccess, hasRoadmapAccess, hasClaudeAccess, accessLoading } = useAuth();
+  const { user, loading: authLoading, hasAccess, hasRoadmapAccess, hasClaudeAccess, products, accessLoading } = useAuth();
   const isUnlocked = hasRoadmapAccess;
   // There is only one package ($159/mo) which includes both RoadMap and Master Claude
   const isClaudeUnlocked = hasClaudeAccess || hasRoadmapAccess || hasAccess;
@@ -464,11 +525,13 @@ export function ProgressPage() {
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [lockedModalOpen, setLockedModalOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
+  const [resourcePaymentModalOpen, setResourcePaymentModalOpen] = useState(false);
+  const [selectedPayResource, setSelectedPayResource] = useState<SavedResource | null>(null);
   const [activeLevelTab, setActiveLevelTab] = useState<number>(1);
   const [showCelebration, setShowCelebration] = useState(false);
   const [progressSyncing, setProgressSyncing] = useState(false);
   // Dashboard top-level tab
-  const [dashTab, setDashTab] = useState<'courses' | 'roadmap' | 'resources' | 'affiliate' | 'settings'>('courses');
+  const [dashTab, setDashTab] = useState<'courses' | 'roadmap' | 'resources' | 'community' | 'affiliate' | 'settings'>('courses');
   const [claudePayLoading, setClaudePayLoading] = useState(false);
   const [claudePayError, setClaudePayError] = useState<string | null>(null);
 
@@ -477,6 +540,29 @@ export function ProgressPage() {
   const [resourceCategory, setResourceCategory] = useState<'all' | 'drive' | 'doc'>('all');
   const [resourceViewMode, setResourceViewMode] = useState<'grid' | 'list'>('grid');
   const [copiedResourceId, setCopiedResourceId] = useState<string | null>(null);
+
+  const isResourceUnlocked = useCallback(
+    (res: SavedResource) => {
+      if (!res.isPaid) return true;
+      if (res.productCode) {
+        if (products?.includes(res.productCode)) return true;
+        try {
+          if (localStorage.getItem(`afh_resource_unlocked_${res.productCode}`) === 'true') {
+            return true;
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+      return false;
+    },
+    [products]
+  );
+
+  const handleUnlockResource = (res: SavedResource) => {
+    setSelectedPayResource(res);
+    setResourcePaymentModalOpen(true);
+  };
 
   const copyResourceLink = (id: string, url: string) => {
     try {
@@ -493,6 +579,7 @@ export function ProgressPage() {
       if (hash === 'resources') setDashTab('resources');
       else if (hash === 'roadmap') setDashTab('roadmap');
       else if (hash === 'courses') setDashTab('courses');
+      else if (hash === 'community') setDashTab('community');
       else if (hash === 'affiliate') setDashTab('affiliate');
       else if (hash === 'settings') setDashTab('settings');
     };
@@ -847,6 +934,7 @@ export function ProgressPage() {
               { id: 'courses',   label: 'Courses',   icon: BookOpen },
               { id: 'roadmap',   label: 'RoadMap',   icon: Map },
               { id: 'resources', label: 'Resources', icon: FolderOpen },
+              { id: 'community', label: 'Community', icon: Users },
               { id: 'affiliate', label: 'Affiliate', icon: Share2 },
               { id: 'settings',  label: 'Settings',  icon: Settings },
             ] as const).map(tab => (
@@ -1520,39 +1608,164 @@ export function ProgressPage() {
                 if (resourceViewMode === 'list') {
                   return (
                     <div className="space-y-2 mb-8">
-                      {filteredResources.map((res, idx) => (
+                      {filteredResources.map((res, idx) => {
+                        const unlocked = isResourceUnlocked(res);
+                        return (
+                          <motion.div
+                            key={res.id}
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: idx * 0.03 }}
+                            className="group rounded-xl border border-white/[0.07] bg-[#0c0c14] hover:border-white/20 hover:bg-[#10101b] px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-200"
+                          >
+                            <div className="min-w-0 flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-mono text-xs text-zinc-500">{res.date}</span>
+                                {res.isPaid ? (
+                                  unlocked ? (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/25 px-2 py-0.5 rounded-full">
+                                      <Unlock className="h-2.5 w-2.5" /> Unlocked
+                                    </span>
+                                  ) : (
+                                    <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-500/35 px-2 py-0.5 rounded-full">
+                                      <Lock className="h-2.5 w-2.5" /> $5 Access
+                                    </span>
+                                  )
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-volt/90 bg-volt/10 border border-volt/20 px-2 py-0.5 rounded-full">
+                                    FREE
+                                  </span>
+                                )}
+                              </div>
+                              <h3 className="font-display text-sm sm:text-base font-bold text-white group-hover:text-volt transition-colors truncate">
+                                {res.title}
+                              </h3>
+                              <p className="text-xs text-zinc-400 mt-0.5 truncate">{res.subtitle}</p>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                              {unlocked ? (
+                                <a
+                                  href={res.link}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:border-volt hover:bg-volt hover:text-void transition-all cursor-pointer"
+                                >
+                                  <span>Open</span>
+                                  <ExternalLink className="h-3 w-3" />
+                                </a>
+                              ) : (
+                                <button
+                                  type="button"
+                                  onClick={() => handleUnlockResource(res)}
+                                  className="flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-gradient-to-r from-emerald-500 to-teal-400 text-void font-extrabold px-3.5 py-1.5 text-xs transition-all cursor-pointer shadow-[0_0_15px_rgba(52,211,153,0.25)] hover:brightness-110"
+                                >
+                                  <Lock className="h-3 w-3" />
+                                  <span>Unlock · $5</span>
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  if (unlocked) {
+                                    copyResourceLink(res.id, res.link);
+                                  } else {
+                                    handleUnlockResource(res);
+                                  }
+                                }}
+                                className="flex h-7.5 w-7.5 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 transition cursor-pointer"
+                                title={unlocked ? "Copy link" : "Unlock for $5"}
+                              >
+                                {copiedResourceId === res.id ? (
+                                  <Check className="h-3.5 w-3.5 text-volt" />
+                                ) : (
+                                  <Copy className="h-3.5 w-3.5" />
+                                )}
+                              </button>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  );
+                }
+
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 mb-8">
+                    {filteredResources.map((res, idx) => {
+                      const unlocked = isResourceUnlocked(res);
+                      return (
                         <motion.div
                           key={res.id}
-                          initial={{ opacity: 0, y: 6 }}
+                          initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.03 }}
-                          className="group rounded-xl border border-white/[0.07] bg-[#0c0c14] hover:border-white/20 hover:bg-[#10101b] px-4 py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all duration-200"
+                          transition={{ delay: idx * 0.04 }}
+                          className={`group relative rounded-2xl border ${
+                            res.isPaid && !unlocked
+                              ? "border-emerald-500/25 bg-[#0c0d16] hover:border-emerald-500/40"
+                              : "border-white/[0.08] bg-[#0c0c14] hover:border-white/20 hover:bg-[#0f0f18]"
+                          } transition-all duration-200 p-5 flex flex-col justify-between`}
                         >
-                          <div className="min-w-0 flex-1">
-                            <div className="font-mono text-xs text-zinc-500 mb-1">
-                              {res.date}
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-2">
+                              <span className="font-mono text-xs text-zinc-500">{res.date}</span>
+                              {res.isPaid ? (
+                                unlocked ? (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                                    <Unlock className="h-2.5 w-2.5" /> Unlocked
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">
+                                    <Lock className="h-2.5 w-2.5" /> $5 Access
+                                  </span>
+                                )
+                              ) : (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-volt/90 bg-volt/10 border border-volt/20 px-2 py-0.5 rounded-full">
+                                  FREE
+                                </span>
+                              )}
                             </div>
-                            <h3 className="font-display text-sm sm:text-base font-bold text-white group-hover:text-volt transition-colors truncate">
+                            <h3 className="font-display text-base font-bold text-white group-hover:text-volt transition-colors leading-snug">
                               {res.title}
                             </h3>
-                            <p className="text-xs text-zinc-400 mt-0.5 truncate">{res.subtitle}</p>
+                            <p className="text-xs text-zinc-400 leading-relaxed mt-2">
+                              {res.subtitle}
+                            </p>
                           </div>
 
-                          <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                            <a
-                              href={res.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:border-volt hover:bg-volt hover:text-void transition-all cursor-pointer"
-                            >
-                              <span>Open</span>
-                              <ExternalLink className="h-3 w-3" />
-                            </a>
+                          {/* Action Buttons */}
+                          <div className="flex items-center gap-2 pt-4 mt-4 border-t border-white/[0.06]">
+                            {unlocked ? (
+                              <a
+                                href={res.link}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-semibold text-zinc-200 bg-white/[0.04] hover:bg-volt hover:text-void border border-white/10 hover:border-volt transition-all duration-200 cursor-pointer"
+                              >
+                                <span>Open</span>
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => handleUnlockResource(res)}
+                                className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-extrabold text-void bg-gradient-to-r from-emerald-500 to-teal-400 hover:brightness-110 border border-emerald-400 transition-all duration-200 cursor-pointer shadow-[0_0_20px_rgba(52,211,153,0.25)]"
+                              >
+                                <Lock className="h-3.5 w-3.5" />
+                                <span>Unlock Access · $5</span>
+                              </button>
+                            )}
                             <button
                               type="button"
-                              onClick={() => copyResourceLink(res.id, res.link)}
-                              className="flex h-7.5 w-7.5 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 transition cursor-pointer"
-                              title="Copy link"
+                              onClick={() => {
+                                if (unlocked) {
+                                  copyResourceLink(res.id, res.link);
+                                } else {
+                                  handleUnlockResource(res);
+                                }
+                              }}
+                              title={unlocked ? "Copy link" : "Unlock for $5"}
+                              className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition cursor-pointer"
                             >
                               {copiedResourceId === res.id ? (
                                 <Check className="h-3.5 w-3.5 text-volt" />
@@ -1562,63 +1775,22 @@ export function ProgressPage() {
                             </button>
                           </div>
                         </motion.div>
-                      ))}
-                    </div>
-                  );
-                }
-
-                return (
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4.5 mb-8">
-                    {filteredResources.map((res, idx) => (
-                      <motion.div
-                        key={res.id}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.04 }}
-                        className="group relative rounded-2xl border border-white/[0.08] bg-[#0c0c14] hover:border-white/20 hover:bg-[#0f0f18] transition-all duration-200 p-5 flex flex-col justify-between"
-                      >
-                        <div>
-                          <div className="font-mono text-xs text-zinc-500 mb-2">
-                            {res.date}
-                          </div>
-                          <h3 className="font-display text-base font-bold text-white group-hover:text-volt transition-colors leading-snug">
-                            {res.title}
-                          </h3>
-                          <p className="text-xs text-zinc-400 leading-relaxed mt-2">
-                            {res.subtitle}
-                          </p>
-                        </div>
-
-                        {/* Action Buttons */}
-                        <div className="flex items-center gap-2 pt-4 mt-4 border-t border-white/[0.06]">
-                          <a
-                            href={res.link}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-semibold text-zinc-200 bg-white/[0.04] hover:bg-volt hover:text-void border border-white/10 hover:border-volt transition-all duration-200 cursor-pointer"
-                          >
-                            <span>Open</span>
-                            <ExternalLink className="h-3 w-3" />
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => copyResourceLink(res.id, res.link)}
-                            title="Copy link"
-                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition cursor-pointer"
-                          >
-                            {copiedResourceId === res.id ? (
-                              <Check className="h-3.5 w-3.5 text-volt" />
-                            ) : (
-                              <Copy className="h-3.5 w-3.5" />
-                            )}
-                          </button>
-                        </div>
-                      </motion.div>
-                    ))}
+                      );
+                    })}
                   </div>
                 );
               })()}
             </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════════
+              TAB: COMMUNITY
+          ══════════════════════════════════════════════════════════ */}
+          {dashTab === 'community' && (
+            <CommunityPanel
+              defaultName={(user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || ''}
+              defaultEmail={user?.email ?? ''}
+            />
           )}
 
           {/* ═══════════════════════════════════════════════════════════
@@ -1748,6 +1920,13 @@ export function ProgressPage() {
       <PaymentModal
         open={paymentModalOpen}
         onClose={() => setPaymentModalOpen(false)}
+      />
+
+      {/* Resource Payment / Checkout Modal ($5 Ziina) */}
+      <ResourcePaymentModal
+        open={resourcePaymentModalOpen}
+        onClose={() => setResourcePaymentModalOpen(false)}
+        resource={selectedPayResource}
       />
 
       {/* Celebration Notification Toast */}

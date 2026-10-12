@@ -28,6 +28,7 @@ export const PACKAGES = {
   'claude-master':          { code: 'claude-master',          label: 'Master Claude in 7 Days (Included in Accelerator)', purpose: 'membership', priceCents: 15900,  recurring: true },
   'all-access':             { code: 'all-access',             label: 'AAA Accelerator — All Access ($159/mo)', purpose: 'membership', priceCents: 15900,  recurring: true },
   'session-1on1':           { code: 'session-1on1',           label: '1:1 Private Session',            purpose: 'booking',    priceCents: 59900,  recurring: false },
+  'supabase-email-leads':   { code: 'supabase-email-leads',   label: '(SupaBase) AI-Personalized Emails → 1000+ Leads ($5)', purpose: 'resource', priceCents: 500, recurring: false },
   'other':                  { code: 'other',                  label: 'Other / Manual',                 purpose: 'membership', priceCents: 0,      recurring: false },
 };
 

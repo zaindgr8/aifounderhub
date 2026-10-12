@@ -1,9 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
-import { ArrowUpRight, LogIn, LayoutDashboard, Menu, Sparkles, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  LogIn,
+  LayoutDashboard,
+  Menu,
+  Sparkles,
+  X,
+  ChevronDown,
+  Users,
+  CalendarDays,
+} from "lucide-react";
 import { Wordmark, scrollToWorkshops } from "./shared";
 import { useAuth } from "../hooks/useAuth";
 import { AuthModal } from "./AuthModal";
+import { CommunityApplyModal, LUMA_URL } from "./CommunityPanel";
 
 const LINKS = [
   { label: "COURSES", target: "courses" },
@@ -24,6 +35,9 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
   const [scrolled, setScrolled] = useState(false);
   const [authOpen, setAuthOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [communityOpen, setCommunityOpen] = useState(false);
+  const [communityApplyModalOpen, setCommunityApplyModalOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const { user, hasAccess } = useAuth();
 
   /* lock body scroll while the drawer is open */
@@ -34,13 +48,34 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
     };
   }, [menuOpen]);
 
-  /* escape closes the drawer */
+  /* escape closes the drawer or community dropdown */
   useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setMenuOpen(false);
+    if (!menuOpen && !communityOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMenuOpen(false);
+        setCommunityOpen(false);
+      }
+    };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
+  }, [menuOpen, communityOpen]);
+
+  /* close community dropdown on outside click */
+  useEffect(() => {
+    if (!communityOpen) return;
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setCommunityOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handlePointerDown);
+    document.addEventListener("touchstart", handlePointerDown);
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+      document.removeEventListener("touchstart", handlePointerDown);
+    };
+  }, [communityOpen]);
 
   const goToSection = (target: string) => {
     setMenuOpen(false);
@@ -75,10 +110,10 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
       >
         {/* Banner 1: Free Masterclass */}
         <div 
-          onClick={handleClaimFreeSeat}
+          onClick={() => setCommunityApplyModalOpen(true)}
           className="bg-volt px-4 py-1.5 text-center text-[10px] md:text-[11px] font-mono font-extrabold uppercase tracking-wider text-void flex items-center justify-center gap-2 relative z-10 shadow-sm border-b border-white/10 cursor-pointer hover:bg-opacity-95 transition-colors whitespace-nowrap overflow-hidden text-ellipsis"
         >
-          <span className="truncate">⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "CLAIM FREE SEAT"</span>
+          <span className="truncate">⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "JOIN THE COMMUNITY"</span>
         </div>
 
         {/* Banner 2: AAA Accelerator Monthly Membership */}
@@ -172,14 +207,93 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
               </button>
             )}
 
-            <button
-              onClick={handleClaimFreeSeat}
-              className="group flex items-center gap-1.5 rounded-full bg-volt px-3.5 sm:px-4 py-1.5 font-display text-[10.5px] sm:text-[11px] md:text-[11.5px] font-extrabold uppercase tracking-wider text-void transition-all duration-300 hover:shadow-[0_0_24px_rgba(204,242,68,0.45)] whitespace-nowrap active:scale-95 cursor-pointer"
-            >
-              <span className="hidden sm:inline">Claim Free Seat</span>
-              <span className="sm:hidden">Free Seat</span>
-              <ArrowUpRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-            </button>
+            {/* JOIN THE COMMUNITY DROPDOWN */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setCommunityOpen((prev) => !prev)}
+                aria-expanded={communityOpen}
+                aria-haspopup="menu"
+                className="group flex items-center gap-1.5 rounded-full bg-volt px-3.5 sm:px-4 py-1.5 font-display text-[10.5px] sm:text-[11px] md:text-[11.5px] font-extrabold uppercase tracking-wider text-void transition-all duration-300 hover:shadow-[0_0_24px_rgba(204,242,68,0.45)] whitespace-nowrap active:scale-95 cursor-pointer"
+              >
+                <span>Join The Community</span>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-300 ${
+                    communityOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {communityOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.96 }}
+                    transition={{ duration: 0.16, ease: [0.22, 1, 0.36, 1] }}
+                    role="menu"
+                    className="absolute right-0 top-full mt-2 w-80 rounded-2xl border border-white/10 bg-[#0d0d14]/95 p-2 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.7)] z-50 overflow-hidden"
+                  >
+                    <div className="px-3 pt-2 pb-1.5 font-mono text-[9.5px] font-bold uppercase tracking-widest text-zinc-500">
+                      Connect With AFH
+                    </div>
+
+                    {/* Option 1: Get Access */}
+                    <button
+                      type="button"
+                      role="menuitem"
+                      onClick={() => {
+                        setCommunityOpen(false);
+                        setCommunityApplyModalOpen(true);
+                      }}
+                      className="group flex w-full items-start gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-white/[0.06] cursor-pointer"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-volt/15 border border-volt/30 text-volt group-hover:bg-volt group-hover:text-void transition-colors">
+                        <Users className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-display text-[12px] font-black uppercase tracking-wider text-white group-hover:text-volt transition-colors">
+                            Join WhatsApp
+                          </span>
+                          <span className="rounded-full bg-volt/15 border border-volt/30 px-1.5 py-0.2 font-mono text-[8.5px] font-extrabold text-volt">
+                            FREE
+                          </span>
+                        </div>
+                        <p className="mt-0.5 text-[11px] leading-snug text-zinc-400">
+                          Apply for WhatsApp community For Regular Updates.
+                        </p>
+                      </div>
+                    </button>
+
+                    {/* Option 2: Join Upcoming Event */}
+                    <a
+                      role="menuitem"
+                      href={LUMA_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={() => setCommunityOpen(false)}
+                      className="group flex w-full items-start gap-3 rounded-xl p-2.5 text-left transition-colors hover:bg-white/[0.06] cursor-pointer"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-lilac/15 border border-lilac/30 text-lilac group-hover:bg-lilac group-hover:text-void transition-colors">
+                        <CalendarDays className="h-4 w-4" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-display text-[12px] font-black uppercase tracking-wider text-white group-hover:text-lilac transition-colors">
+                            Join Upcoming Event
+                          </span>
+                          <ArrowUpRight className="h-3 w-3 text-zinc-500 group-hover:text-lilac group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+                        </div>
+                        <p className="mt-0.5 text-[11px] leading-snug text-zinc-400">
+                          Browse Upcoming Events, Workshops & Meetups.
+                        </p>
+                      </div>
+                    </a>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
             {/* burger — the whole nav was unreachable on mobile before this */}
             <button
@@ -248,22 +362,49 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
                         setMenuOpen(false);
                         setAuthOpen(true);
                       }}
-                      className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 py-3.5 font-display text-[12px] font-extrabold uppercase tracking-wider text-zinc-200 transition-colors hover:border-volt/50 hover:text-volt cursor-pointer"
+                      className="flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 py-3 font-display text-[12px] font-extrabold uppercase tracking-wider text-zinc-200 transition-colors hover:border-volt/50 hover:text-volt cursor-pointer"
                     >
                       <LogIn className="h-4 w-4" />
                       Login
                     </button>
                   )}
+
+                  <div className="px-1 pt-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-500">
+                    Join The Community
+                  </div>
+
+                  {/* Option 1: Get Access */}
                   <button
+                    type="button"
                     onClick={() => {
                       setMenuOpen(false);
-                      handleClaimFreeSeat();
+                      setCommunityApplyModalOpen(true);
                     }}
-                    className="flex items-center justify-center gap-2 rounded-xl bg-volt py-3.5 font-display text-[12.5px] font-extrabold uppercase tracking-wider text-void active:scale-[0.98] cursor-pointer"
+                    className="flex items-center justify-between rounded-xl bg-volt px-4 py-3 font-display text-[12px] font-extrabold uppercase tracking-wider text-void active:scale-[0.98] cursor-pointer"
                   >
-                    Claim Free Seat
-                    <ArrowUpRight className="h-4 w-4" />
+                    <span className="flex items-center gap-2">
+                      <Users className="h-4 w-4" />
+                      Option 1: Get Access
+                    </span>
+                    <span className="rounded-full bg-void/15 px-2 py-0.5 font-mono text-[9px] font-black">
+                      FREE
+                    </span>
                   </button>
+
+                  {/* Option 2: Join Upcoming Event */}
+                  <a
+                    href={LUMA_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-between rounded-xl border border-lilac/30 bg-lilac/10 px-4 py-3 font-display text-[12px] font-extrabold uppercase tracking-wider text-lilac active:scale-[0.98] cursor-pointer"
+                  >
+                    <span className="flex items-center gap-2">
+                      <CalendarDays className="h-4 w-4" />
+                      Option 2: Upcoming Events
+                    </span>
+                    <ArrowUpRight className="h-4 w-4" />
+                  </a>
                 </div>
               </nav>
             </motion.div>
@@ -279,6 +420,14 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
           setAuthOpen(false);
           window.location.href = "/progress";
         }}
+      />
+
+      {/* Community Application Modal */}
+      <CommunityApplyModal
+        open={communityApplyModalOpen}
+        onClose={() => setCommunityApplyModalOpen(false)}
+        defaultName={user?.user_metadata?.full_name || ""}
+        defaultEmail={user?.email || ""}
       />
     </>
   );

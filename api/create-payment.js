@@ -32,14 +32,25 @@ export async function createPayment(req, res) {
       fullName, email,
       advisorName,
       productCode = 'aaa-accelerator',
-      amount     = (productCode === 'aaa-accelerator-yearly' ? 159000 : 15900),
-      message    = (advisorName
-        ? `AI Founder Hub — 1:1 Session with ${advisorName}`
-        : productCode === 'aaa-accelerator-yearly'
-        ? 'AI Founder Hub — AAA Accelerator (Annual - $1,590/yr · 2 Mo Free) · Includes Claude'
-        : 'AI Founder Hub — AAA Accelerator ($159/month) · Includes Claude'),
+      amount,
+      message,
       cancelPath = '/progress',
     } = req.body ?? {};
+
+    const pkg = PACKAGES[productCode] || (advisorName ? PACKAGES['session-1on1'] : PACKAGES['aaa-accelerator']);
+    const finalAmount = (typeof amount === 'number' && amount > 0)
+      ? amount
+      : (pkg?.priceCents || (productCode === 'aaa-accelerator-yearly' ? 159000 : 15900));
+
+    const finalMessage = message || (advisorName
+      ? `AI Founder Hub — 1:1 Session with ${advisorName}`
+      : productCode === 'aaa-accelerator-yearly'
+      ? 'AI Founder Hub — AAA Accelerator (Annual - $1,590/yr · 2 Mo Free) · Includes Claude'
+      : productCode === 'supabase-email-leads'
+      ? 'AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($5)'
+      : pkg?.label
+      ? `AI Founder Hub — ${pkg.label}`
+      : 'AI Founder Hub — AAA Accelerator ($159/month) · Includes Claude');
     if (!fullName || !email) {
       return res.status(400).json({ ok: false, error: 'fullName and email are required' });
     }
@@ -55,9 +66,9 @@ export async function createPayment(req, res) {
 
     // Build the Payment Intent request
     const payload = {
-      amount,
+      amount: finalAmount,
       currency_code: 'USD',
-      message,
+      message: finalMessage,
       success_url: `${appUrl}/payment-success`,
       cancel_url:  `${appUrl}${cancelPath}`,
       failure_url: `${appUrl}/payment-failed`,
@@ -65,7 +76,7 @@ export async function createPayment(req, res) {
       test: testMode,
     };
 
-    console.log('[Ziina] Creating payment intent', { email, testMode, amount });
+    console.log('[Ziina] Creating payment intent', { email, testMode, amount: finalAmount });
 
     const ziinaRes = await fetch(`${ZIINA_API}/payment_intent`, {
       method: 'POST',
@@ -87,10 +98,10 @@ export async function createPayment(req, res) {
     console.log('[Ziina] Payment intent created', { paymentIntentId, redirect_url });
 
     // Persist user details so confirm-payment can send the email
-    sessionStore.set(paymentIntentId, { fullName, email, advisorName, amount, message, createdAt: Date.now() });
+    sessionStore.set(paymentIntentId, { fullName, email, advisorName, amount: finalAmount, message: finalMessage, createdAt: Date.now() });
 
     // Record the attempt. Best-effort: a reporting write must never cost a sale.
-    await recordPendingPayment({ paymentIntentId, redirect_url, fullName, email, amount, advisorName, productCode, testMode });
+    await recordPendingPayment({ paymentIntentId, redirect_url, fullName, email, amount: finalAmount, advisorName, productCode, testMode });
 
     return res.status(200).json({ ok: true, redirect_url, paymentIntentId });
   } catch (err) {

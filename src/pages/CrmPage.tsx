@@ -248,6 +248,7 @@ function personaCfg(persona: string | null) {
 const C = {
   bg:      '#09090b',
   surface: '#0e0e11',
+  panel:   '#111115',
   raised:  '#141417',
   border:  '#1d1d21',
   strong:  '#2a2a30',
@@ -1926,7 +1927,7 @@ function EmailHistoryModal({ onClose }: { onClose: () => void }) {
                     display: 'inline-flex', alignItems: 'center', gap: 5,
                   }}
                 >
-                  <Dot color={cfg.dotColor} /> {cfg.label}
+                  <Dot color={cfg.color} /> {cfg.label}
                 </button>
               );
             })}

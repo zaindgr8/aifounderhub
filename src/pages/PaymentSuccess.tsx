@@ -7,7 +7,9 @@ type PageState = "loading" | "success" | "failed";
 
 export function PaymentSuccess() {
   const [pageState, setPageState] = useState<PageState>("loading");
-  const [errorMsg, setErrorMsg] = useState<string>("");
+  const [errorMsg, setErrorMsg] = useState<string>("" );
+  const [productCode, setProductCode] = useState<string | null>(null);
+  const [driveUrl, setDriveUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -26,6 +28,13 @@ export function PaymentSuccess() {
     confirmZiinaPayment(paymentIntentId)
       .then((result) => {
         if (result.ok) {
+          setProductCode(result.productCode || null);
+          if (result.driveUrl) setDriveUrl(result.driveUrl);
+          if (result.productCode === "supabase-email-leads") {
+            try {
+              localStorage.setItem("afh_resource_unlocked_supabase-email-leads", "true");
+            } catch { /* ignore */ }
+          }
           setPageState("success");
         } else {
           setErrorMsg(result.error ?? `Payment status: ${result.status}`);
@@ -37,6 +46,8 @@ export function PaymentSuccess() {
         setPageState("failed");
       });
   }, []);
+
+  const isResourcePurchase = productCode === "supabase-email-leads";
 
   return (
     <div
@@ -124,13 +135,15 @@ export function PaymentSuccess() {
                   transition={{ delay: 0.25 }}
                 >
                   <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-volt">
-                    ⚡ Payment Confirmed
+                    ⚡ {isResourcePurchase ? "Resource Unlocked" : "Payment Confirmed"}
                   </span>
                   <h1 className="mt-3 font-display text-4xl font-extrabold uppercase leading-tight tracking-tight text-white sm:text-5xl">
-                    You're In! 🎉
+                    {isResourcePurchase ? "Access Granted! 🎉" : "You're In! 🎉"}
                   </h1>
                   <p className="mt-3 text-base leading-relaxed text-zinc-400">
-                    Your payment was successful. A confirmation email is on its way to your inbox with access details.
+                    {isResourcePurchase
+                      ? "Your $5 payment was confirmed. You now have lifetime access to (SupaBase) AI-Personalized Emails → 1000+ Leads."
+                      : "Your payment was successful. A confirmation email is on its way to your inbox with access details."}
                   </p>
                 </motion.div>
 
@@ -145,13 +158,21 @@ export function PaymentSuccess() {
                     What you unlocked
                   </p>
                   <div className="space-y-3">
-                    {[
-                      "AI Lead Management System — Complete Build & Setup Blueprint",
-                      "AI Call Assistant — Retell AI + Cal.com Voice Agent Suite",
-                      "AAA Agency Launch — Niche, Offer & Outreach Playbook",
-                      "Private Builders Community — Online & Dubai Meetups",
-                      "Sales & Closing Playbook — Scripts to Land Your First $2,000 Client",
-                    ].map((item) => (
+                    {(isResourcePurchase
+                      ? [
+                          "(SupaBase) AI-Personalized Emails → 1000+ Leads Google Drive Folder",
+                          "Production Supabase Database Schema & Custom SQL Tables",
+                          "Automated AI Email Personalization Workflows & Prompt Blueprints",
+                          "Permanent Access Unlocked Inside Your Account Dashboard",
+                        ]
+                      : [
+                          "AI Lead Management System — Complete Build & Setup Blueprint",
+                          "AI Call Assistant — Retell AI + Cal.com Voice Agent Suite",
+                          "AAA Agency Launch — Niche, Offer & Outreach Playbook",
+                          "Private Builders Community — Online & Dubai Meetups",
+                          "Sales & Closing Playbook — Scripts to Land Your First $2,000 Client",
+                        ]
+                    ).map((item) => (
                       <div key={item} className="flex items-start gap-3">
                         <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full bg-volt/20">
                           <CheckCircle className="h-2.5 w-2.5 text-volt" />
@@ -175,22 +196,45 @@ export function PaymentSuccess() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row items-center justify-center gap-3 w-full">
-                    <a
-                      href="/progress"
-                      id="payment-success-progress-btn"
-                      className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] no-underline w-full sm:w-auto cursor-pointer"
-                    >
-                      <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
-                      <span className="relative">Track My Progress Game →</span>
-                    </a>
+                    {isResourcePurchase ? (
+                      <>
+                        <a
+                          href={driveUrl || "https://drive.google.com/drive/folders/128T9p-C7xiwPMjeZpbPS7jtyGeGvUIsA?usp=sharing"}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] no-underline w-full sm:w-auto cursor-pointer"
+                        >
+                          <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                          <span className="relative">Open Google Drive Folder ↗</span>
+                        </a>
 
-                    <a
-                      href="/"
-                      id="payment-success-home-btn"
-                      className="rounded-full border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-zinc-400 hover:bg-white/10 hover:text-white transition w-full sm:w-auto"
-                    >
-                      Return Home
-                    </a>
+                        <a
+                          href="/progress#resources"
+                          className="rounded-full border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-zinc-300 hover:bg-white/10 hover:text-white transition w-full sm:w-auto"
+                        >
+                          View In Dashboard Resources
+                        </a>
+                      </>
+                    ) : (
+                      <>
+                        <a
+                          href="/progress"
+                          id="payment-success-progress-btn"
+                          className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] no-underline w-full sm:w-auto cursor-pointer"
+                        >
+                          <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%]" />
+                          <span className="relative">Track My Progress Game →</span>
+                        </a>
+
+                        <a
+                          href="/"
+                          id="payment-success-home-btn"
+                          className="rounded-full border border-white/10 bg-white/5 px-6 py-3.5 font-mono text-xs font-bold uppercase tracking-wider text-zinc-400 hover:bg-white/10 hover:text-white transition w-full sm:w-auto"
+                        >
+                          Return Home
+                        </a>
+                      </>
+                    )}
                   </div>
                 </motion.div>
               </motion.div>

@@ -207,16 +207,23 @@ function setCors(res) {
 
 // ─── Email template ────────────────────────────────────────────────────────────
 function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg }) {
-  const isYearly = pkg?.code === 'aaa-accelerator-yearly' || (amount && amount >= 150000);
-  const planTitle = isYearly
+  const isResource = pkg?.code === 'supabase-email-leads' || pkg?.purpose === 'resource';
+  const isYearly = !isResource && (pkg?.code === 'aaa-accelerator-yearly' || (amount && amount >= 150000));
+  const planTitle = isResource
+    ? '(SupaBase) AI-Personalized Emails → 1000+ Leads'
+    : isYearly
     ? 'Annual Subscription ($1,590/yr · 2 Months Free) · Instant Access'
     : 'Monthly Subscription ($159/mo) · Instant Access';
-  const planDesc = isYearly
+  const planDesc = isResource
+    ? 'Full Google Drive Folder · Supabase SQL Database Schema · Automated Webhook Workflows · 1,000+ Leads Engine'
+    : isYearly
     ? 'All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds · 2 Months Free'
     : 'All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds';
-  const itemPrice = isYearly ? '$1,590.00' : '$159.00';
-  const totalPaid = isYearly ? '$1,590.00 USD / yr' : '$159.00 USD / mo';
-  const subMessage = isYearly
+  const itemPrice = isResource ? '$5.00' : (isYearly ? '$1,590.00' : '$159.00');
+  const totalPaid = isResource ? '$5.00 USD' : (isYearly ? '$1,590.00 USD / yr' : '$159.00 USD / mo');
+  const subMessage = isResource
+    ? 'Your resource <strong style="color:#ccf244;">(SupaBase) AI-Personalized Emails → 1000+ Leads</strong> has been unlocked with lifetime access.'
+    : isYearly
     ? 'Your <strong style="color:#ccf244;">annual subscription (with 2 months free)</strong> is active with instant access.'
     : 'Your <strong style="color:#ccf244;">monthly subscription</strong> is active with instant access.';
 
@@ -248,7 +255,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg 
           <tr>
             <td style="background:linear-gradient(135deg,#0d0d14 0%,#12121c 100%);padding:40px 40px 32px;border-bottom:1px solid #1e1e2a;text-align:center;">
               <span style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ccf244;text-transform:uppercase;">⚡ AI Founder Hub</span>
-              <h1 style="margin:16px 0 8px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;line-height:1.2;">Welcome to AAA Accelerator! 🎉</h1>
+              <h1 style="margin:16px 0 8px;font-size:28px;font-weight:900;color:#ffffff;letter-spacing:-1px;line-height:1.2;">${isResource ? 'Resource Access Unlocked! 🎉' : 'Welcome to AAA Accelerator! 🎉'}</h1>
               <p style="margin:0;font-size:15px;color:#a1a1aa;line-height:1.6;">${subMessage}</p>
             </td>
           </tr>
@@ -326,17 +333,23 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg 
           <!-- What's inside -->
           <tr>
             <td style="background:#0d0d14;padding:0 40px 32px;">
-              <p style="margin:0 0 14px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">What's Unlocked In Your Membership</p>
+              <p style="margin:0 0 14px;font-size:10px;font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:#52525b;">${isResource ? "What's Unlocked In Your Resource" : "What's Unlocked In Your Membership"}</p>
               <table width="100%" cellpadding="0" cellspacing="0">
-                ${[
-    ['⚡', 'Master Claude in 7 Days — Complete Course & Prompt Engineering Systems'],
-    ['🤖', 'Production AI Lead Management System & Retell / Vapi Voice Prompts'],
-    ['📦', 'Complete n8n & Make.com CRM Synchronization Workflows'],
-    ['🎯', 'High-Converting Cold Outreach Campaigns & Email Templates'],
-    ['📑', 'The Exact $2,000 Setup + $600/mo Retainer Contract Templates'],
-    ['👥', 'Private Builders Community & Weekly Live Build Office Hours'],
-    ['🏆', 'Full 6-Stage Gamified Game Map Dashboard Access (Zero to $50K/mo)'],
-  ].map(([icon, text]) => `
+                ${(isResource ? [
+                  ['🗄️', 'Supabase Database Schema & Leads Storage Pipeline'],
+                  ['⚡', 'Automated AI Personalization Webhook & Edge Trigger Workflows'],
+                  ['🎯', '1000+ Leads Outreach Architecture & Dynamic Variable Prompts'],
+                  ['📁', 'Direct Google Drive Folder Access (Instant Downloads)'],
+                  ['🚀', 'Permanent Access Unlocked in Your AI Founder Hub Account'],
+                ] : [
+                  ['⚡', 'Master Claude in 7 Days — Complete Course & Prompt Engineering Systems'],
+                  ['🤖', 'Production AI Lead Management System & Retell / Vapi Voice Prompts'],
+                  ['📦', 'Complete n8n & Make.com CRM Synchronization Workflows'],
+                  ['🎯', 'High-Converting Cold Outreach Campaigns & Email Templates'],
+                  ['📑', 'The Exact $2,000 Setup + $600/mo Retainer Contract Templates'],
+                  ['👥', 'Private Builders Community & Weekly Live Build Office Hours'],
+                  ['🏆', 'Full 6-Stage Gamified Game Map Dashboard Access (Zero to $50K/mo)'],
+                ]).map(([icon, text]) => `
                 <tr>
                   <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;">
                     <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">${icon}</span>${text}</p>
@@ -349,8 +362,8 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg 
           <!-- CTA -->
           <tr>
             <td style="background:#0a0a10;padding:28px 40px;border-top:1px solid #1e1e2a;text-align:center;">
-              <p style="margin:0 0 20px;font-size:14px;color:#a1a1aa;line-height:1.7;">Your member dashboard is ready with all stages unlocked.<br/>Log in using your registered email address.</p>
-              <a href="https://aifounderhub.com/progress" style="display:inline-block;background:#ccf244;color:#07070b;font-size:13px;font-weight:800;text-decoration:none;padding:14px 34px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;">Access Member Dashboard →</a>
+              <p style="margin:0 0 20px;font-size:14px;color:#a1a1aa;line-height:1.7;">${isResource ? 'Your Google Drive resource folder is ready for instant download.<br/>You can also view it anytime from your dashboard.' : 'Your member dashboard is ready with all stages unlocked.<br/>Log in using your registered email address.'}</p>
+              <a href="${isResource ? 'https://drive.google.com/drive/folders/128T9p-C7xiwPMjeZpbPS7jtyGeGvUIsA?usp=sharing' : 'https://aifounderhub.com/progress'}" style="display:inline-block;background:#ccf244;color:#07070b;font-size:13px;font-weight:800;text-decoration:none;padding:14px 34px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;">${isResource ? 'Open Google Drive Folder →' : 'Access Member Dashboard →'}</a>
             </td>
           </tr>
 
@@ -471,6 +484,7 @@ export async function confirmPayment(req, res) {
     const emailPromises = [];
 
     // 4. Send confirmation to customer (if we have their email)
+    const isResource = pkg?.code === 'supabase-email-leads' || pkg?.purpose === 'resource';
     if (email) {
       emailPromises.push(
         getResend().emails.send({
@@ -478,6 +492,8 @@ export async function confirmPayment(req, res) {
           to:      [email],
           subject: isSession
             ? `🗓️ Session Booked — 1:1 with ${advisorName} · AI Founder Hub`
+            : isResource
+            ? `⚡ Access Unlocked: ${productLabel} · AI Founder Hub`
             : '🎉 Payment Confirmed — AI Founder Hub Course Access',
           html:    buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg }),
         }),
@@ -491,10 +507,12 @@ export async function confirmPayment(req, res) {
         to:      ownerRecipients,
         subject: isSession
           ? `🗓️ Session Booked: ${fullName} — 1:1 with ${advisorName} · $${(amount / 100).toFixed(2)} ${currency_code}`
+          : isResource
+          ? `💰 New Resource Sale ($5): ${fullName} — ${productLabel}`
           : `💰 New Purchase: ${fullName} — ${productLabel} · $${(amount / 100).toFixed(2)} ${currency_code}`,
         html: `<div style="font-family:Inter,Arial,sans-serif;background:#07070b;color:#e4e4e7;padding:32px;border-radius:16px;max-width:520px;">
   <p style="font-family:'Courier New',monospace;font-size:11px;font-weight:700;letter-spacing:0.25em;color:#ccf244;text-transform:uppercase;margin:0 0 8px;">⚡ AI Founder Hub</p>
-  <h2 style="margin:0 0 20px;font-size:22px;font-weight:900;color:#ffffff;">${isSession ? '🗓️ New Session Booked!' : '💰 New Purchase!'}</h2>
+  <h2 style="margin:0 0 20px;font-size:22px;font-weight:900;color:#ffffff;">${isSession ? '🗓️ New Session Booked!' : isResource ? '💰 New Resource Sale!' : '💰 New Purchase!'}</h2>
   <table style="width:100%;border-collapse:collapse;">
     <tr><td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-size:11px;color:#71717a;font-family:'Courier New',monospace;text-transform:uppercase;">Product</td>
         <td style="padding:10px 0;border-bottom:1px solid #1e1e2a;font-weight:700;color:#ccf244;">${productLabel}</td></tr>
@@ -524,7 +542,7 @@ export async function confirmPayment(req, res) {
     // Clean up session store
     sessionStore.delete(paymentIntentId);
 
-    return res.status(200).json({ ok: true, status, alreadySent: false });
+    return res.status(200).json({ ok: true, status, alreadySent: false, productCode: pkg?.code, productLabel });
   } catch (err) {
     console.error('[Ziina] Unexpected error in confirm-payment:', err);
     return res.status(500).json({ ok: false, error: 'Internal server error' });

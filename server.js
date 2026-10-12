@@ -7,6 +7,7 @@ import checkMember from './api/check-member.js';
 import admin from './api/admin.js';
 import affiliate from './api/affiliate.js';
 import { leadWebhook } from './api/lead-webhook.js';
+import { joinCommunity } from './api/join-community.js';
 
 const app = express();
 const PORT = process.env.API_PORT || 3001;
@@ -39,6 +40,7 @@ app.post('/api/check-member', checkMember);
 app.post('/api/admin', admin);
 app.post('/api/affiliate', affiliate);
 app.post('/api/lead-webhook', leadWebhook);
+app.post('/api/join-community', joinCommunity);
 
 // Health check
 app.get('/api/health', (_req, res) => res.json({ ok: true, ts: Date.now() }));

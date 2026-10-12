@@ -115,6 +115,9 @@ export interface ZiinaConfirmResult {
   ok: boolean;
   status?: string;
   alreadySent?: boolean;
+  productCode?: string;
+  productLabel?: string;
+  driveUrl?: string;
   error?: string;
 }
 

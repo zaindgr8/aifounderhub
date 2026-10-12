@@ -50,6 +50,13 @@ export const PRODUCTS = {
     checkoutMessage: "AI Founder Hub — 1:1 Private Session",
     cancelPath: "/#mentors",
   },
+  "supabase-email-leads": {
+    code: "supabase-email-leads",
+    label: "(SupaBase) AI-Personalized Emails → 1000+ Leads",
+    priceCents: 500, // $5
+    checkoutMessage: "AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($5)",
+    cancelPath: "/progress#resources",
+  },
 } as const satisfies Record<string, Product>;
 
 export type ProductCode = keyof typeof PRODUCTS;
