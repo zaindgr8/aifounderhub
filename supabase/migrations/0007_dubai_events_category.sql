@@ -1,11 +1,23 @@
--- Migration 0007: Add Dubai Events Category to Lead Intelligence CRM
--- Target: Supabase project csdxhpdjkaddrblyxlhg
+-- Migration 0007: Add "Dubai Event Circle" category to Lead Intelligence CRM
+-- Target: Supabase project csdxhpdjkaddrblyxlhg (aifounderhubleads)
+--
+-- lead_category is a Postgres ENUM and the view gumroad_lead_products depends on it,
+-- so we extend the enum instead of converting the column to text.
+--
+-- IMPORTANT: run in TWO separate executions in the SQL editor.
+-- Postgres can't use a new enum value in the same transaction that adds it.
 
--- 1-2. Convert column to text so new categories (dubai_event_circle) never fail with enum errors
-alter table masterclass_leads alter column lead_category type text using lead_category::text;
-alter table masterclass_leads alter column lead_category set default 'free_class_registration';
+-- ═══════════════════════════════════════════════════════════════════════════
+-- RUN 1 — select ONLY this statement and click Run
+-- ═══════════════════════════════════════════════════════════════════════════
+alter type lead_category add value if not exists 'dubai_event_circle';
 
--- 3. Update existing Dubai Events leads (Luma / Everyone Pitches / Dubai Event Circle)
+
+-- ═══════════════════════════════════════════════════════════════════════════
+-- RUN 2 — after Run 1 succeeds, select everything below and click Run
+-- ═══════════════════════════════════════════════════════════════════════════
+
+-- Move existing Dubai Event Circle leads (Luma / Everyone Pitches) into the new category
 update masterclass_leads
 set lead_category = 'dubai_event_circle',
     updated_at = now()
@@ -15,7 +27,7 @@ where source = 'luma'
    or 'dubai-event-circle' = any(tags)
    or 'event:everyone-pitches-dubai' = any(tags);
 
--- 4. Update helper function upsert_masterclass_lead_funnel to support dubai_events (Level 3 rank)
+-- Funnel upsert helper: Dubai Event Circle = Level 3, GumRoad = Level 4
 create or replace function upsert_masterclass_lead_funnel(
   p_email text,
   p_full_name text default null,
@@ -32,7 +44,6 @@ declare
   v_target_rank int;
   v_result jsonb;
 begin
-  -- Rank mapping: 1 is top, 4 is lowest
   v_target_rank := case p_category
     when 'afh_signup' then 1
     when 'free_class_registration' then 2
@@ -47,7 +58,7 @@ begin
   limit 1;
 
   if found then
-    v_existing_rank := case v_existing.lead_category
+    v_existing_rank := case v_existing.lead_category::text
       when 'afh_signup' then 1
       when 'free_class_registration' then 2
       when 'dubai_event_circle' then 3
@@ -57,7 +68,7 @@ begin
 
     if v_target_rank < v_existing_rank then
       update masterclass_leads
-      set lead_category = p_category,
+      set lead_category = p_category::lead_category,
           full_name = coalesce(p_full_name, full_name),
           phone_number = coalesce(p_phone, phone_number),
           country = coalesce(p_country, country),
@@ -81,7 +92,7 @@ begin
     insert into masterclass_leads (
       full_name, email_address, phone_number, country, lead_category, status, notes, created_at, updated_at
     ) values (
-      p_full_name, v_clean_email, p_phone, p_country, p_category, p_status, p_notes, now(), now()
+      p_full_name, v_clean_email, p_phone, p_country, p_category::lead_category, p_status, p_notes, now(), now()
     ) returning jsonb_build_object('id', id, 'status', 'inserted', 'level', v_target_rank) into v_result;
   end if;
 
