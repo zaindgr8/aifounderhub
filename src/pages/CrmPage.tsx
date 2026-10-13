@@ -39,7 +39,7 @@ const crmSupabase = createClient(
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type LeadStatus = 'new' | 'contacted' | 'interested' | 'meeting_booked' | 'closed' | 'not_interested' | 'enrolled' | 'lost' | string;
 type LeadIntent = 'hot' | 'warm' | 'cold' | null;
-type LeadCategory = 'afh_signup' | 'free_class_registration' | 'gumroad_course';
+type LeadCategory = 'afh_signup' | 'free_class_registration' | 'dubai_event_circle' | 'gumroad_course';
 type AutomationStatus = 'pending' | 'queued' | 'in_progress' | 'completed' | 'failed' | 'opted_out';
 
 interface MasterclassLead {
@@ -126,16 +126,20 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; bg: string; 
 
 // Preset Interest Tags requested by user
 const PRESET_TAGS = [
-  { id: 'Free Master',     label: 'Free Master',     color: '#ccf244', bg: 'rgba(204,242,68,0.15)', border: 'rgba(204,242,68,0.3)', icon: Sparkles },
-  { id: 'Business',        label: 'Business',        color: '#60a5fa', bg: 'rgba(96,165,250,0.15)', border: 'rgba(96,165,250,0.3)', icon: Target },
-  { id: 'AAA Accelerator', label: 'AAA Accelerator', color: '#a78bfa', bg: 'rgba(167,139,250,0.15)', border: 'rgba(167,139,250,0.3)', icon: Zap },
-  { id: 'Affiliate',       label: 'Affiliate',       color: '#f59e0b', bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', icon: TrendingUp },
-  { id: '1:1 Session',     label: '1:1 Session',     color: '#34d399', bg: 'rgba(52,211,153,0.15)', border: 'rgba(52,211,153,0.3)', icon: Users },
+  { id: 'Dubai Event',     label: 'Dubai Event Circle', color: '#38bdf8', bg: 'rgba(56,189,248,0.15)', border: 'rgba(56,189,248,0.3)', icon: Calendar },
+  { id: 'Free Master',     label: 'Free Master',        color: '#ccf244', bg: 'rgba(204,242,68,0.15)', border: 'rgba(204,242,68,0.3)', icon: Sparkles },
+  { id: 'Business',        label: 'Business',           color: '#60a5fa', bg: 'rgba(96,165,250,0.15)', border: 'rgba(96,165,250,0.3)', icon: Target },
+  { id: 'AAA Accelerator', label: 'AAA Accelerator',    color: '#a78bfa', bg: 'rgba(167,139,250,0.15)', border: 'rgba(167,139,250,0.3)', icon: Zap },
+  { id: 'Affiliate',       label: 'Affiliate',          color: '#f59e0b', bg: 'rgba(245,158,11,0.15)', border: 'rgba(245,158,11,0.3)', icon: TrendingUp },
+  { id: '1:1 Session',     label: '1:1 Session',        color: '#34d399', bg: 'rgba(52,211,153,0.15)', border: 'rgba(52,211,153,0.3)', icon: Users },
 ] as const;
 
 function tagCfg(tag: string) {
   const found = PRESET_TAGS.find(t => t.id.toLowerCase() === tag.toLowerCase() || t.label.toLowerCase() === tag.toLowerCase());
   if (found) return found;
+  if (tag.toLowerCase().includes('dubai') || tag.toLowerCase().includes('luma')) {
+    return { id: tag, label: tag, color: '#38bdf8', bg: 'rgba(56,189,248,0.12)', border: 'rgba(56,189,248,0.3)', icon: Calendar };
+  }
   return { id: tag, label: tag, color: '#9ca3af', bg: 'rgba(156,163,175,0.12)', border: 'rgba(156,163,175,0.25)', icon: Tag };
 }
 
@@ -154,11 +158,12 @@ const AUTOMATION_CONFIG: Record<AutomationStatus, { label: string; color: string
   opted_out:   { label: 'Opted Out',   color: '#9ca3af' },
 };
 
-// Funnel Hierarchy: Level 1 (Top Level / Most mature) > Level 2 (Mid) > Level 3 (Low)
+// Funnel Hierarchy: Level 1 (Top Level) > Level 2 (Mid) > Level 3 (Dubai Events) > Level 4 (Low)
 export const LEAD_LEVELS: Record<LeadCategory, number> = {
   afh_signup: 1,               // Level 1 - Top Level (Most mature)
   free_class_registration: 2,  // Level 2 - Mid Level
-  gumroad_course: 3,           // Level 3 - Low Level
+  dubai_event_circle: 3,       // Level 3 - Dubai In-Person & Event Circle
+  gumroad_course: 4,           // Level 4 - Low Level
 };
 
 export function isLevelUpgrade(newCat: LeadCategory, currentCat: LeadCategory | null | undefined): boolean {
@@ -166,6 +171,41 @@ export function isLevelUpgrade(newCat: LeadCategory, currentCat: LeadCategory | 
   const currentLvl = LEAD_LEVELS[currentCat] ?? 99;
   const newLvl = LEAD_LEVELS[newCat] ?? 99;
   return newLvl < currentLvl; // lower number = higher rank (1 is top)
+}
+
+// Helper: Detect if a lead belongs to Dubai Event Circle
+export function isDubaiEventLead(lead: {
+  lead_category?: string | null;
+  enrolled_for?: string | null;
+  campaign_name?: string | null;
+  tags?: string[] | null;
+  source?: string | null;
+}): boolean {
+  if (lead.lead_category === 'dubai_event_circle' || lead.lead_category === 'dubai_events') return true;
+  if (lead.source === 'luma') return true;
+  if (lead.campaign_name === 'Everyone Pitches Event') return true;
+  if (lead.enrolled_for && lead.enrolled_for.toLowerCase().includes('dubai event circle')) return true;
+  if (Array.isArray(lead.tags)) {
+    if (lead.tags.includes('dubai-event-circle') || lead.tags.includes('event:everyone-pitches-dubai')) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// Helper: Normalize category dynamically so Dubai Event Circle leads always classify correctly
+export function resolveLeadCategory(lead: {
+  lead_category?: string | null;
+  enrolled_for?: string | null;
+  campaign_name?: string | null;
+  tags?: string[] | null;
+  source?: string | null;
+}): LeadCategory {
+  if (lead.lead_category === 'afh_signup') return 'afh_signup';
+  if (lead.lead_category === 'gumroad_course') return 'gumroad_course';
+  if (isDubaiEventLead(lead)) return 'dubai_event_circle';
+  if (lead.lead_category === 'free_class_registration') return 'free_class_registration';
+  return (lead.lead_category as LeadCategory) || 'free_class_registration';
 }
 
 // Lead category config — Funnel Levels for campaigns & pipeline
@@ -202,9 +242,20 @@ const LEAD_CATEGORY_CONFIG: Record<LeadCategory, {
     emoji: '🎓',
     tag: 'Mid Level',
   },
-  gumroad_course: {
+  dubai_event_circle: {
     level: 3,
-    levelBadge: 'Level 3 · Low',
+    levelBadge: 'Level 3 · Events',
+    label: 'Dubai Event Circle',
+    value: 'dubai_event_circle',
+    color: '#38bdf8',
+    bg: 'rgba(56,189,248,0.12)',
+    border: 'rgba(56,189,248,0.3)',
+    emoji: '🎟️',
+    tag: 'In-Person & Dubai Meetups',
+  },
+  gumroad_course: {
+    level: 4,
+    levelBadge: 'Level 4 · Low',
     label: 'GumRoad Course',
     value: 'gumroad_course',
     color: '#f472b6',
@@ -217,7 +268,9 @@ const LEAD_CATEGORY_CONFIG: Record<LeadCategory, {
 
 function categoryCfg(cat: string | null | undefined) {
   if (!cat) return LEAD_CATEGORY_CONFIG.free_class_registration;
-  return (LEAD_CATEGORY_CONFIG as any)[cat] || LEAD_CATEGORY_CONFIG.free_class_registration;
+  if ((LEAD_CATEGORY_CONFIG as any)[cat]) return (LEAD_CATEGORY_CONFIG as any)[cat];
+  if (cat === 'dubai_events' || cat === 'dubai_event_circle') return LEAD_CATEGORY_CONFIG.dubai_event_circle;
+  return LEAD_CATEGORY_CONFIG.free_class_registration;
 }
 
 function leadCategoryCfg(cat: string | null | undefined) {
@@ -490,7 +543,7 @@ function LeadModal({
     profession: lead.profession || '',
     company: lead.company || '',
     follow_up_at: lead.follow_up_at ? lead.follow_up_at.split('T')[0] : '',
-    lead_category: lead.lead_category || 'free_class_registration',
+    lead_category: resolveLeadCategory(lead),
   });
   const [tagsList, setTagsList] = useState<string[]>(lead.tags || []);
   const [customTag, setCustomTag] = useState('');
@@ -701,7 +754,7 @@ function LeadModal({
                     <Dot color={isActive ? cfg.color : C.faint} /> {cfg.label}
                   </span>
                   <span style={{ fontSize: 10, color: C.faint }}>
-                    Level {cfg.level} {cfg.level === 1 ? '· Top' : cfg.level === 2 ? '· Mid' : '· Low'}
+                    Level {cfg.level} {cfg.level === 1 ? '· Top' : cfg.level === 2 ? '· Mid' : cfg.level === 3 ? '· Events' : '· Low'}
                   </span>
                 </button>
               );
@@ -1241,7 +1294,7 @@ function AddLeadModal({
 
       if (found) {
         // Lead already exists! Do NOT add duplicate record.
-        const currentCat = (found.lead_category as LeadCategory) || 'free_class_registration';
+        const currentCat = resolveLeadCategory(found as MasterclassLead);
         const currentLevel = LEAD_LEVELS[currentCat] ?? 2;
         const newLevel = LEAD_LEVELS[category] ?? 2;
         const isUpgrade = newLevel < currentLevel;
@@ -1317,7 +1370,7 @@ function AddLeadModal({
     }
   };
 
-  const existingCat = existingLead ? ((existingLead.lead_category as LeadCategory) || 'free_class_registration') : null;
+  const existingCat = existingLead ? resolveLeadCategory(existingLead as MasterclassLead) : null;
   const existingLevel = existingCat ? (LEAD_LEVELS[existingCat] ?? 2) : null;
   const targetLevel = LEAD_LEVELS[category] ?? 2;
   const isUpgrading = existingLevel !== null && targetLevel < existingLevel;
@@ -1414,7 +1467,7 @@ function AddLeadModal({
                     <Dot color={isSelected ? cfg.color : C.faint} /> {cfg.label}
                   </span>
                   <span style={{ fontSize: 10, color: C.faint }}>
-                    Level {cfg.level} {cfg.level === 1 ? '· Top' : cfg.level === 2 ? '· Mid' : '· Low'}
+                    Level {cfg.level} {cfg.level === 1 ? '· Top' : cfg.level === 2 ? '· Mid' : cfg.level === 3 ? '· Events' : '· Low'}
                   </span>
                 </button>
               );
@@ -1481,6 +1534,9 @@ interface SentEmailRecord {
   email_subject: string | null;
   next_campaign: string | null;
   created_at: string;
+  source?: string | null;
+  tags?: string[] | null;
+  enrolled_for?: string | null;
 }
 
 // ─── Sent Email Preview Modal ─────────────────────────────────────────────────
@@ -1634,7 +1690,7 @@ function EmailHistoryModal({ onClose }: { onClose: () => void }) {
     try {
       const { data, error: err } = await crmSupabase
         .from('masterclass_leads')
-        .select('id, full_name, email_address, lead_category, email_status, last_campaign_sent_at, last_emailed_at, campaign_name, email_subject, next_campaign, created_at')
+        .select('id, full_name, email_address, lead_category, email_status, last_campaign_sent_at, last_emailed_at, campaign_name, email_subject, next_campaign, created_at, source, tags, enrolled_for')
         .eq('email_status', 'sent')
         .order('last_campaign_sent_at', { ascending: false, nullsFirst: false });
 
@@ -1665,7 +1721,8 @@ function EmailHistoryModal({ onClose }: { onClose: () => void }) {
     const rawDate = r.last_campaign_sent_at || r.last_emailed_at || r.created_at;
     const dateKey = rawDate ? rawDate.slice(0, 10) : 'unknown';
     if (selectedDate !== 'all' && dateKey !== selectedDate) return false;
-    if (categoryFilter !== 'all' && (r.lead_category || 'free_class_registration') !== categoryFilter) return false;
+    const itemCat = resolveLeadCategory(r as any);
+    if (categoryFilter !== 'all' && itemCat !== categoryFilter) return false;
     if (search.trim()) {
       const q = search.toLowerCase();
       const matchName = (r.full_name || '').toLowerCase().includes(q);
@@ -1694,7 +1751,7 @@ function EmailHistoryModal({ onClose }: { onClose: () => void }) {
         Timestamp: r.last_campaign_sent_at || r.last_emailed_at || r.created_at || '',
         RecipientName: r.full_name || '',
         RecipientEmail: r.email_address || '',
-        Category: r.lead_category || 'free_class_registration',
+        Category: resolveLeadCategory(r as any),
         CampaignName: r.campaign_name || 'Masterclass Welcome',
         Subject: subject,
       };
@@ -2347,7 +2404,14 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         q = q.contains('tags', [tagFilter]);
       }
       // Lead Category filter
-      if (categoryFilter !== 'all') {
+      if (categoryFilter === 'dubai_event_circle') {
+        q = q.or('source.eq.luma,campaign_name.eq.Everyone Pitches Event,enrolled_for.ilike.%Dubai Event Circle%,tags.cs.{dubai-event-circle}');
+      } else if (categoryFilter === 'free_class_registration') {
+        q = q.eq('lead_category', 'free_class_registration')
+             .not('source', 'eq', 'luma')
+             .not('campaign_name', 'eq', 'Everyone Pitches Event')
+             .not('tags', 'cs', '{dubai-event-circle}');
+      } else if (categoryFilter !== 'all') {
         q = q.eq('lead_category', categoryFilter);
       }
       // Email / Campaign filter
@@ -2365,7 +2429,8 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         q = q.or(
           `full_name.ilike.%${search}%,email_address.ilike.%${search}%,` +
           `country.ilike.%${search}%,why_they_signed_up.ilike.%${search}%,` +
-          `assigned_to.ilike.%${search}%,notes.ilike.%${search}%,next_campaign.ilike.%${search}%`
+          `assigned_to.ilike.%${search}%,notes.ilike.%${search}%,next_campaign.ilike.%${search}%,` +
+          `enrolled_for.ilike.%${search}%,campaign_name.ilike.%${search}%`
         );
       }
 
@@ -2375,7 +2440,11 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
 
       const { data, error: err, count } = await q;
       if (err) throw new Error(err.message);
-      setLeads((data || []) as MasterclassLead[]);
+      const mappedLeads = (data || []).map(l => ({
+        ...l,
+        lead_category: resolveLeadCategory(l),
+      }));
+      setLeads(mappedLeads as MasterclassLead[]);
       setTotal(count || 0);
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
@@ -2390,13 +2459,13 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
     try {
       const { data, error: err, count } = await crmSupabase
         .from('masterclass_leads')
-        .select('country, what_best_describes_them, enrolled_for, status, intent, email_automation_status, lead_score, interested, email_status, next_campaign, lead_category', { count: 'exact' });
+        .select('country, what_best_describes_them, enrolled_for, status, intent, email_automation_status, lead_score, interested, email_status, next_campaign, lead_category, source, campaign_name, tags', { count: 'exact' });
 
       if (err) {
         // Fallback
         const { data: baseData, count: baseCount } = await crmSupabase
           .from('masterclass_leads')
-          .select('country, what_best_describes_them, enrolled_for', { count: 'exact' });
+          .select('country, what_best_describes_them, enrolled_for, source, campaign_name, tags', { count: 'exact' });
 
         const items = baseData || [];
         const byCountry: Record<string, number> = {};
@@ -2449,7 +2518,7 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
         if (l.what_best_describes_them) byPersona[l.what_best_describes_them] = (byPersona[l.what_best_describes_them] || 0) + 1;
         if (l.enrolled_for) byEnrolled[l.enrolled_for] = (byEnrolled[l.enrolled_for] || 0) + 1;
         if (l.email_status) byEmailStatus[l.email_status] = (byEmailStatus[l.email_status] || 0) + 1;
-        const cat = l.lead_category || 'free_class_registration';
+        const cat = resolveLeadCategory(l);
         byCategory[cat] = (byCategory[cat] || 0) + 1;
         if (l.next_campaign) campaignsReady++;
         if (l.email_status === 'sent') emailsSent++;
@@ -2504,13 +2573,45 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
   // ── Update a lead ─────────────────────────────────────────────────────────
   const updateLead = useCallback(async (id: string | number, updates: Partial<MasterclassLead>) => {
     try {
-      const { error: err } = await crmSupabase
+      const payload: any = { ...updates, updated_at: new Date().toISOString() };
+
+      // If updating category to dubai_event_circle, also attach tag
+      if (updates.lead_category === 'dubai_event_circle') {
+        const currentTags = updates.tags || [];
+        if (!currentTags.includes('dubai-event-circle')) {
+          payload.tags = [...currentTags, 'dubai-event-circle'];
+        }
+      }
+
+      let { error: err } = await crmSupabase
         .from('masterclass_leads')
-        .update({ ...updates, updated_at: new Date().toISOString() })
+        .update(payload)
         .eq('id', id);
+
+      // Graceful fallback if database enum doesn't recognize dubai_event_circle string directly yet
+      if (err && (err.message?.includes('enum lead_category') || err.message?.includes('lead_category'))) {
+        const fallbackPayload = {
+          ...payload,
+          lead_category: 'free_class_registration',
+        };
+        const fb = await crmSupabase
+          .from('masterclass_leads')
+          .update(fallbackPayload)
+          .eq('id', id);
+        if (!fb.error) {
+          err = null;
+        }
+      }
+
       if (err) throw err;
 
-      setLeads(prev => prev.map(l => String(l.id) === String(id) ? { ...l, ...updates } : l));
+      setLeads(prev => prev.map(l => {
+        if (String(l.id) === String(id)) {
+          const merged = { ...l, ...updates };
+          return { ...merged, lead_category: resolveLeadCategory(merged) };
+        }
+        return l;
+      }));
       setEditingLead(null);
       showToast('Lead updated successfully', 'success');
       fetchStats();
@@ -2659,6 +2760,7 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
       ID: l.id,
       Name: l.full_name || '',
       Email: l.email_address || '',
+      Category: LEAD_CATEGORY_CONFIG[resolveLeadCategory(l)]?.label || l.lead_category || '',
       AssignedTo: l.assigned_to || '',
       Phone: l.phone_number || '',
       Country: l.country || '',
