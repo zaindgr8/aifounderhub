@@ -108,7 +108,7 @@ export function FreeMasterclassPage() {
           countryCode: country.code,
           fullPhoneNumber,
           goal: "workshop",
-          workshopTitle: "Build Your Startup With AI — From Idea to Live App",
+          workshopTitle: "Build Your Own AI Employees — Work Smarter, 24/7",
           source: "freemasterclass-direct-page",
           submittedAt: new Date().toISOString(),
           ticketNumber: generatedTicket,
@@ -252,35 +252,39 @@ export function FreeMasterclassPage() {
               {/* Top Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase text-volt mb-3">
                 <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
-                <span>NEXT LIVE CLASS: THIS SATURDAY (LIMITED SEATS)</span>
+                <span>FREE HERMES MASTERCLASS · THIS SATURDAY</span>
               </div>
 
               {/* Title & Core Hook */}
               <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP
+                BUILD YOUR OWN AI EMPLOYEES — WORK SMARTER, 24/7.
               </h1>
-                                                                                    {/* Description */}
+              {/* Description */}
               <div className="mt-2 space-y-2 text-xs sm:text-[13px] text-zinc-400 leading-relaxed">
-                <p>Most startup ideas die in a notes app because founders think they need a technical co-founder or a $30K agency. You don’t anymore.</p>
-                <p>In this free live class, we’ll build a real full-stack app from scratch, with frontend, database, user logins, and payments, using AI and plain English.</p>
-                <p>Then we’ll take it live on a real domain, ready for your first paying users. No coding experience needed, just an idea worth building.</p>
+                <p>Imagine AI handling your leads, customer support, marketing, and repetitive tasks — while you focus on growing your business.</p>
+                <p>Join <strong className="text-white">AI Founders Hub Dubai</strong> for a free live masterclass and learn how to build your own AI workforce using <strong className="text-white">Hermes, DeepSeek &amp; Codex</strong>.</p>
               </div>
 
               {/* Highlights Bar */}
               <div className="my-5 grid grid-cols-3 gap-2 rounded-xl border border-zinc-800/80 bg-zinc-900/60 p-3 text-center">
                 <div className="border-r border-zinc-800/80 pr-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">FORMAT</p>
-                  <p className="text-xs font-bold text-white mt-0.5">Live Build + Q&amp;A</p>
+                  <p className="text-xs font-bold text-white mt-0.5">Live Masterclass + Q&amp;A</p>
                 </div>
                 <div className="border-r border-zinc-800/80 px-1">
-                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU LEAVE WITH</p>
-                  <p className="text-xs font-bold text-volt mt-0.5">A Working Full-Stack App</p>
+                  <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU'LL LEARN</p>
+                  <p className="text-xs font-bold text-volt mt-0.5">Build Your Own AI Employees</p>
                 </div>
                 <div className="pl-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">ACCESS</p>
                   <p className="text-xs font-bold text-white mt-0.5">100% Free</p>
                 </div>
               </div>
+
+              {/* Form Heading */}
+              <h2 className="mb-4 font-display text-base sm:text-lg font-black uppercase tracking-tight text-white">
+                RESERVE YOUR FREE SEAT
+              </h2>
 
               {/* Error Display */}
               {error && (
@@ -455,14 +459,14 @@ export function FreeMasterclassPage() {
                     </span>
                   ) : (
                     <>
-                      <span>CLAIM FREE SPOT</span>
+                      <span>BUILD MY AI WORKFORCE</span>
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </>
                   )}
                 </button>
 
                 <p className="text-center font-mono text-[10px] text-zinc-500 pt-1">
-                  🔒 Instant email confirmation · 100% Free · No pitch until the last 10 minutes
+                  🔒 Free to attend · Live on Zoom · Limited seats
                 </p>
               </form>
             </div>

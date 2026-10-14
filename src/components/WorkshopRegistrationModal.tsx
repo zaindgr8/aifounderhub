@@ -301,7 +301,7 @@ export function WorkshopRegistrationModal({
                           {workshop?.emoji}
                         </span>
                         <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-volt">
-                          ● NEXT LIVE CLASS: THIS SATURDAY (LIMITED SEATS)
+                          ● FREE HERMES MASTERCLASS · THIS SATURDAY
                         </span>
                       </div>
 
@@ -317,11 +317,11 @@ export function WorkshopRegistrationModal({
                     <div className="grid grid-cols-3 gap-2 border-b border-white/5 bg-white/[0.02] px-7 py-2.5 text-center">
                       <div className="border-r border-zinc-800/80 pr-1">
                         <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">FORMAT</p>
-                        <p className="text-[11px] font-bold text-white mt-0.5">Live Build + Q&amp;A</p>
+                        <p className="text-[11px] font-bold text-white mt-0.5">Live Masterclass + Q&amp;A</p>
                       </div>
                       <div className="border-r border-zinc-800/80 px-1">
-                        <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU LEAVE WITH</p>
-                        <p className="text-[11px] font-bold text-volt mt-0.5">Ready-to-Deploy System</p>
+                        <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU'LL LEARN</p>
+                        <p className="text-[11px] font-bold text-volt mt-0.5">Build Your Own AI Employees</p>
                       </div>
                       <div className="pl-1">
                         <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">ACCESS</p>
@@ -331,6 +331,9 @@ export function WorkshopRegistrationModal({
 
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="px-7 py-5" noValidate>
+                      <h3 className="mb-3.5 font-display text-sm font-black uppercase tracking-tight text-white">
+                        RESERVE YOUR FREE SEAT
+                      </h3>
                       <div className="space-y-3.5">
 
                         {/* Full Name */}
@@ -467,7 +470,7 @@ export function WorkshopRegistrationModal({
                           </>
                         ) : (
                           <>
-                            <span className="relative">Claim Free Spot</span>
+                            <span className="relative">BUILD MY AI WORKFORCE</span>
                             <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
                           </>
                         )}
@@ -476,7 +479,7 @@ export function WorkshopRegistrationModal({
                       <div className="mt-3.5 flex items-center justify-center gap-1.5">
                         <Lock className="h-3 w-3 text-zinc-700" />
                         <p className="text-center font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-700">
-                          No spam · Unsubscribe anytime · 100% Free
+                          Free to attend · Live on Zoom · Limited seats
                         </p>
                       </div>
                     </form>

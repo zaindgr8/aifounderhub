@@ -39,9 +39,9 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     path: "/aaa-accelerator",
   },
   freemasterclass: {
-    title: "Build Your Startup With AI — From Idea to Live App | Free Live Class | AI Founder Hub",
+    title: "Build Your Own AI Employees — Free Hermes Masterclass | AI Founder Hub Dubai",
     description:
-      "Learn how to Vibe Code a full-stack startup from scratch using AI. In this free live class, we’ll build the UI, backend, database, authentication, APIs and deployment together — from idea to working product.",
+      "Free live masterclass: learn how to build your own AI workforce using Hermes, DeepSeek & Codex — AI that handles your leads, customer support, marketing and repetitive tasks 24/7.",
     path: "/freemasterclass",
   },
   progress: {

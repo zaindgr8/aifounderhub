@@ -4,10 +4,10 @@ import { Magnetic, Reveal } from "./shared";
 import { WorkshopRegistrationModal } from "./WorkshopRegistrationModal";
 
 const FREE_MASTERCLASS = {
-  title: "BUILD YOUR STARTUP WITH AI — FROM IDEA TO LIVE APP",
-  desc:  "What if you could turn your startup idea into a working application without spending months learning to code? In this free live class, we’ll Vibe Code a full-stack application from scratch using AI — building the UI, backend, database, authentication, APIs and deployment. You’ll see the exact workflow we use to go from idea → code → working product → launch. No endless tutorials. No copying random AI-generated code. Build it. Understand it. Launch it. Bring your startup idea and build with us live.",
+  title: "BUILD YOUR OWN AI EMPLOYEES — WORK SMARTER, 24/7.",
+  desc:  "Imagine AI handling your leads, customer support, marketing, and repetitive tasks — while you focus on growing your business. Join AI Founders Hub Dubai for a free live masterclass and learn how to build your own AI workforce using Hermes, DeepSeek & Codex.",
   emoji: "⚡",
-  tagline: "Live Build + Q&A · A Working Full-Stack App · 100% Free",
+  tagline: "Live Masterclass + Q&A · Build Your Own AI Employees · 100% Free",
 };
 
 export function FinalCta() {

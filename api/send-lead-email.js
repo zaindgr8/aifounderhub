@@ -367,17 +367,17 @@ export async function sendLeadEmail(req, res) {
                     <table width="100%" cellpadding="0" cellspacing="0">
                       <tr>
                         <td style="padding:12px 0;border-bottom:1px solid #1e1e2a;">
-                          <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">⚡</span>Build real AI-powered apps — no coding required</p>
+                          <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">⚡</span>Build your own AI employees with Hermes, DeepSeek &amp; Codex</p>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:12px 0;border-bottom:1px solid #1e1e2a;">
-                          <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">🚀</span>Go from idea to live product in days, not months</p>
+                          <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">🚀</span>Automate leads, customer support, marketing &amp; repetitive tasks 24/7</p>
                         </td>
                       </tr>
                       <tr>
                         <td style="padding:12px 0;border-bottom:1px solid #1e1e2a;">
-                          <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">💰</span>How to land your first AI client or launch your SaaS</p>
+                          <p style="margin:0;font-size:13px;color:#e4e4e7;line-height:1.5;"><span style="color:#ccf244;margin-right:10px;">💰</span>Free up your time to focus on growing your business</p>
                         </td>
                       </tr>
                       <tr>
