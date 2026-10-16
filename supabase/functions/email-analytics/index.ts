@@ -6,14 +6,27 @@
 //                      per-campaign stats, most engaged recipients (matched to
 //                      masterclass_leads), recent activity and Brevo campaigns.
 //
-// Secrets: BREVO_API_KEY (required). SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY are
-// auto-injected and only used to put names on recipient emails.
+// Secrets: BREVO_API_KEY, or the 'brevo_api_key' Vault secret (read through the
+// service-role-only get_brevo_api_key() RPC). SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY
+// are auto-injected and also used to put names on recipient emails.
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 import { json, preflight } from '../_shared/cors.ts';
 
 const BREVO = 'https://api.brevo.com/v3';
-const BREVO_KEY = Deno.env.get('BREVO_API_KEY') ?? '';
+let BREVO_KEY = Deno.env.get('BREVO_API_KEY') ?? '';
+
+// Falls back to Vault when the function secret isn't set; cached per instance.
+async function loadBrevoKey(): Promise<string> {
+  if (BREVO_KEY) return BREVO_KEY;
+  const sbUrl = Deno.env.get('SUPABASE_URL');
+  const sbKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+  if (!sbUrl || !sbKey) return '';
+  const db = createClient(sbUrl, sbKey, { auth: { persistSession: false } });
+  const { data } = await db.rpc('get_brevo_api_key');
+  BREVO_KEY = typeof data === 'string' ? data.trim() : '';
+  return BREVO_KEY;
+}
 
 // Brevo tags the transactional sends with the lead category, so each funnel level
 // can be reported on its own.
@@ -90,7 +103,9 @@ Deno.serve(async (req) => {
   const pre = preflight(req);
   if (pre) return pre;
 
-  if (!BREVO_KEY) return json({ error: 'BREVO_API_KEY is not set on the email-analytics function' }, 500);
+  if (!(await loadBrevoKey())) {
+    return json({ error: 'Brevo API key not found: set the BREVO_API_KEY function secret or the brevo_api_key Vault secret' }, 500);
+  }
 
   const url = new URL(req.url);
   const days = [7, 30, 90].includes(Number(url.searchParams.get('days'))) ? Number(url.searchParams.get('days')) : 30;
