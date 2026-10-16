@@ -18,9 +18,9 @@ function json(data: unknown, status = 200) {
   });
 }
 
-// Use the new CRM Supabase project with service role
-const CRM_URL = Deno.env.get('CRM_SUPABASE_URL') || 'https://csdxhpdjkaddrblyxlhg.supabase.co';
-const CRM_SERVICE_KEY = Deno.env.get('CRM_SUPABASE_SERVICE_KEY') || '';
+// masterclass_leads lives in this function's own project, so default to its built-in URL and service key
+const CRM_URL = Deno.env.get('CRM_SUPABASE_URL') || Deno.env.get('SUPABASE_URL') || '';
+const CRM_SERVICE_KEY = Deno.env.get('CRM_SUPABASE_SERVICE_KEY') || Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || '';
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {

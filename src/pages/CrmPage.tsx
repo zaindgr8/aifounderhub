@@ -8,7 +8,7 @@
  * - Bulk actions: mark interested, trigger n8n email automation
  * - Intent scoring visualisation per lead
  *
- * Data source: masterclass_leads table on Supabase (csdxhpdjkaddrblyxlhg project)
+ * Data source: masterclass_leads table on Supabase (main project idttbtyqglgdtxlyujlv)
  * Flow: Leads from Zoho → Managed here → Personalised emails via n8n
  */
 
@@ -30,11 +30,13 @@ const CRM_USER = (import.meta.env.VITE_CRM_USER as string) || 'zangbang360@gmail
 const CRM_PASS = (import.meta.env.VITE_CRM_PASS as string) || 'Ajalpc@yo1';
 const CRM_SESSION_KEY = 'crm_auth_session_v2';
 
-// ─── Supabase client for CRM project ──────────────────────────────────────────
-const crmSupabase = createClient(
-  (import.meta.env.VITE_CRM_SUPABASE_URL as string) || 'https://csdxhpdjkaddrblyxlhg.supabase.co',
-  (import.meta.env.VITE_CRM_SUPABASE_ANON_KEY as string) || 'sb_publishable_np0dKvFsKGf2kyLPSHKgvg_WqRglY5a'
-);
+// ─── Supabase client for the CRM ───────────────────────────────────────────────
+// masterclass_leads now lives in the website's main project (idttbtyqglgdtxlyujlv), where n8n writes
+// campaign sends. The old VITE_CRM_SUPABASE_* vars pointed at the retired csdxhpdjkaddrblyxlhg project,
+// so they are deliberately ignored here.
+const CRM_SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL as string;
+const CRM_SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+const crmSupabase = createClient(CRM_SUPABASE_URL, CRM_SUPABASE_ANON_KEY);
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
 type LeadStatus = 'new' | 'contacted' | 'interested' | 'meeting_booked' | 'closed' | 'not_interested' | 'enrolled' | 'lost' | string;
@@ -2179,6 +2181,405 @@ function EmailHistoryModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+// ─── Email analytics (Brevo) ───────────────────────────────────────────────────
+// Read from the email-analytics edge function, which holds the Brevo key.
+interface BrevoTotals {
+  requests: number; delivered: number; hardBounces: number; softBounces: number;
+  clicks: number; uniqueClicks: number; opens: number; uniqueOpens: number;
+  spamReports: number; blocked: number; unsubscribed: number; loadedByProxy: number;
+}
+interface CampaignRow {
+  key: string; subject: string; category: string; lastSent: string | null;
+  sent: number; delivered: number; opened: number; clicked: number;
+  unsubscribed: number; bounced: number; blocked: number; notOpened: number;
+}
+interface RecipientRow {
+  email: string; name: string | null; category: string | null;
+  received: number; opens: number; clicks: number; lastActivity: string;
+}
+interface EmailAnalyticsData {
+  days: number;
+  range: string;
+  generatedAt: string;
+  totals: BrevoTotals;
+  daily: (BrevoTotals & { date: string })[];
+  byCategory: Record<string, BrevoTotals>;
+  byCampaign: CampaignRow[];
+  oneOffSends: number;
+  engaged: RecipientRow[];
+  neverOpened: { count: number; sample: RecipientRow[] };
+  audience: { reached: number; openedAny: number; clickedAny: number };
+  recent: { email: string; date: string; event: string; subject: string; link: string | null }[];
+  brevoCampaigns: {
+    id: number; name: string; subject: string; sentDate: string | null; sent: number; delivered: number;
+    uniqueViews: number; uniqueClicks: number; unsubscriptions: number; hardBounces: number; softBounces: number;
+    complaints: number; shareLink: string | null;
+  }[];
+  plan: { type: string; credits: number; creditsType: string }[];
+}
+
+const ANALYTICS_URL = `${CRM_SUPABASE_URL}/functions/v1/email-analytics`;
+const ANALYTICS_KEY = CRM_SUPABASE_ANON_KEY;
+
+const EVENT_CONFIG: Record<string, { label: string; color: string }> = {
+  opened:       { label: 'Opened',       color: '#34d399' },
+  click:        { label: 'Clicked',      color: C.accent },
+  clicks:       { label: 'Clicked',      color: C.accent },
+  unsubscribed: { label: 'Unsubscribed', color: '#f59e0b' },
+  hard_bounce:  { label: 'Bounced',      color: C.danger },
+  hardBounces:  { label: 'Bounced',      color: C.danger },
+  spam:         { label: 'Spam report',  color: C.danger },
+};
+
+function pctOf(part: number, whole: number) {
+  return whole > 0 ? Math.round((part / whole) * 1000) / 10 : 0;
+}
+
+function RateCell({ value, of, color = C.sub }: { value: number; of: number; color?: string }) {
+  const pct = pctOf(value, of);
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 110 }}>
+      <div style={{ flex: 1, height: 3, background: C.border, borderRadius: 2, overflow: 'hidden' }}>
+        <div style={{ width: `${Math.min(pct, 100)}%`, height: '100%', background: color }} />
+      </div>
+      <span style={{ fontSize: 12, color: C.sub, fontVariantNumeric: 'tabular-nums', width: 62, textAlign: 'right' }}>
+        {value} <span style={{ color: C.faint }}>{pct}%</span>
+      </span>
+    </div>
+  );
+}
+
+function Panel({ title, sub, children, right }: { title: string; sub?: string; children: React.ReactNode; right?: React.ReactNode }) {
+  return (
+    <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: 12, padding: 18, minWidth: 0 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 12, marginBottom: 14, flexWrap: 'wrap' }}>
+        <div>
+          <div style={{ fontSize: 13, fontWeight: 500, color: C.text }}>{title}</div>
+          {sub && <div style={{ fontSize: 12, color: C.faint, marginTop: 3 }}>{sub}</div>}
+        </div>
+        {right}
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// Delivered per day with the opened share drawn inside each bar (both are counts, one axis).
+function DailyChart({ daily }: { daily: EmailAnalyticsData['daily'] }) {
+  const [hover, setHover] = useState<number | null>(null);
+  const max = Math.max(1, ...daily.map(d => d.delivered));
+  const OPEN_COLOR = '#34d399';
+  const h = hover !== null ? daily[hover] : null;
+  return (
+    <div>
+      <div style={{ display: 'flex', gap: 14, fontSize: 12, color: C.muted, marginBottom: 10 }}>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Dot color={C.strong} size={8} /> Delivered</span>
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Dot color={OPEN_COLOR} size={8} /> Opened (unique)</span>
+        <span style={{ marginLeft: 'auto', color: C.sub, fontVariantNumeric: 'tabular-nums', minHeight: 16 }}>
+          {h ? <>{fmtDate(h.date)} · {h.delivered} delivered · {h.uniqueOpens} opened ({pctOf(h.uniqueOpens, h.delivered)}%) · {h.uniqueClicks} clicked</> : <span style={{ color: C.faint }}>Hover a day for details</span>}
+        </span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 2, height: 160, borderBottom: `1px solid ${C.border}` }}>
+        {daily.map((d, i) => (
+          <div
+            key={d.date}
+            onMouseEnter={() => setHover(i)}
+            onMouseLeave={() => setHover(null)}
+            style={{ flex: 1, height: '100%', display: 'flex', alignItems: 'flex-end', cursor: 'default', minWidth: 0 }}
+          >
+            <div style={{
+              width: '100%', height: `${(d.delivered / max) * 100}%`, minHeight: d.delivered ? 2 : 0,
+              background: hover === i ? C.muted : C.strong, borderRadius: '4px 4px 0 0',
+              display: 'flex', alignItems: 'flex-end', overflow: 'hidden', transition: 'background 0.12s',
+            }}>
+              <div style={{ width: '100%', height: `${d.delivered ? (d.uniqueOpens / d.delivered) * 100 : 0}%`, background: OPEN_COLOR }} />
+            </div>
+          </div>
+        ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: C.faint, marginTop: 6 }}>
+        <span>{daily[0] ? fmtDate(daily[0].date) : ''}</span>
+        <span>peak {max}/day</span>
+        <span>{daily.length ? fmtDate(daily[daily.length - 1].date) : ''}</span>
+      </div>
+    </div>
+  );
+}
+
+function EmailAnalytics() {
+  const [days, setDays] = useState<7 | 30 | 90>(30);
+  const [data, setData] = useState<EmailAnalyticsData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`${ANALYTICS_URL}?days=${days}`, {
+        headers: { apikey: ANALYTICS_KEY, Authorization: `Bearer ${ANALYTICS_KEY}` },
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(body.error || `Request failed (${res.status})`);
+      setData(body as EmailAnalyticsData);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setLoading(false);
+    }
+  }, [days]);
+
+  useEffect(() => { load(); }, [load]);
+
+  const t = data?.totals;
+  const bounced = t ? t.hardBounces + t.softBounces : 0;
+  const notOpened = t ? Math.max(0, t.delivered - t.uniqueOpens) : 0;
+  const v = (n: number | string) => (loading && !data ? '…' : n);
+
+  const th: React.CSSProperties = { padding: '8px 10px', textAlign: 'left', fontSize: 12, color: C.muted, fontWeight: 500, whiteSpace: 'nowrap', borderBottom: `1px solid ${C.border}` };
+  const td: React.CSSProperties = { padding: '9px 10px', fontSize: 12, color: C.sub, borderBottom: `1px solid ${C.border}`, verticalAlign: 'middle' };
+  const num: React.CSSProperties = { ...td, fontVariantNumeric: 'tabular-nums' };
+  const rangeBtn = (active: boolean): React.CSSProperties => ({
+    background: active ? C.raised : 'transparent', border: 'none', borderRadius: 6, padding: '4px 10px',
+    cursor: 'pointer', fontFamily: 'inherit', fontSize: 12, color: active ? C.text : C.muted, fontWeight: 500,
+  });
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      {/* Range + refresh */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 2, border: `1px solid ${C.border}`, borderRadius: 8, padding: 2 }}>
+            {([7, 30, 90] as const).map(d => (
+              <button key={d} onClick={() => setDays(d)} className="crm-link" style={rangeBtn(days === d)}>{d} days</button>
+            ))}
+          </div>
+          <span style={{ fontSize: 12, color: C.faint }}>
+            Brevo · {data ? data.range.replace('|', ' → ') : '…'}
+            {data && <> · updated {relTime(data.generatedAt)}</>}
+          </span>
+        </div>
+        <button onClick={load} disabled={loading} className="crm-hover" style={{ ...btnGhost, fontSize: 12 }}>
+          {loading ? <Loader2 size={12} style={{ animation: 'spin 1s linear infinite' }} /> : <RefreshCw size={12} />} Refresh
+        </button>
+      </div>
+
+      {error && (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 14px', border: `1px solid ${C.border}`, borderRadius: 10, fontSize: 13, color: C.danger }}>
+          <AlertCircle size={14} /> Couldn't load email analytics: {error}
+        </div>
+      )}
+
+      {/* Headline metrics */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 1,
+        background: C.border, border: `1px solid ${C.border}`, borderRadius: 12, overflow: 'hidden',
+      }}>
+        <StatTile label="Sent" value={v(t?.requests ?? 0)} sub={t ? `${data!.audience.reached} unique people` : undefined} icon={Send} color="#a78bfa" />
+        <StatTile label="Delivered" value={v(t?.delivered ?? 0)} sub={t ? `${pctOf(t.delivered, t.requests)}% delivery rate` : undefined} icon={Inbox} color="#38bdf8" />
+        <StatTile label="Opened" value={v(t?.uniqueOpens ?? 0)} sub={t ? `${pctOf(t.uniqueOpens, t.delivered)}% open rate · ${t.opens} total opens` : undefined} icon={Eye} color="#34d399" accent />
+        <StatTile label="Not opened" value={v(notOpened)} sub={t ? `${pctOf(notOpened, t.delivered)}% ignored` : undefined} icon={EyeOff} color={C.muted} />
+        <StatTile label="Clicked" value={v(t?.uniqueClicks ?? 0)} sub={t ? `${pctOf(t.uniqueClicks, t.delivered)}% CTR · ${pctOf(t.uniqueClicks, t.uniqueOpens)}% of opens` : undefined} icon={ArrowUpRight} color={C.accent} accent />
+        <StatTile label="Unsubscribed" value={v(t?.unsubscribed ?? 0)} sub={t ? `${pctOf(t.unsubscribed, t.delivered)}% of delivered` : undefined} icon={XCircle} color="#f59e0b" />
+        <StatTile label="Bounced" value={v(bounced)} sub={t ? `${t.hardBounces} hard · ${t.softBounces} soft` : undefined} icon={AlertCircle} color={C.danger} />
+        <StatTile label="Blocked / spam" value={v(t ? t.blocked + t.spamReports : 0)} sub={t ? `${t.blocked} blocked · ${t.spamReports} spam reports` : undefined} icon={ShieldCheck} color={C.danger} />
+      </div>
+      {t && t.loadedByProxy > 0 && (
+        <div style={{ fontSize: 12, color: C.faint, marginTop: -6 }}>
+          Plus {t.loadedByProxy} loads by privacy proxies (Apple Mail / Gmail image cache). Brevo doesn't count these as opens, so the real open rate is likely a bit higher.
+        </div>
+      )}
+
+      {data && (
+        <>
+          <Panel title="Daily performance" sub={`Delivered emails per day, with the share that was opened`}>
+            {data.daily.length ? <DailyChart daily={data.daily} /> : <div style={{ fontSize: 12, color: C.faint }}>No sends in this period.</div>}
+          </Panel>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 16 }}>
+            <Panel title="By funnel level" sub="Transactional sends tagged with the lead category">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr><th style={th}>Level</th><th style={th}>Delivered</th><th style={th}>Opened</th><th style={th}>Clicked</th><th style={th}>Unsub</th></tr></thead>
+                  <tbody>
+                    {Object.entries(LEAD_CATEGORY_CONFIG).map(([key, cfg]) => {
+                      const r = data.byCategory[key];
+                      if (!r) return null;
+                      return (
+                        <tr key={key}>
+                          <td style={{ ...td, whiteSpace: 'nowrap' }}><span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}><Dot color={cfg.color} /><span style={{ color: C.faint }}>L{cfg.level}</span> {cfg.label}</span></td>
+                          <td style={num}>{r.delivered}</td>
+                          <td style={td}><RateCell value={r.uniqueOpens} of={r.delivered} color="#34d399" /></td>
+                          <td style={td}><RateCell value={r.uniqueClicks} of={r.delivered} color={C.accent} /></td>
+                          <td style={num}>{r.unsubscribed}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </Panel>
+
+            <Panel title="Audience engagement" sub="Unique people across every email in this period">
+              {[
+                { label: 'Reached', value: data.audience.reached, color: '#38bdf8' },
+                { label: 'Opened at least one', value: data.audience.openedAny, color: '#34d399' },
+                { label: 'Clicked at least one', value: data.audience.clickedAny, color: C.accent },
+                { label: 'Got 2+ emails, opened none', value: data.neverOpened.count, color: C.muted },
+              ].map(row => (
+                <div key={row.label} style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 12 }}>
+                  <span style={{ fontSize: 12, color: C.sub, width: 170, flexShrink: 0, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    <Dot color={row.color} /> {row.label}
+                  </span>
+                  <div style={{ flex: 1 }}><RateCell value={row.value} of={data.audience.reached} color={row.color} /></div>
+                </div>
+              ))}
+            </Panel>
+          </div>
+
+          <Panel
+            title="Campaign performance"
+            sub={`Unique recipients per campaign (test sends excluded)${data.oneOffSends ? ` · ${data.oneOffSends} one-off emails like team notifications not shown` : ''}`}
+          >
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 900 }}>
+                <thead>
+                  <tr>
+                    <th style={th}>Campaign</th><th style={th}>Last sent</th><th style={th}>Sent</th><th style={th}>Delivered</th>
+                    <th style={th}>Opened</th><th style={th}>Not opened</th><th style={th}>Clicked</th><th style={th}>Unsub</th><th style={th}>Bounced</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.byCampaign.map(c => {
+                    const cat = c.category ? leadCategoryCfg(c.category) : null;
+                    return (
+                      <tr key={c.key} className="crm-row">
+                        <td style={{ ...td, maxWidth: 320 }}>
+                          <div style={{ color: C.text, display: 'flex', alignItems: 'center', gap: 6 }}>
+                            {cat && <Dot color={cat.color} />}
+                            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.key}</span>
+                          </div>
+                          {c.subject !== c.key && <div style={{ color: C.faint, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', marginTop: 2 }} title={c.subject}>e.g. "{c.subject}"</div>}
+                        </td>
+                        <td style={{ ...td, whiteSpace: 'nowrap' }}>{relTime(c.lastSent)}</td>
+                        <td style={num}>{c.sent}</td>
+                        <td style={num}>{c.delivered}</td>
+                        <td style={td}><RateCell value={c.opened} of={c.delivered} color="#34d399" /></td>
+                        <td style={td}><RateCell value={c.notOpened} of={c.delivered} color={C.muted} /></td>
+                        <td style={td}><RateCell value={c.clicked} of={c.delivered} color={C.accent} /></td>
+                        <td style={num}>{c.unsubscribed}</td>
+                        <td style={num}>{c.bounced + c.blocked}</td>
+                      </tr>
+                    );
+                  })}
+                  {!data.byCampaign.length && <tr><td style={td} colSpan={9}>No campaigns in this period.</td></tr>}
+                </tbody>
+              </table>
+            </div>
+          </Panel>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(340px, 1fr))', gap: 16 }}>
+            <Panel title="Most engaged" sub="Ranked by clicks, then opens — your warmest leads">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                  <thead><tr><th style={th}>Lead</th><th style={th}>Got</th><th style={th}>Opens</th><th style={th}>Clicks</th><th style={th}>Last active</th></tr></thead>
+                  <tbody>
+                    {data.engaged.map(p => (
+                      <tr key={p.email} className="crm-row">
+                        <td style={{ ...td, maxWidth: 220 }}>
+                          <div style={{ color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', display: 'flex', alignItems: 'center', gap: 6 }}>
+                            {p.category && <Dot color={leadCategoryCfg(p.category).color} />}{p.name || p.email}
+                          </div>
+                          {p.name && <div style={{ color: C.faint, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.email}</div>}
+                        </td>
+                        <td style={num}>{p.received}</td>
+                        <td style={num}>{p.opens}</td>
+                        <td style={num}>{p.clicks}</td>
+                        <td style={{ ...td, whiteSpace: 'nowrap' }}>{relTime(p.lastActivity)}</td>
+                      </tr>
+                    ))}
+                    {!data.engaged.length && <tr><td style={td} colSpan={5}>No opens or clicks yet.</td></tr>}
+                  </tbody>
+                </table>
+              </div>
+            </Panel>
+
+            <Panel title="Recent activity" sub="Latest opens, clicks, unsubscribes and bounces">
+              <div style={{ maxHeight: 420, overflowY: 'auto' }}>
+                {data.recent.map((e, i) => {
+                  const cfg = EVENT_CONFIG[e.event] ?? { label: e.event, color: C.muted };
+                  return (
+                    <div key={`${e.email}-${e.date}-${i}`} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: `1px solid ${C.border}`, fontSize: 12 }}>
+                      <span style={{ width: 96, flexShrink: 0, color: C.sub, display: 'inline-flex', alignItems: 'center', gap: 6 }}><Dot color={cfg.color} /> {cfg.label}</span>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.email}</div>
+                        <div style={{ color: C.faint, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={e.link || e.subject}>{e.link || e.subject}</div>
+                      </div>
+                      <span style={{ color: C.faint, whiteSpace: 'nowrap' }}>{relTime(e.date)}</span>
+                    </div>
+                  );
+                })}
+                {!data.recent.length && <div style={{ fontSize: 12, color: C.faint }}>No activity yet.</div>}
+              </div>
+            </Panel>
+          </div>
+
+          {data.neverOpened.count > 0 && (
+            <Panel title={`Ignoring your emails · ${data.neverOpened.count}`} sub="Received 2+ emails in this period and opened none — consider a new subject line or pausing them">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                {data.neverOpened.sample.map(p => (
+                  <span key={p.email} title={`${p.received} emails received`} style={{ fontSize: 12, color: C.sub, border: `1px solid ${C.border}`, borderRadius: 6, padding: '3px 8px', display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+                    {p.category && <Dot color={leadCategoryCfg(p.category).color} />}{p.name || p.email} <span style={{ color: C.faint }}>{p.received}</span>
+                  </span>
+                ))}
+                {data.neverOpened.count > data.neverOpened.sample.length && (
+                  <span style={{ fontSize: 12, color: C.faint, padding: '3px 4px' }}>+{data.neverOpened.count - data.neverOpened.sample.length} more</span>
+                )}
+              </div>
+            </Panel>
+          )}
+
+          {data.brevoCampaigns.length > 0 && (
+            <Panel title="Brevo newsletter campaigns" sub="Campaigns sent from the Brevo dashboard (all time, latest 20)">
+              <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 820 }}>
+                  <thead>
+                    <tr><th style={th}>Campaign</th><th style={th}>Sent on</th><th style={th}>Delivered</th><th style={th}>Opened</th><th style={th}>Clicked</th><th style={th}>Unsub</th><th style={th}>Bounced</th></tr>
+                  </thead>
+                  <tbody>
+                    {data.brevoCampaigns.map(c => (
+                      <tr key={c.id} className="crm-row">
+                        <td style={{ ...td, maxWidth: 340 }}>
+                          <div style={{ color: C.text, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {c.shareLink ? <a href={c.shareLink} target="_blank" rel="noreferrer" className="crm-link" style={{ color: C.text, textDecoration: 'none' }}>{c.name}</a> : c.name}
+                          </div>
+                          <div style={{ color: C.faint, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.subject}</div>
+                        </td>
+                        <td style={{ ...td, whiteSpace: 'nowrap' }}>{fmtDate(c.sentDate)}</td>
+                        <td style={num}>{c.delivered}</td>
+                        <td style={td}><RateCell value={c.uniqueViews} of={c.delivered} color="#34d399" /></td>
+                        <td style={td}><RateCell value={c.uniqueClicks} of={c.delivered} color={C.accent} /></td>
+                        <td style={num}>{c.unsubscriptions}</td>
+                        <td style={num}>{c.hardBounces + c.softBounces}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </Panel>
+          )}
+
+          {data.plan.length > 0 && (
+            <div style={{ fontSize: 12, color: C.faint }}>
+              Brevo plan: {data.plan.map(p => `${p.type} · ${p.credits} ${p.creditsType === 'sendLimit' ? 'sends left' : 'credits'}`).join(' · ')}
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 // ─── Login Gate ────────────────────────────────────────────────────────────────
 function CrmLoginGate({ onAuth }: { onAuth: (email: string) => void }) {
   const [email, setEmail] = useState('zangbang360@gmail.com');
@@ -2378,6 +2779,7 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
   const [bulkLoading, setBulkLoading] = useState(false);
   const [addLeadOpen, setAddLeadOpen] = useState(false);
   const [emailHistoryOpen, setEmailHistoryOpen] = useState(false);
+  const [view, setView] = useState<'leads' | 'analytics'>('leads');
   const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' | 'info' } | null>(null);
 
   const searchDebounce = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -2918,6 +3320,26 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
           </div>
         </div>
 
+        {/* ─── View switch ──────────────────────────────────────────────────── */}
+        <div style={{ display: 'flex', gap: 2, borderBottom: `1px solid ${C.border}`, marginBottom: 20 }}>
+          {([['leads', 'Leads', Users], ['analytics', 'Analytics', BarChart3]] as const).map(([key, label, Icon]) => (
+            <button
+              key={key}
+              onClick={() => setView(key)}
+              className="crm-link"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 6, background: 'none', border: 'none',
+                borderBottom: `2px solid ${view === key ? C.accent : 'transparent'}`, marginBottom: -1,
+                padding: '8px 12px', cursor: 'pointer', fontFamily: 'inherit', fontSize: 13, fontWeight: 500,
+                color: view === key ? C.text : C.muted,
+              }}
+            >
+              <Icon size={13} /> {label}
+            </button>
+          ))}
+        </div>
+
+        {view === 'analytics' ? <EmailAnalytics /> : (<>
         {/* ─── Metrics strip ────────────────────────────────────────────────── */}
         <div style={{
           display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: 1,
@@ -3637,6 +4059,7 @@ function CrmDashboard({ userEmail, onSignOut }: { userEmail?: string; onSignOut?
             </div>
           </div>
         )}
+        </>)}
       </div>
 
       <style>{CRM_CSS}</style>
