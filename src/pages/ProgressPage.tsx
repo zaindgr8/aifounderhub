@@ -42,6 +42,7 @@ import {
   LayoutGrid,
   List,
   Users,
+  Download,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
@@ -327,12 +328,43 @@ interface SavedResource {
   buttonStyle: string;
   highlights: string[];
   tags: string[];
+  downloadUrl?: string;
+  videoUrl?: string;
   isPaid?: boolean;
   price?: number;
   productCode?: string;
 }
 
 const SAVED_RESOURCES: SavedResource[] = [
+  {
+    id: "retell-x-claude-22nd-oct",
+    date: "22nd Oct",
+    badge: "Free Guide + Video",
+    title: "RETELL AI × CLAUDE: Your First AI Caller in 5 Minutes",
+    subtitle: "Step-by-step PDF guide to build and launch your first AI call assistant with Retell AI and Claude, plus the video walkthrough.",
+    category: "doc",
+    typeLabel: "PDF Guide + Video · Free",
+    link: "/resources/retell-x-claude.pdf",
+    downloadUrl: "/resources/retell-x-claude.pdf",
+    videoUrl: "https://www.instagram.com/p/DershL4ItZ9/",
+    icon: FileText,
+    isPaid: false,
+    price: 0,
+    borderColor: "border-volt/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
+    glowBg: "bg-volt/10",
+    accentGradient: "from-volt via-[#d4fa4c] to-emerald-400",
+    badgeStyle: "border-volt/30 bg-volt/10 text-volt",
+    iconBoxStyle: "border-volt/30 bg-volt/10 text-volt",
+    checkCircleStyle: "bg-volt/20 text-volt",
+    buttonStyle: "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c]",
+    highlights: [
+      "Launch your first AI voice caller in about 5 minutes",
+      "Retell AI + Claude setup walkthrough",
+      "PDF guide with video demo",
+    ],
+    tags: ["Free", "Retell AI", "Claude", "AI Caller", "Voice AI"],
+  },
   {
     id: "ai-personalized-emails-free-12th-oct",
     date: "12th Oct",
@@ -1664,6 +1696,28 @@ export function ProgressPage() {
                                   <span>Unlock · $5</span>
                                 </button>
                               )}
+                              {unlocked && res.downloadUrl && (
+                                <a
+                                  href={res.downloadUrl}
+                                  download
+                                  title="Download PDF"
+                                  className="flex h-7.5 w-7.5 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-void hover:bg-volt hover:border-volt transition cursor-pointer"
+                                >
+                                  <Download className="h-3.5 w-3.5" />
+                                </a>
+                              )}
+                              {unlocked && res.videoUrl && (
+                                <a
+                                  href={res.videoUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  title="Watch video"
+                                  className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1.5 text-xs font-semibold text-zinc-300 hover:text-white hover:border-white/20 transition cursor-pointer"
+                                >
+                                  <Play className="h-3 w-3" />
+                                  <span>Video</span>
+                                </a>
+                              )}
                               <button
                                 type="button"
                                 onClick={() => {
@@ -1754,6 +1808,28 @@ export function ProgressPage() {
                                 <Lock className="h-3.5 w-3.5" />
                                 <span>Unlock Access · $5</span>
                               </button>
+                            )}
+                            {unlocked && res.downloadUrl && (
+                              <a
+                                href={res.downloadUrl}
+                                download
+                                title="Download PDF"
+                                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-void hover:bg-volt hover:border-volt transition cursor-pointer"
+                              >
+                                <Download className="h-3.5 w-3.5" />
+                              </a>
+                            )}
+                            {unlocked && res.videoUrl && (
+                              <a
+                                href={res.videoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Watch video"
+                                className="flex h-8 items-center justify-center gap-1.5 shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-2.5 text-xs font-semibold text-zinc-300 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition cursor-pointer"
+                              >
+                                <Play className="h-3 w-3" />
+                                <span>Video</span>
+                              </a>
                             )}
                             <button
                               type="button"
