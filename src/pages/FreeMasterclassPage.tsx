@@ -108,7 +108,7 @@ export function FreeMasterclassPage() {
           countryCode: country.code,
           fullPhoneNumber,
           goal: "workshop",
-          workshopTitle: "Build Your Own AI Employees — Work Smarter, 24/7",
+          workshopTitle: "How To Sell AI Call Assistants — Free Sales Masterclass",
           source: "freemasterclass-direct-page",
           submittedAt: new Date().toISOString(),
           ticketNumber: generatedTicket,
@@ -252,17 +252,17 @@ export function FreeMasterclassPage() {
               {/* Top Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-volt/25 bg-volt/10 px-3 py-1 font-mono text-[10px] font-bold tracking-widest uppercase text-volt mb-3">
                 <span className="h-1.5 w-1.5 rounded-full bg-volt animate-pulse" />
-                <span>FREE HERMES MASTERCLASS · THIS SATURDAY</span>
+                <span>FREE SALES MASTERCLASS · HOW TO SELL AI CALL ASSISTANTS</span>
               </div>
 
               {/* Title & Core Hook */}
               <h1 className="font-display text-2xl sm:text-3xl font-black uppercase tracking-tight text-white leading-tight">
-                BUILD YOUR OWN AI EMPLOYEES — WORK SMARTER, 24/7.
+                Build & Sell: AI Call Assistants — The $2.7B Voice AI Goldrush
               </h1>
               {/* Description */}
               <div className="mt-2 space-y-2 text-xs sm:text-[13px] text-zinc-400 leading-relaxed">
-                <p>Imagine AI handling your leads, customer support, marketing, and repetitive tasks — while you focus on growing your business.</p>
-                <p>Join <strong className="text-white">AI Founders Hub Dubai</strong> for a free live masterclass and learn how to build your own AI workforce using <strong className="text-white">Hermes, DeepSeek &amp; Codex</strong>.</p>
+                <p>The AI receptionist market was worth $2.7 billion in 2025 and is projected to reach about $31.3 billion by 2035. Every clinic, law firm, contractor and agency needs one, and most still pay $2,800+ a month for a receptionist who misses calls. It’s a new niche with huge demand and very few sellers. <a href="https://market.us/report/ai-receptionist-market/" target="_blank" rel="noopener noreferrer" className="text-volt underline underline-offset-2">[market]</a></p>
+                <p>Join <strong className="text-white">AI Founders Hub Dubai</strong> live and get the full sales system. Claude finds the leads. n8n sends personalised emails. You close the deals, with meetings booked on Cal.com. Resources will be shared free for AFH members.</p>
               </div>
 
               {/* Highlights Bar */}
@@ -273,11 +273,11 @@ export function FreeMasterclassPage() {
                 </div>
                 <div className="border-r border-zinc-800/80 px-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">YOU'LL LEARN</p>
-                  <p className="text-xs font-bold text-volt mt-0.5">Build Your Own AI Employees</p>
+                  <p className="text-xs font-bold text-volt mt-0.5">Leads → Outreach → Booked Meetings</p>
                 </div>
                 <div className="pl-1">
                   <p className="text-[9px] font-mono uppercase tracking-wider text-zinc-500 font-semibold">ACCESS</p>
-                  <p className="text-xs font-bold text-white mt-0.5">100% Free</p>
+                  <p className="text-xs font-bold text-white mt-0.5">100% Free + Resources</p>
                 </div>
               </div>
 
@@ -459,7 +459,7 @@ export function FreeMasterclassPage() {
                     </span>
                   ) : (
                     <>
-                      <span>BUILD MY AI WORKFORCE</span>
+                      <span>RESERVE MY FREE SEAT</span>
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                     </>
                   )}
