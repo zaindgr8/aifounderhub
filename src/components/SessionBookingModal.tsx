@@ -41,6 +41,7 @@ export interface SessionAdvisor {
   photo?: string;
   role: string;
   avatarClass: string;
+  calLink?: string;
 }
 
 interface SessionBookingModalProps {

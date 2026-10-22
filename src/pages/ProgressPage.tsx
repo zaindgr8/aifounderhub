@@ -43,12 +43,14 @@ import {
   List,
   Users,
   Download,
+  Wrench,
 } from "lucide-react";
 import { Wordmark } from "../components/shared";
 import { AuthModal } from "../components/AuthModal";
 import { LockedStageModal } from "../components/LockedStageModal";
 import { PaymentModal } from "../components/PaymentModal";
 import { ResourcePaymentModal } from "../components/ResourcePaymentModal";
+import { HelpBuildModal } from "../components/HelpBuildModal";
 import { CommunityPanel } from "../components/CommunityPanel";
 import { useAuth } from "../hooks/useAuth";
 import { signOut } from "../lib/auth";
@@ -559,6 +561,8 @@ export function ProgressPage() {
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [resourcePaymentModalOpen, setResourcePaymentModalOpen] = useState(false);
   const [selectedPayResource, setSelectedPayResource] = useState<SavedResource | null>(null);
+  const [helpBuildModalOpen, setHelpBuildModalOpen] = useState(false);
+  const [helpBuildResource, setHelpBuildResource] = useState<string | undefined>(undefined);
   const [activeLevelTab, setActiveLevelTab] = useState<number>(1);
   const [showCelebration, setShowCelebration] = useState(false);
   const [progressSyncing, setProgressSyncing] = useState(false);
@@ -594,6 +598,11 @@ export function ProgressPage() {
   const handleUnlockResource = (res: SavedResource) => {
     setSelectedPayResource(res);
     setResourcePaymentModalOpen(true);
+  };
+
+  const handleOpenHelpBuild = (res?: SavedResource) => {
+    setHelpBuildResource(res ? res.title : undefined);
+    setHelpBuildModalOpen(true);
   };
 
   const copyResourceLink = (id: string, url: string) => {
@@ -1611,6 +1620,31 @@ export function ProgressPage() {
                 </div>
               </div>
 
+              {/* Help Me Build / Hire Developer Feature Banner */}
+              <div className="mb-6 rounded-2xl border border-volt/30 bg-gradient-to-r from-[#0d160b] via-[#0d0d17] to-[#140e1c] p-4.5 sm:p-5.5 shadow-[0_0_35px_rgba(204,242,68,0.12)] relative overflow-hidden flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="pointer-events-none absolute -right-12 -top-12 h-44 w-44 rounded-full bg-volt/10 blur-3xl" />
+                <div className="relative z-10 space-y-1">
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
+                    <Sparkles className="h-3 w-3 text-volt" />
+                    <span>AFH Custom Engineering</span>
+                  </div>
+                  <h3 className="font-display text-base sm:text-lg font-black uppercase text-white tracking-tight">
+                    Need Help Building? Hire an AFH Developer
+                  </h3>
+                  <p className="text-xs text-zinc-300 max-w-2xl leading-relaxed">
+                    Pick any system below or share your custom requirements — our team of verified AI engineers will build, integrate, and deploy it for you.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleOpenHelpBuild()}
+                  className="relative z-10 shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-volt px-4.5 py-2.5 font-display text-xs font-black uppercase tracking-wider text-void shadow-[0_0_20px_rgba(204,242,68,0.3)] hover:bg-[#d8fa55] hover:shadow-[0_0_30px_rgba(204,242,68,0.5)] active:scale-98 transition cursor-pointer"
+                >
+                  <Wrench className="h-3.5 w-3.5" />
+                  <span>Help Me Build / Hire Dev →</span>
+                </button>
+              </div>
+
               {/* Resources List or Grid */}
               {(() => {
                 const filteredResources = SAVED_RESOURCES.filter(res => {
@@ -1718,6 +1752,15 @@ export function ProgressPage() {
                                   <span>Video</span>
                                 </a>
                               )}
+                              <button
+                                type="button"
+                                onClick={() => handleOpenHelpBuild(res)}
+                                className="hidden sm:inline-flex items-center gap-1 rounded-lg border border-volt/25 bg-volt/10 px-2.5 py-1.5 text-xs font-semibold text-volt hover:bg-volt hover:text-void transition-all cursor-pointer"
+                                title="Hire developer or get help building this"
+                              >
+                                <Wrench className="h-3 w-3" />
+                                <span>Help Me Build</span>
+                              </button>
                               <button
                                 type="button"
                                 onClick={() => {
@@ -1850,7 +1893,20 @@ export function ProgressPage() {
                               )}
                             </button>
                           </div>
-                        </motion.div>
+
+                            {/* Help Me Build row in Grid View */}
+                            <div className="mt-3.5 pt-3 border-t border-white/[0.05] flex items-center justify-between">
+                              <span className="text-zinc-500 font-mono text-[10px]">Need custom setup?</span>
+                              <button
+                                type="button"
+                                onClick={() => handleOpenHelpBuild(res)}
+                                className="inline-flex items-center gap-1 font-mono text-[11px] font-bold text-volt/90 hover:text-volt hover:underline transition cursor-pointer"
+                              >
+                                <Wrench className="h-3 w-3 text-volt" />
+                                <span>Help Me Build / Hire Dev →</span>
+                              </button>
+                            </div>
+                          </motion.div>
                       );
                     })}
                   </div>
@@ -2003,6 +2059,15 @@ export function ProgressPage() {
         open={resourcePaymentModalOpen}
         onClose={() => setResourcePaymentModalOpen(false)}
         resource={selectedPayResource}
+      />
+
+      {/* Help Me Build / Hire Developer Modal */}
+      <HelpBuildModal
+        open={helpBuildModalOpen}
+        onClose={() => setHelpBuildModalOpen(false)}
+        initialResource={helpBuildResource}
+        defaultName={(user?.user_metadata?.full_name as string) || (user?.user_metadata?.name as string) || ""}
+        defaultEmail={user?.email || ""}
       />
 
       {/* Celebration Notification Toast */}

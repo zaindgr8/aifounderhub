@@ -127,6 +127,7 @@ export async function sendLeadEmail(req, res) {
       agency:     'Start an automation agency',
       explore:    'Just exploring AI',
       workshop:   workshopTitle ? `Free MasterClass — ${workshopTitle}` : 'Free MasterClass',
+      'help-me-build': workshopTitle ? `Help Me Build / Hire Dev — ${workshopTitle}` : 'Help Me Build / Hire Developer',
     };
     const goalLabel = goalLabels[goal] || goal || '—';
     const isWorkshop = goal === 'workshop';

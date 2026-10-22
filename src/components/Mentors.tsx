@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   ArrowRight,
   CalendarClock,
@@ -13,7 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import { Reveal, SectionTag } from "./shared";
-import { SessionBookingModal, type SessionAdvisor } from "./SessionBookingModal";
+import type { SessionAdvisor } from "./SessionBookingModal";
 
 const ADVISORS: (SessionAdvisor & {
   bio: string;
@@ -22,6 +22,7 @@ const ADVISORS: (SessionAdvisor & {
   socials: { platform: string; url: string; icon: React.ElementType }[];
   sessionMin: string;
   photo?: string;
+  calLink: string;
 })[] = [
   {
     name: "Ahmed",
@@ -35,6 +36,7 @@ const ADVISORS: (SessionAdvisor & {
     topics: ["GCC Top 20 Entrepreneur", "Published Author", "Scaling & operations", "Sales and First Client"],
     icon: LineChart,
     sessionMin: "60 min",
+    calLink: "https://cal.com/ahmedyahyak/speaking",
     socials: [
       { platform: "linkedin", url: "https://www.linkedin.com/in/ahmedyahyak/?skipRedirect=true", icon: Linkedin },
       { platform: "website", url: "https://www.ahmedyahyak.com/", icon: Globe },
@@ -52,6 +54,7 @@ const ADVISORS: (SessionAdvisor & {
     topics: ["Micro-SaaS Building", "AI Automation Agency", "B2B Collaboration", "Startup Launch & Growth"],
     icon: BrainCircuit,
     sessionMin: "40 min",
+    calLink: "https://cal.com/devmate/meet-zain",
     socials: [
       { platform: "instagram", url: "https://www.instagram.com/zainulabideen.unicorn/", icon: Instagram },
       { platform: "youtube", url: "https://www.youtube.com/@zainulabideen.unicorn", icon: Youtube },
@@ -62,8 +65,6 @@ const ADVISORS: (SessionAdvisor & {
 ];
 
 export function Mentors() {
-  const [activeAdvisor, setActiveAdvisor] = useState<SessionAdvisor | null>(null);
-
   return (
     <>
       <section id="mentors" className="relative overflow-hidden border-t border-edge bg-panel/30 py-16 sm:py-20 scroll-mt-20">
@@ -158,26 +159,28 @@ export function Mentors() {
 
                   {/* Booking CTA */}
                   <div className="mt-7">
-                    {/* Price strip */}
+                    {/* Session strip */}
                     <div className="mb-4 flex items-center justify-between rounded-xl border border-lilac/15 bg-gradient-to-r from-lilac/[0.06] to-transparent px-4 py-3">
                       <div className="flex items-center gap-2">
                         <Clock className="h-3.5 w-3.5 text-lilac" />
                         <span className="font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                          Private 1:1 · {a.sessionMin}
+                          Private 1:1 Session · {a.sessionMin}
                         </span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <span className="font-display text-2xl font-extrabold text-volt">$599</span>
-                        <span className="font-mono text-[10px] font-bold text-zinc-500">/session</span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-volt/30 bg-volt/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-volt">
+                          <CalendarClock className="h-3 w-3 text-volt" />
+                          Live Calendar
+                        </span>
                       </div>
                     </div>
 
                     {/* 3 micro trust bullets */}
                     <div className="mb-4 grid grid-cols-3 gap-1.5">
                       {[
-                        { icon: Star,          text: "Expert 1:1" },
-                        { icon: CalendarClock, text: "Flexible" },
-                        { icon: Zap,           text: "Instant Access" },
+                        { icon: Star,          text: "Founder 1:1" },
+                        { icon: CalendarClock, text: "Cal.com" },
+                        { icon: Zap,           text: "Instant Slot" },
                       ].map(({ icon: Icon, text }) => (
                         <div key={text} className="flex items-center justify-center gap-1 rounded-lg border border-white/5 bg-white/[0.02] py-1.5">
                           <Icon className="h-3 w-3 text-lilac" />
@@ -186,17 +189,19 @@ export function Mentors() {
                       ))}
                     </div>
 
-                    {/* Main CTA button — volt green, full width */}
-                    <button
-                      onClick={() => setActiveAdvisor(a)}
+                    {/* Main CTA link — direct to Cal.com */}
+                    <a
+                      href={a.calLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       id={`session-cta-btn-${a.slug}`}
                       className="group/btn relative flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-full bg-volt px-6 py-4 font-display text-[13px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_32px_rgba(204,242,68,0.25)] transition-all duration-300 hover:shadow-[0_0_52px_rgba(204,242,68,0.5)] active:scale-95 cursor-pointer"
                     >
                       <span className="absolute inset-0 w-1/2 -translate-x-full bg-white/25 [transform:skewX(-25deg)] transition-transform duration-700 group-hover/btn:translate-x-[250%]" />
                       <CalendarClock className="relative h-4 w-4 transition-transform group-hover/btn:scale-110" />
-                      <span className="relative">Book 1:1 with {a.name} — $599</span>
+                      <span className="relative">Book 1:1 with {a.name}</span>
                       <ArrowRight className="relative h-3.5 w-3.5 transition-transform duration-300 group-hover/btn:translate-x-1" />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </Reveal>
@@ -204,11 +209,6 @@ export function Mentors() {
           </div>
         </div>
       </section>
-
-      <SessionBookingModal
-        advisor={activeAdvisor}
-        onClose={() => setActiveAdvisor(null)}
-      />
     </>
   );
 }
