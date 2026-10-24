@@ -339,6 +339,33 @@ interface SavedResource {
 
 const SAVED_RESOURCES: SavedResource[] = [
   {
+    id: "sales-masterclass-voice-ai-24th-oct",
+    date: "24th Oct",
+    badge: "Sales Masterclass",
+    title: "(SALES MASTERCLASS) Build & Sell: AI Call Assistants — The $2.7B Voice AI Goldrush",
+    subtitle: "Complete sales presentation deck, high-converting offer framework, Retell AI caller templates, and objection handling scripts.",
+    category: "drive",
+    typeLabel: "Google Drive Folder · Free",
+    link: "https://drive.google.com/drive/folders/1BFJM9pF4GAVqlbH1IFxxTcjEDWb4GoBx?usp=sharing",
+    icon: FolderOpen,
+    isPaid: false,
+    price: 0,
+    borderColor: "border-volt/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
+    glowBg: "bg-volt/10",
+    accentGradient: "from-volt via-[#d4fa4c] to-emerald-400",
+    badgeStyle: "border-volt/30 bg-volt/10 text-volt",
+    iconBoxStyle: "border-volt/30 bg-volt/10 text-volt",
+    checkCircleStyle: "bg-volt/20 text-volt",
+    buttonStyle: "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c]",
+    highlights: [
+      "The $2.7B Voice AI goldrush market breakdown & agency positioning",
+      "Complete client acquisition sales deck & objection handling scripts",
+      "Voice AI caller system architecture and Retell AI setup blueprints",
+    ],
+    tags: ["Sales Masterclass", "Voice AI", "Call Assistant", "Retell AI", "Google Drive"],
+  },
+  {
     id: "retell-x-claude-22nd-oct",
     date: "22nd Oct",
     badge: "Free Guide + Video",
