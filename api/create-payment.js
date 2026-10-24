@@ -47,7 +47,7 @@ export async function createPayment(req, res) {
       : productCode === 'aaa-accelerator-yearly'
       ? 'AI Founder Hub — AAA Accelerator (Annual - $1,590/yr · 2 Mo Free) · Includes Claude'
       : productCode === 'supabase-email-leads'
-      ? 'AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($5)'
+      ? 'AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($25)'
       : pkg?.label
       ? `AI Founder Hub — ${pkg.label}`
       : 'AI Founder Hub — AAA Accelerator ($159/month) · Includes Claude');

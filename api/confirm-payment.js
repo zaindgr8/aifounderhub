@@ -219,8 +219,8 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg 
     : isYearly
     ? 'All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds · 2 Months Free'
     : 'All 6-Stage Blueprints · Master Claude in 7 Days · Private Community · Weekly Live Builds';
-  const itemPrice = isResource ? '$5.00' : (isYearly ? '$1,590.00' : '$159.00');
-  const totalPaid = isResource ? '$5.00 USD' : (isYearly ? '$1,590.00 USD / yr' : '$159.00 USD / mo');
+  const itemPrice = isResource ? '$25.00' : (isYearly ? '$1,590.00' : '$159.00');
+  const totalPaid = isResource ? '$25.00 USD' : (isYearly ? '$1,590.00 USD / yr' : '$159.00 USD / mo');
   const subMessage = isResource
     ? 'Your resource <strong style="color:#ccf244;">(SupaBase) AI-Personalized Emails → 1000+ Leads</strong> has been unlocked with lifetime access.'
     : isYearly
@@ -363,7 +363,7 @@ function buildConfirmationEmail({ fullName, email, paymentIntentId, amount, pkg 
           <tr>
             <td style="background:#0a0a10;padding:28px 40px;border-top:1px solid #1e1e2a;text-align:center;">
               <p style="margin:0 0 20px;font-size:14px;color:#a1a1aa;line-height:1.7;">${isResource ? 'Your Google Drive resource folder is ready for instant download.<br/>You can also view it anytime from your dashboard.' : 'Your member dashboard is ready with all stages unlocked.<br/>Log in using your registered email address.'}</p>
-              <a href="${isResource ? 'https://drive.google.com/drive/folders/128T9p-C7xiwPMjeZpbPS7jtyGeGvUIsA?usp=sharing' : 'https://aifounderhub.com/progress'}" style="display:inline-block;background:#ccf244;color:#07070b;font-size:13px;font-weight:800;text-decoration:none;padding:14px 34px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;">${isResource ? 'Open Google Drive Folder →' : 'Access Member Dashboard →'}</a>
+              <a href="${isResource ? 'https://drive.google.com/drive/folders/1cRBSdTXoy0WKxn3y-kWmQrmgRYq6KqRg?usp=sharing' : 'https://aifounderhub.com/progress'}" style="display:inline-block;background:#ccf244;color:#07070b;font-size:13px;font-weight:800;text-decoration:none;padding:14px 34px;border-radius:100px;letter-spacing:0.05em;text-transform:uppercase;">${isResource ? 'Open Google Drive Folder →' : 'Access Member Dashboard →'}</a>
             </td>
           </tr>
 

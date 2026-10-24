@@ -53,8 +53,8 @@ export const PRODUCTS = {
   "supabase-email-leads": {
     code: "supabase-email-leads",
     label: "(SupaBase) AI-Personalized Emails → 1000+ Leads",
-    priceCents: 500, // $5
-    checkoutMessage: "AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($5)",
+    priceCents: 2500, // $25
+    checkoutMessage: "AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($25)",
     cancelPath: "/progress#resources",
   },
 } as const satisfies Record<string, Product>;

@@ -424,15 +424,15 @@ const SAVED_RESOURCES: SavedResource[] = [
   {
     id: "supabase-email-leads-12th-oct",
     date: "12th Oct",
-    badge: "$5 Premium Asset",
+    badge: "$25 Premium Asset",
     title: "(SupaBase) AI-Personalized Emails → 1000+ Leads",
     subtitle: "Full Supabase database backend schema, automated webhook pipeline, and personalized email engine for 1,000+ leads.",
     category: "drive",
-    typeLabel: "Google Drive Folder · $5 Lifetime Access",
-    link: "https://drive.google.com/drive/folders/128T9p-C7xiwPMjeZpbPS7jtyGeGvUIsA?usp=sharing",
+    typeLabel: "Google Drive Folder · $25 Lifetime Access",
+    link: "https://drive.google.com/drive/folders/1cRBSdTXoy0WKxn3y-kWmQrmgRYq6KqRg?usp=sharing",
     icon: FolderOpen,
     isPaid: true,
-    price: 5,
+    price: 25,
     productCode: "supabase-email-leads",
     borderColor: "border-emerald-500/30",
     shadowHover: "hover:shadow-[0_0_50px_rgba(52,211,153,0.2)]",
@@ -447,7 +447,7 @@ const SAVED_RESOURCES: SavedResource[] = [
       "Automated AI enrichment & personalization sync directly in Supabase",
       "Production-grade webhook integration & automated campaign triggers",
     ],
-    tags: ["Supabase", "SQL Backend", "1000+ Leads", "Automation", "$5 Asset"],
+    tags: ["Supabase", "SQL Backend", "1000+ Leads", "Automation", "$25 Asset"],
   },
   {
     id: "startup-ai-4th-oct",
@@ -1721,7 +1721,7 @@ export function ProgressPage() {
                                     </span>
                                   ) : (
                                     <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-500/35 px-2 py-0.5 rounded-full">
-                                      <Lock className="h-2.5 w-2.5" /> $5 Access
+                                      <Lock className="h-2.5 w-2.5" /> ${res.price ?? 25} Access
                                     </span>
                                   )
                                 ) : (
@@ -1754,7 +1754,7 @@ export function ProgressPage() {
                                   className="flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-gradient-to-r from-emerald-500 to-teal-400 text-void font-extrabold px-3.5 py-1.5 text-xs transition-all cursor-pointer shadow-[0_0_15px_rgba(52,211,153,0.25)] hover:brightness-110"
                                 >
                                   <Lock className="h-3 w-3" />
-                                  <span>Unlock · $5</span>
+                                  <span>Unlock · ${res.price ?? 25}</span>
                                 </button>
                               )}
                               {unlocked && res.downloadUrl && (
@@ -1798,7 +1798,7 @@ export function ProgressPage() {
                                   }
                                 }}
                                 className="flex h-7.5 w-7.5 items-center justify-center rounded-lg border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 transition cursor-pointer"
-                                title={unlocked ? "Copy link" : "Unlock for $5"}
+                                title={unlocked ? "Copy link" : `Unlock for $${res.price ?? 25}`}
                               >
                                 {copiedResourceId === res.id ? (
                                   <Check className="h-3.5 w-3.5 text-volt" />
@@ -1840,7 +1840,7 @@ export function ProgressPage() {
                                   </span>
                                 ) : (
                                   <span className="inline-flex items-center gap-1 text-[10px] font-mono font-bold text-emerald-300 bg-emerald-500/15 border border-emerald-500/40 px-2.5 py-0.5 rounded-full">
-                                    <Lock className="h-2.5 w-2.5" /> $5 Access
+                                    <Lock className="h-2.5 w-2.5" /> ${res.price ?? 25} Access
                                   </span>
                                 )
                               ) : (
@@ -1876,7 +1876,7 @@ export function ProgressPage() {
                                 className="flex-1 flex items-center justify-center gap-2 rounded-xl py-2 px-3 text-xs font-extrabold text-void bg-gradient-to-r from-emerald-500 to-teal-400 hover:brightness-110 border border-emerald-400 transition-all duration-200 cursor-pointer shadow-[0_0_20px_rgba(52,211,153,0.25)]"
                               >
                                 <Lock className="h-3.5 w-3.5" />
-                                <span>Unlock Access · $5</span>
+                                <span>Unlock Access · ${res.price ?? 25}</span>
                               </button>
                             )}
                             {unlocked && res.downloadUrl && (
@@ -1910,7 +1910,7 @@ export function ProgressPage() {
                                   handleUnlockResource(res);
                                 }
                               }}
-                              title={unlocked ? "Copy link" : "Unlock for $5"}
+                              title={unlocked ? "Copy link" : `Unlock for $${res.price ?? 25}`}
                               className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/[0.03] text-zinc-400 hover:text-white hover:border-white/20 hover:bg-white/[0.08] transition cursor-pointer"
                             >
                               {copiedResourceId === res.id ? (

@@ -185,10 +185,10 @@ export function ResourcePaymentModal({
     try {
       const productCode = resource?.productCode || "supabase-email-leads";
       const productCfg = PRODUCTS[productCode as keyof typeof PRODUCTS];
-      const amountCents = (resource?.price ?? 5) * 100;
+      const amountCents = (resource?.price ?? 25) * 100;
       const message =
         productCfg?.checkoutMessage ||
-        `AI Founder Hub — ${resource?.title || "(SupaBase) AI-Personalized Emails → 1000+ Leads"} ($5)`;
+        `AI Founder Hub — ${resource?.title || "(SupaBase) AI-Personalized Emails → 1000+ Leads"} ($${resource?.price ?? 25})`;
 
       const result = await initiateZiinaPayment({
         fullName: fullName.trim(),
@@ -259,7 +259,7 @@ export function ResourcePaymentModal({
                 {/* Header Badge */}
                 <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-[11px] font-mono font-bold text-emerald-400 mb-4">
                   <Database className="h-3 w-3" />
-                  <span>PREMIUM RESOURCE · ONE-TIME $5</span>
+                  <span>PREMIUM RESOURCE · ONE-TIME ${resource.price ? `$${resource.price}` : '$25'}</span>
                 </div>
 
                 {/* Title */}
@@ -282,7 +282,7 @@ export function ResourcePaymentModal({
                   </div>
                   <div className="text-right">
                     <span className="font-display text-3xl font-black text-emerald-400">
-                      ${resource.price ?? 5}
+                      ${resource.price ?? 25}
                     </span>
                     <span className="text-[10px] font-mono text-zinc-500 block">USD</span>
                   </div>
@@ -422,7 +422,7 @@ export function ResourcePaymentModal({
                       </>
                     ) : (
                       <>
-                        <span>Pay ${resource.price ?? 5} with Ziina</span>
+                        <span>Pay ${resource.price ?? 25} with Ziina</span>
                         <ArrowRight className="h-4 w-4" />
                       </>
                     )}

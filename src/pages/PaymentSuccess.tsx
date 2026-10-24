@@ -199,7 +199,7 @@ export function PaymentSuccess() {
                     {isResourcePurchase ? (
                       <>
                         <a
-                          href={driveUrl || "https://drive.google.com/drive/folders/128T9p-C7xiwPMjeZpbPS7jtyGeGvUIsA?usp=sharing"}
+                          href={driveUrl || "https://drive.google.com/drive/folders/1cRBSdTXoy0WKxn3y-kWmQrmgRYq6KqRg?usp=sharing"}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-volt px-8 py-3.5 font-display text-sm font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.3)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.55)] no-underline w-full sm:w-auto cursor-pointer"
