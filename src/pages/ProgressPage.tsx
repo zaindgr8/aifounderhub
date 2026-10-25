@@ -28,6 +28,7 @@ import {
   ExternalLink,
   BookOpen,
   FileText,
+  FileSpreadsheet,
   Map,
   Settings,
   Play,
@@ -338,6 +339,33 @@ interface SavedResource {
 }
 
 const SAVED_RESOURCES: SavedResource[] = [
+  {
+    id: "ai-cold-calling-10k-leads-25th-oct",
+    date: "25th Oct",
+    badge: "AI Cold Calling",
+    title: "AI Cold Calling Resources: qualify 10,000+ leads a day without a sales team",
+    subtitle: "Complete cold calling resource database, qualification frameworks, objection handling scripts, and AI telephony workflows.",
+    category: "doc",
+    typeLabel: "Google Sheets · Free",
+    link: "https://docs.google.com/spreadsheets/d/1UCLpa5naMJ2zHZI2bSmzHh7Hfvee6lGh/edit?usp=sharing&ouid=108209401505078277900&rtpof=true&sd=true",
+    icon: FileSpreadsheet,
+    isPaid: false,
+    price: 0,
+    borderColor: "border-volt/30",
+    shadowHover: "hover:shadow-[0_0_50px_rgba(204,242,68,0.15)]",
+    glowBg: "bg-volt/10",
+    accentGradient: "from-volt via-[#d4fa4c] to-emerald-400",
+    badgeStyle: "border-volt/30 bg-volt/10 text-volt",
+    iconBoxStyle: "border-volt/30 bg-volt/10 text-volt",
+    checkCircleStyle: "bg-volt/20 text-volt",
+    buttonStyle: "bg-volt text-void shadow-[0_0_20px_rgba(204,242,68,0.25)] hover:bg-[#d4fa4c]",
+    highlights: [
+      "Qualify 10,000+ leads daily without hiring an internal sales team",
+      "Plug-and-play qualification frameworks, objection scripts & prompts",
+      "Curated cold calling database, tech stack breakdown & workflow templates",
+    ],
+    tags: ["AI Cold Calling", "10,000+ Leads", "Voice AI", "Lead Qualification", "Google Sheets"],
+  },
   {
     id: "sales-masterclass-voice-ai-24th-oct",
     date: "24th Oct",
@@ -1614,7 +1642,7 @@ export function ProgressPage() {
                             : 'text-zinc-400 hover:text-white'
                         }`}
                       >
-                        {cat === 'all' ? 'All' : cat === 'drive' ? 'Drive' : 'Docs'}
+                        {cat === 'all' ? 'All' : cat === 'drive' ? 'Drive' : 'Docs & Sheets'}
                       </button>
                     ))}
                   </div>
