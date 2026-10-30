@@ -32,6 +32,12 @@ export const ROUTE_META: Record<string, RouteMeta> = {
       "A free 7-day field guide to Claude, updated for September 2026. Two tracks: run your business on the Claude app with Projects, Artifacts, Connectors, Skills and Cowork — no code — or go deep on Claude Code with subagents, hooks and headless automation.",
     path: "/claude-master-in-7-days",
   },
+  "founder-hub": {
+    title: "Zain Ul Abideen Baloch | Co-founder, AI Founder Hub | Founder & CEO, DevMate Solutions, Dubai",
+    description:
+      "Zain Ul Abideen Baloch is the co-founder of AI Founder Hub, alongside Ahmed Yahya, and the Founder and CEO of DevMate Solutions, based in Dubai. We teach founders how to build and sell AI lead management systems.",
+    path: "/zain-ul-abideen-baloch",
+  },
   "aaa-accelerator": {
     title: "AAA Accelerator — AI Agency Membership ($159/mo) | AI Founder Hub",
     description:
