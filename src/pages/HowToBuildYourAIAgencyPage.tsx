@@ -15,6 +15,7 @@ import {
   ChevronDown,
   Clock,
   ExternalLink,
+  Facebook,
   Handshake,
   Globe,
   GraduationCap,
@@ -51,7 +52,7 @@ import {
   Youtube,
   Zap,
 } from "lucide-react";
-import { Reveal, SectionTag, Wordmark, BackToTop, CountUp } from "../components/shared";
+import { Reveal, SectionTag, Wordmark, BackToTop, CountUp, LogoMark } from "../components/shared";
 import { initiateZiinaPayment } from "../lib/api";
 
 /* ────────────────────────────────────────────────────────
@@ -1777,6 +1778,82 @@ function CommunityBand() {
 }
 
 /* ────────────────────────────────────────────────────────
+   FOLLOW US — brand socials
+──────────────────────────────────────────────────────── */
+
+const BRANDS = [
+  {
+    name: "AI Founder Hub",
+    sub: "Community · classes · events",
+    logo: <LogoMark size={40} />,
+    links: [
+      { label: "Instagram", handle: "@aifounderhubofficial", url: "https://www.instagram.com/aifounderhubofficial/", icon: Instagram },
+      { label: "YouTube", handle: "@zainulabideen.unicorn", url: "https://www.youtube.com/@zainulabideen.unicorn", icon: Youtube },
+      { label: "WhatsApp", handle: "Community group", url: WHATSAPP_COMMUNITY_URL, icon: MessageCircle },
+      { label: "Events", handle: "luma.com/aifounderhub", url: EVENTS_URL, icon: CalendarDays },
+      { label: "Website", handle: "aifounderhub.com", url: "https://aifounderhub.com", icon: Globe },
+    ],
+  },
+  {
+    name: "DevMate Solutions",
+    sub: "AI-powered agency · Dubai · Muscat · NYC",
+    logo: (
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white font-display text-[17px] font-black text-void">D</span>
+    ),
+    links: [
+      { label: "Instagram", handle: "@devmatesolutions", url: "https://www.instagram.com/devmatesolutions/", icon: Instagram },
+      { label: "LinkedIn", handle: "devmate-solutions", url: "https://www.linkedin.com/company/devmate-solutions", icon: Linkedin },
+      { label: "Facebook", handle: "devmatesolutions", url: "https://www.facebook.com/devmatesolutions", icon: Facebook },
+      { label: "Website", handle: "devmatesolutions.com", url: "https://devmatesolutions.com/", icon: Globe },
+    ],
+  },
+];
+
+function FollowUs() {
+  return (
+    <section className="border-t border-edge/40 py-14 sm:py-16">
+      <div className="mx-auto max-w-6xl px-4 md:px-10">
+        <Reveal>
+          <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-zinc-500">Follow along</p>
+        </Reveal>
+        <div className="mt-4 grid gap-4 lg:grid-cols-2">
+          {BRANDS.map((b, i) => (
+            <Reveal key={b.name} delay={i * 0.05}>
+              <div className="h-full rounded-3xl border border-edge bg-panel/60 p-6">
+                <div className="flex items-center gap-3">
+                  {b.logo}
+                  <div>
+                    <p className="font-display text-[18px] font-extrabold text-white">{b.name}</p>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">{b.sub}</p>
+                  </div>
+                </div>
+                <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  {b.links.map((l) => (
+                    <a
+                      key={l.label}
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group flex items-center gap-2.5 rounded-xl border border-edge bg-void/50 px-3 py-2.5 transition-colors hover:border-volt/40"
+                    >
+                      <l.icon className="h-4 w-4 flex-shrink-0 text-zinc-400 transition-colors group-hover:text-volt" />
+                      <span className="min-w-0">
+                        <span className="block text-[12.5px] font-semibold text-white">{l.label}</span>
+                        <span className="block truncate font-mono text-[10px] text-zinc-500">{l.handle}</span>
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ────────────────────────────────────────────────────────
    PAGE
 ──────────────────────────────────────────────────────── */
 
@@ -2382,6 +2459,9 @@ export function HowToBuildYourAIAgencyPage() {
             </Reveal>
           </div>
         </section>
+
+        {/* ══════════ FOLLOW US ══════════ */}
+        <FollowUs />
 
         {/* ══════════ SOURCES ══════════ */}
         <section id="sources" className="scroll-mt-20 border-t border-edge/40 bg-panel/30 py-12 pb-28 md:pb-12">
