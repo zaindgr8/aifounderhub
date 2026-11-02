@@ -44,6 +44,12 @@ export const ROUTE_META: Record<string, RouteMeta> = {
       "Build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. $159/month subscription, weekly live builds, taught by an operator selling this commercially in Dubai.",
     path: "/aaa-accelerator",
   },
+  "how-to-build-your-ai-agency": {
+    title: "How to Build Your AI Agency — Build and Sell AI Voice Agents | AI Founder Hub",
+    description:
+      "A one-month Master Course: build and sell AI voice agents, with 5 classes and a first client in 90 days. 1,500 AED instead of 8,000 AED for the first 10 students only. Taught by Zain Ul Abideen, CEO of DevMate Solutions.",
+    path: "/how-to-build-your-ai-agency",
+  },
   freemasterclass: {
     title: "How To Sell AI Call Assistants — Free Sales Masterclass | AI Founder Hub Dubai",
     description:

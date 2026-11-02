@@ -65,10 +65,19 @@ export async function createPayment(req, res) {
     }
 
     // Build the Payment Intent request
+    // Ziina requires message to be 1–64 characters; otherwise returns MESSAGE_LENGTH_INVALID
+    let ziinaMessage = typeof finalMessage === 'string' ? finalMessage.trim() : '';
+    if (ziinaMessage.length > 64) {
+      ziinaMessage = ziinaMessage.slice(0, 61) + '...';
+    } else if (ziinaMessage.length === 0) {
+      ziinaMessage = 'AI Founder Hub';
+    }
+
+    const isAedProduct = productCode === 'ai-agency-mastercourse';
     const payload = {
       amount: finalAmount,
-      currency_code: 'USD',
-      message: finalMessage,
+      currency_code: isAedProduct ? 'AED' : 'USD',
+      message: ziinaMessage,
       success_url: `${appUrl}/payment-success`,
       cancel_url:  `${appUrl}${cancelPath}`,
       failure_url: `${appUrl}/payment-failed`,

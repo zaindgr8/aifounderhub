@@ -27,6 +27,7 @@ const AdminPage = lazy(() => import("./pages/AdminPage").then(m => ({ default: m
 const ThankYouPage = lazy(() => import("./pages/ThankYouPage").then(m => ({ default: m.ThankYouPage })));
 const AAAAcceleratorPage = lazy(() => import("./pages/AAAAcceleratorPage").then(m => ({ default: m.AAAAcceleratorPage })));
 const FounderHubPage = lazy(() => import("./pages/FounderHubPage").then(m => ({ default: m.FounderHubPage })));
+const HowToBuildYourAIAgencyPage = lazy(() => import("./pages/HowToBuildYourAIAgencyPage").then(m => ({ default: m.HowToBuildYourAIAgencyPage })));
 const CrmPage = lazy(() => import("./pages/CrmPage").then(m => ({ default: m.CrmPage })));
 const PolicyModal = lazy(() => import("./components/PolicyModal").then(m => ({ default: m.PolicyModal })));
 const ClaudeMasterclassPopupModal = lazy(() => import("./components/ClaudeMasterclassPopupModal").then(m => ({ default: m.ClaudeMasterclassPopupModal })));
@@ -54,6 +55,7 @@ function useRoute() {
   if (path === "/claude-master-in-7-days") return "claude-master";
   if (path === "/aaa-accelerator") return "aaa-accelerator";
   if (path === "/zain-ul-abideen-baloch") return "founder-hub";
+  if (path === "/how-to-build-your-ai-agency") return "how-to-build-your-ai-agency";
   if (path === "/admin") return "admin";
   if (path === "/crm") return "crm";
   return "home";
@@ -143,6 +145,14 @@ export default function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <FounderHubPage />
+      </Suspense>
+    );
+  }
+
+  if (route === "how-to-build-your-ai-agency") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <HowToBuildYourAIAgencyPage />
       </Suspense>
     );
   }

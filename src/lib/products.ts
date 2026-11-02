@@ -57,6 +57,13 @@ export const PRODUCTS = {
     checkoutMessage: "AI Founder Hub — (SupaBase) AI-Personalized Emails → 1000+ Leads ($25)",
     cancelPath: "/progress#resources",
   },
+  "ai-agency-mastercourse": {
+    code: "ai-agency-mastercourse",
+    label: "How to Build Your AI Agency — Master Course",
+    priceCents: 150_000, // 1,500 AED in fils (AED minor unit = fils)
+    checkoutMessage: "AI Founder Hub — AI Agency Master Course (1,500 AED)",
+    cancelPath: "/how-to-build-your-ai-agency",
+  },
 } as const satisfies Record<string, Product>;
 
 export type ProductCode = keyof typeof PRODUCTS;

@@ -29,6 +29,7 @@ export const PACKAGES = {
   'all-access':             { code: 'all-access',             label: 'AAA Accelerator — All Access ($159/mo)', purpose: 'membership', priceCents: 15900,  recurring: true },
   'session-1on1':           { code: 'session-1on1',           label: '1:1 Private Session',            purpose: 'booking',    priceCents: 59900,  recurring: false },
   'supabase-email-leads':   { code: 'supabase-email-leads',   label: '(SupaBase) AI-Personalized Emails → 1000+ Leads ($25)', purpose: 'resource', priceCents: 2500, recurring: false },
+  'ai-agency-mastercourse': { code: 'ai-agency-mastercourse', label: 'How to Build Your AI Agency — Master Course (1,500 AED)', purpose: 'course', priceCents: 150000, recurring: false },
   'other':                  { code: 'other',                  label: 'Other / Manual',                 purpose: 'membership', priceCents: 0,      recurring: false },
 };
 
