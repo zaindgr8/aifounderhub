@@ -1313,15 +1313,15 @@ type Tile =
 
 const ONSITE: Tile[] = [
   { kind: "img", src: "/gallery/community-03.jpg", alt: "AI Founder Hub members after a session in Dubai", caption: "AI Founder Hub, Dubai", span: "col-span-2 row-span-2" },
-  { kind: "clip", src: "/gallery/clip-01.mp4", poster: "/gallery/clip-01.jpg", alt: "Live session at Dubai Founders HQ", span: "row-span-2" },
+  { kind: "clip", src: "/gallery/teaching-live.mp4", poster: "/gallery/teaching-live.jpg", alt: "Zain teaching a live build session at Dubai Founders HQ", caption: "Zain teaching live · Dubai Founders HQ", span: "row-span-2" },
   { kind: "img", src: "/gallery/community-01.jpg", alt: "Founder circle at Dubai Founders HQ", caption: "Founder circle · Dubai Founders HQ", span: "row-span-2" },
+  { kind: "clip", src: "/gallery/clip-01.mp4", poster: "/gallery/clip-01.jpg", alt: "Live session at Dubai Founders HQ", span: "row-span-2" },
   { kind: "clip", src: "/gallery/clip-04.mp4", poster: "/gallery/clip-04.jpg", alt: "Founders sharing their builds", span: "row-span-2" },
   { kind: "clip", src: "/gallery/clip-03.mp4", poster: "/gallery/clip-03.jpg", alt: "Open discussion at the meetup", span: "row-span-2" },
   { kind: "img", src: "/gallery/community-02.jpg", alt: "AI Founder Hub community group photo", caption: "Community night", span: "row-span-2" },
-  { kind: "clip", src: "/gallery/clip-05.mp4", poster: "/gallery/clip-05.jpg", alt: "Q&A with founders", span: "row-span-2 hidden md:block" },
+  { kind: "clip", src: "/gallery/clip-05.mp4", poster: "/gallery/clip-05.jpg", alt: "Q&A with founders", span: "row-span-2" },
   { kind: "clip", src: "/gallery/clip-02.mp4", poster: "/gallery/clip-02.jpg", alt: "AI Founder Hub meetup moment", span: "row-span-2 hidden md:block" },
   { kind: "clip", src: "/gallery/clip-06.mp4", poster: "/gallery/clip-06.jpg", alt: "AI Founder Hub meetup moment", span: "row-span-2 hidden md:block" },
-  { kind: "clip", src: "/gallery/clip-07.mp4", poster: "/gallery/clip-07.jpg", alt: "AI Founder Hub meetup moment", span: "row-span-2 hidden md:block" },
   { kind: "cta", span: "row-span-2" },
 ];
 
