@@ -11,6 +11,7 @@ import { Community } from "./components/Community";
 import { Team } from "./components/Team";
 import { Testimonials } from "./components/Testimonials";
 import { Faq } from "./components/Faq";
+import { BlogTeaser } from "./components/BlogTeaser";
 import { FinalCta } from "./components/FinalCta";
 import { Footer } from "./components/Footer";
 import { ModalKind } from "./components/PolicyModal";
@@ -225,6 +226,7 @@ export default function App() {
         <Mentors />
         <Testimonials />
         <Faq />
+        <BlogTeaser />
         <FinalCta />
       </main>
 
