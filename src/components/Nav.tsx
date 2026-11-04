@@ -28,6 +28,7 @@ const LINKS: NavLink[] = [
   { label: "MASTERCLASS", target: "workshops" },
   { label: "ACCELERATOR", target: "membership" },
   { label: "FOUNDERS", target: "mentors" },
+  { label: "BLOG", href: "/blog" },
 ];
 
 interface NavProps {

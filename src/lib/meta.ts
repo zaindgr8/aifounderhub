@@ -20,6 +20,18 @@ export interface RouteMeta {
 }
 
 export const ROUTE_META: Record<string, RouteMeta> = {
+  blog: {
+    title: "AI Voice Agent & AI Agency Blog | AI Founder Hub",
+    description:
+      "Practical guides on AI voice agents and starting an AI automation agency: real costs, platform comparisons, UAE rules and what works with real clients. By the team at AI Founder Hub, Dubai.",
+    path: "/blog",
+  },
+  "ai-community-dubai": {
+    title: "AI Community in Dubai: Free Meetups | AI Founder Hub",
+    description:
+      "AI Founder Hub is a Dubai community for founders and builders using AI: free weekly live classes, in-person meetups at Dubai Founders HQ and a WhatsApp group. Join free.",
+    path: "/ai-community-dubai",
+  },
   home: {
     title: "AI Automation Agency Training | Build & Sell AI Systems — AI Founder Hub",
     description:
@@ -68,6 +80,30 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     path: "/thank-you",
     noindex: true,
   },
+  admin: {
+    title: "Admin | AI Founder Hub",
+    description: "AI Founder Hub admin sign in.",
+    path: "/admin",
+    noindex: true,
+  },
+  crm: {
+    title: "CRM | AI Founder Hub",
+    description: "AI Founder Hub CRM sign in.",
+    path: "/crm",
+    noindex: true,
+  },
+  "payment-success": {
+    title: "Payment Status | AI Founder Hub",
+    description: "Your AI Founder Hub payment status.",
+    path: "/payment-success",
+    noindex: true,
+  },
+  "payment-failed": {
+    title: "Payment Status | AI Founder Hub",
+    description: "Your AI Founder Hub payment status.",
+    path: "/payment-failed",
+    noindex: true,
+  },
 };
 
 function setTag(selector: string, attr: "content", value: string, create: () => HTMLElement) {
@@ -98,7 +134,15 @@ function og(property: string, value: string) {
 /** Rewrite the document head for the given route. */
 export function applyRouteMeta(route: string) {
   const m = ROUTE_META[route];
-  if (!m || typeof document === "undefined") return;
+  if (!m) return;
+  // The app shows the homepage for any unknown path, so those must stay out of the index.
+  const isUnknownPath = route === "home" && window.location.pathname !== "/";
+  applyMeta(isUnknownPath ? { ...m, path: window.location.pathname, noindex: true } : m);
+}
+
+/** Rewrite the document head. Blog posts call this directly with their own metadata. */
+export function applyMeta(m: RouteMeta) {
+  if (typeof document === "undefined") return;
 
   const url = `${SITE}${m.path}`;
   const image = m.image ?? `${SITE}/og-cover.jpg`;
