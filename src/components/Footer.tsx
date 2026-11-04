@@ -2,6 +2,18 @@ import React from "react";
 import { Wordmark } from "./shared";
 import { Mail, Instagram } from "lucide-react";
 
+// Plain links so search engines can reach the main pages. Google uses these internal
+// links to pick the sub-page links it shows under the homepage result.
+const EXPLORE_LINKS = [
+  { label: "Master Course", href: "/how-to-build-your-ai-agency" },
+  { label: "Free Masterclass", href: "/freemasterclass" },
+  { label: "AI Community", href: "/ai-community-dubai" },
+  { label: "Master Claude in 7 Days", href: "/claude-master-in-7-days" },
+  { label: "AI Agency Roadmap", href: "/progress" },
+  { label: "Zain Ul Abideen Baloch", href: "/zain-ul-abideen-baloch" },
+  { label: "Blog", href: "/blog" },
+];
+
 export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") => void }) {
   return (
     <footer id="contact" className="relative overflow-hidden border-t border-edge bg-[#050508] px-5 pb-10 pt-16 text-zinc-400">
@@ -52,6 +64,14 @@ export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") 
           </a>
         </div>
 
+        <nav aria-label="Explore AI Founder Hub" className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5 text-[13px] font-semibold text-zinc-300">
+          {EXPLORE_LINKS.map((link) => (
+            <a key={link.href} href={link.href} className="transition-colors hover:text-volt">
+              {link.label}
+            </a>
+          ))}
+        </nav>
+
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-[11.5px] font-bold">
           <button
             type="button"
@@ -71,10 +91,6 @@ export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") 
           <span className="text-zinc-700">·</span>
           <a href="mailto:support@aifounderhub.com" className="transition-colors hover:text-volt">
             Contact
-          </a>
-          <span className="text-zinc-700">·</span>
-          <a href="/blog" className="transition-colors hover:text-volt">
-            Blog
           </a>
         </div>
 

@@ -13,6 +13,8 @@ export interface RouteMeta {
   title: string;
   description: string;
   path: string;
+  /** Short page name for breadcrumb schema. Falls back to the title. */
+  label?: string;
   /** Absolute URL. Falls back to the site-wide cover. */
   image?: string;
   /** Keep thin or duplicate pages out of the index. */
@@ -31,6 +33,7 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     description:
       "AI Founder Hub is a Dubai community for founders and builders using AI: free weekly live classes, in-person meetups at Dubai Founders HQ and a WhatsApp group. Join free.",
     path: "/ai-community-dubai",
+    label: "AI Community in Dubai",
   },
   home: {
     title: "AI Automation Agency Training | Build & Sell AI Systems — AI Founder Hub",
@@ -43,36 +46,42 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     description:
       "A free 7-day field guide to Claude, updated for September 2026. Two tracks: run your business on the Claude app with Projects, Artifacts, Connectors, Skills and Cowork — no code — or go deep on Claude Code with subagents, hooks and headless automation.",
     path: "/claude-master-in-7-days",
+    label: "Master Claude in 7 Days",
   },
   "founder-hub": {
     title: "Zain Ul Abideen Baloch | Co-founder, AI Founder Hub | Founder & CEO, DevMate Solutions, Dubai",
     description:
       "Zain Ul Abideen Baloch is the co-founder of AI Founder Hub, alongside Ahmed Yahya, and the Founder and CEO of DevMate Solutions, based in Dubai. We teach founders how to build and sell AI lead management systems.",
     path: "/zain-ul-abideen-baloch",
+    label: "Zain Ul Abideen Baloch",
   },
   "aaa-accelerator": {
     title: "AAA Accelerator — AI Agency Membership ($159/mo) | AI Founder Hub",
     description:
       "Build a working AI Lead Management System, package it as a service, and run real outreach to land your first $2,000 client. $159/month subscription, weekly live builds, taught by an operator selling this commercially in Dubai.",
     path: "/aaa-accelerator",
+    label: "AAA Accelerator",
   },
   "how-to-build-your-ai-agency": {
     title: "How to Build Your AI Agency — Build and Sell AI Voice Agents | AI Founder Hub",
     description:
       "A one-month Master Course: build and sell AI voice agents, with 5 classes and a first client in 90 days. 1,500 AED instead of 8,000 AED for the first 10 students only. Taught by Zain Ul Abideen, CEO of DevMate Solutions.",
     path: "/how-to-build-your-ai-agency",
+    label: "How to Build Your AI Agency",
   },
   freemasterclass: {
     title: "How To Sell AI Call Assistants — Free Sales Masterclass | AI Founder Hub Dubai",
     description:
       "Free live masterclass: learn how to sell AI call assistants. Claude finds the leads, n8n sends personalised outreach, and you close deals with meetings booked on Cal.com.",
     path: "/freemasterclass",
+    label: "Free Masterclass",
   },
   progress: {
     title: "The $50K/mo AI Agency Roadmap — 6 Stages | AI Founder Hub",
     description:
       "The gamified 6-stage roadmap from $0 to a $50,000/month AI automation agency. Stage 1 is free to preview — niche selection, AI sandboxes and your first offer.",
     path: "/progress",
+    label: "AI Agency Roadmap",
   },
   "thank-you": {
     title: "You're In — Masterclass Seat Confirmed | AI Founder Hub",
