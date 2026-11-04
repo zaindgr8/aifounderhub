@@ -1,6 +1,6 @@
 {
   "framework": null,
-  "buildCommand": "vite build",
+  "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "headers": [
     {
@@ -26,7 +26,22 @@
   ],
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/blog", "destination": "/blog/index.html" },
+    { "source": "/blog/:slug", "destination": "/blog/:slug/index.html" },
+    { "source": "/ai-community-dubai", "destination": "/ai-community-dubai/index.html" },
+    { "source": "/claude-master-in-7-days", "destination": "/claude-master-in-7-days/index.html" },
+    { "source": "/zain-ul-abideen-baloch", "destination": "/zain-ul-abideen-baloch/index.html" },
+    { "source": "/aaa-accelerator", "destination": "/aaa-accelerator/index.html" },
+    { "source": "/how-to-build-your-ai-agency", "destination": "/how-to-build-your-ai-agency/index.html" },
+    { "source": "/freemasterclass", "destination": "/freemasterclass/index.html" },
+    { "source": "/progress", "destination": "/progress/index.html" },
+    { "source": "/thank-you", "destination": "/thank-you/index.html" },
+    { "source": "/admin", "destination": "/admin/index.html" },
+    { "source": "/crm", "destination": "/crm/index.html" },
+    { "source": "/payment-success", "destination": "/payment-success/index.html" },
+    { "source": "/payment-failed", "destination": "/payment-failed/index.html" },
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/(.*)", "destination": "/fallback.html" }
   ]
 }
 
