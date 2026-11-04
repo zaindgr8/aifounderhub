@@ -134,6 +134,7 @@
   border-radius: 26px;
   padding: 1px;
   overflow: hidden;
+  overflow: clip; /* clip, not hidden: focusing a control inside must not scroll the frame */
   isolation: isolate;
 }
 .conic-frame::before {

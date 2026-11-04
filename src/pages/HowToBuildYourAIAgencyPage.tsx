@@ -5,7 +5,6 @@ import {
   Award,
   BadgeCheck,
   Building2,
-  CalendarCheck,
   CalendarHeart,
   CalendarDays,
   CheckCircle2,
@@ -19,7 +18,6 @@ import {
   Handshake,
   Globe,
   GraduationCap,
-  Headphones,
   HeartPulse,
   Home,
   Instagram,
@@ -36,7 +34,6 @@ import {
   Mic,
   Pause,
   PhoneCall,
-  PhoneIncoming,
   PhoneMissed,
   Play,
   Scale,
@@ -271,109 +268,6 @@ const FAQS = [
     a: "Because the setup sessions are hands-on. With 10 people we can look at every build, fix every broken workflow and review every pitch.",
   },
 ];
-
-/* ────────────────────────────────────────────────────────
-   HERO — live call mock
-──────────────────────────────────────────────────────── */
-
-const CALL_SCRIPT: { who: "caller" | "ai"; text: string }[] = [
-  { who: "caller", text: "Hi, do you have anything for a cleaning this week?" },
-  { who: "ai", text: "We do! Thursday at 4:30 PM or Saturday at 11 AM. Which works better?" },
-  { who: "caller", text: "Thursday please." },
-  { who: "ai", text: "Done. You're booked for Thursday 4:30 PM. I've sent a confirmation by WhatsApp." },
-];
-
-function LiveCallCard() {
-  const [step, setStep] = useState(0);
-  const [seconds, setSeconds] = useState(0);
-  const done = step >= CALL_SCRIPT.length;
-
-  useEffect(() => {
-    const t = setInterval(() => setSeconds((s) => s + 1), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  useEffect(() => {
-    const delay = done ? 4500 : step === 0 ? 900 : 1900;
-    const t = setTimeout(() => {
-      if (done) setSeconds(0);
-      setStep((s) => (s >= CALL_SCRIPT.length ? 0 : s + 1));
-    }, delay);
-    return () => clearTimeout(t);
-  }, [step, done]);
-
-  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const ss = String(seconds % 60).padStart(2, "0");
-
-  return (
-    <div className="conic-frame shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
-      <div className="rounded-[25px] bg-panel p-5 sm:p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-volt/15 text-volt">
-              <PhoneIncoming className="h-4.5 w-4.5" />
-              <span className="absolute -right-0.5 -top-0.5 h-2.5 w-2.5 rounded-full bg-volt pulse-glow-dot" />
-            </div>
-            <div>
-              <p className="font-display text-[14px] font-bold text-white">Smile Dental · AI Receptionist</p>
-              <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
-                Live call · {mm}:{ss} · 2:47 AM
-              </p>
-            </div>
-          </div>
-          <span className="rounded-full border border-volt/30 bg-volt/10 px-2.5 py-1 font-mono text-[9px] font-bold uppercase tracking-widest text-volt">
-            AI
-          </span>
-        </div>
-
-        {/* waveform */}
-        <div className="mt-5 flex h-8 items-center gap-[3px]" aria-hidden="true">
-          {Array.from({ length: 42 }).map((_, i) => (
-            <span
-              key={i}
-              className="w-full rounded-full bg-volt/70"
-              style={{
-                height: `${20 + Math.abs(Math.sin((i + seconds) * 0.9)) * 80}%`,
-                opacity: done ? 0.25 : 0.4 + Math.abs(Math.cos(i * 0.5)) * 0.6,
-                transition: "height 0.6s ease",
-              }}
-            />
-          ))}
-        </div>
-
-        <div className="mt-5 min-h-[200px] space-y-2.5" aria-live="polite">
-          {CALL_SCRIPT.slice(0, Math.min(step, CALL_SCRIPT.length)).map((line, i) => (
-            <div key={i} className={`flex ${line.who === "ai" ? "justify-end" : "justify-start"}`}>
-              <p
-                className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-[13px] leading-snug ${
-                  line.who === "ai"
-                    ? "rounded-br-md bg-volt text-void font-medium"
-                    : "rounded-bl-md border border-edge bg-void/70 text-zinc-200"
-                }`}
-              >
-                {line.text}
-              </p>
-            </div>
-          ))}
-        </div>
-
-        <div
-          className={`mt-4 flex items-center gap-3 rounded-xl border px-4 py-3 transition-all duration-500 ${
-            done ? "border-volt/40 bg-volt/10 opacity-100" : "border-edge bg-void/40 opacity-50"
-          }`}
-        >
-          <CalendarCheck className={`h-5 w-5 flex-shrink-0 ${done ? "text-volt" : "text-zinc-600"}`} />
-          <div className="min-w-0">
-            <p className="font-display text-[13px] font-bold text-white">
-              {done ? "Appointment booked · CRM updated" : "Listening…"}
-            </p>
-            <p className="font-mono text-[10px] text-zinc-500">Recording + transcript saved · no staff on shift</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 /* ────────────────────────────────────────────────────────
    MARKET GROWTH CHART
@@ -1854,10 +1748,193 @@ function FollowUs() {
 }
 
 /* ────────────────────────────────────────────────────────
+   HERO — the two real calls, tabbed
+──────────────────────────────────────────────────────── */
+
+function HeroCalls() {
+  const [tab, setTab] = useState<"video" | "audio">("video");
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+  const [time, setTime] = useState(0);
+  const [duration, setDuration] = useState(311);
+
+  const active = ESTATE_LINES.reduce((idx, l, i) => (l.t <= time ? i : idx), 0);
+  const line = ESTATE_LINES[active];
+
+  const seek = (t: number) => {
+    const a = audioRef.current;
+    if (!a) return;
+    a.currentTime = t;
+    setTime(t);
+    a.play().catch(() => {});
+  };
+  const toggle = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (a.paused) a.play().catch(() => {});
+    else a.pause();
+  };
+  const switchTab = (t: "video" | "audio") => {
+    if (t === "video") audioRef.current?.pause();
+    setTab(t);
+  };
+
+  return (
+    <div className="conic-frame shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
+      <div className="rounded-[25px] bg-panel p-4 sm:p-5">
+        {/* tabs */}
+        <div className="flex items-center justify-between gap-3">
+          <span className="hidden items-center gap-1.5 whitespace-nowrap font-mono text-[10px] font-bold uppercase tracking-widest text-red-400 sm:inline-flex">
+            <span className="h-2 w-2 rounded-full bg-red-400" /> Real calls
+          </span>
+          <div className="mx-auto flex rounded-full border border-edge bg-void/60 p-1 sm:mx-0" role="tablist" aria-label="Demo calls">
+            {([
+              ["video", "Inbound · video", "Video call"],
+              ["audio", "Outbound · audio", "Audio call"],
+            ] as const).map(([k, label, short]) => (
+              <button
+                key={k}
+                role="tab"
+                aria-selected={tab === k}
+                onClick={() => switchTab(k)}
+                className={`cursor-pointer whitespace-nowrap rounded-full px-3 py-1.5 font-mono text-[10px] font-bold uppercase tracking-wider transition-colors ${
+                  tab === k ? "bg-volt text-void" : "text-zinc-400 hover:text-white"
+                }`}
+              >
+                <span className="sm:hidden">{short}</span>
+                <span className="hidden sm:inline">{label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* video call */}
+        <div className={tab === "video" ? "mt-4" : "hidden"}>
+          <div className="mx-auto w-full max-w-[250px] overflow-hidden rounded-2xl border border-edge bg-void">
+            <video
+              src="/demos/ai-call-property-lead.mp4"
+              poster="/demos/ai-call-property-lead.jpg"
+              controls
+              playsInline
+              preload="none"
+              className="aspect-[9/16] w-full bg-void object-cover"
+            >
+              Your browser can't play this video.
+            </video>
+          </div>
+          <p className="mt-4 text-center font-display text-[15px] font-bold text-white">A property lead, qualified in one call</p>
+          <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+            {["Invest", "2M AED", "ASAP"].map((c) => (
+              <span key={c} className="rounded-full border border-edge bg-void/60 px-2.5 py-1 font-mono text-[10px] text-zinc-300">{c}</span>
+            ))}
+            <span className="rounded-full border border-volt/40 bg-volt/10 px-2.5 py-1 font-mono text-[10px] font-bold text-volt">Meeting booked</span>
+          </div>
+        </div>
+
+        {/* audio call */}
+        <div className={tab === "audio" ? "mt-4" : "hidden"}>
+          <audio
+            ref={audioRef}
+            src="/demos/ai-call-real-estate.mp3"
+            preload="metadata"
+            onPlay={() => setPlaying(true)}
+            onPause={() => setPlaying(false)}
+            onEnded={() => setPlaying(false)}
+            onTimeUpdate={(e) => setTime(e.currentTarget.currentTime)}
+            onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || 311)}
+          />
+          <div className="rounded-2xl border border-edge bg-void/50 p-5">
+            <p className="font-display text-[16px] font-bold text-white">A cold lead books a viewing</p>
+            <p className="mt-0.5 font-mono text-[10px] uppercase tracking-widest text-zinc-500">Outbound · 5 min · real estate</p>
+
+            {/* waveform */}
+            <div className="mt-5 flex h-10 items-center gap-[3px]" aria-hidden="true">
+              {Array.from({ length: 40 }).map((_, i) => (
+                <span
+                  key={i}
+                  className="w-full rounded-full bg-volt/70"
+                  style={{
+                    height: `${playing ? 20 + Math.abs(Math.sin((i + time * 6) * 0.8)) * 80 : 18 + Math.abs(Math.sin(i * 0.7)) * 30}%`,
+                    opacity: playing ? 0.9 : 0.35,
+                    transition: "height 0.25s ease",
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* live caption */}
+            <div className="mt-5 min-h-[112px]" aria-live="polite">
+              <p className={`font-mono text-[9px] font-bold uppercase tracking-widest ${line.who === "ai" ? "text-volt" : "text-zinc-500"}`}>
+                {line.who === "ai" ? "AI agent" : "Lead"} · {fmt(line.t)}
+              </p>
+              <p className="mt-1.5 text-[15px] leading-relaxed text-white">{line.text}</p>
+            </div>
+
+            <div className="mt-4 flex items-center gap-3">
+              <button
+                onClick={toggle}
+                aria-label={playing ? "Pause recording" : "Play recording"}
+                className="flex h-12 w-12 flex-shrink-0 cursor-pointer items-center justify-center rounded-full bg-volt text-void shadow-[0_0_30px_rgba(204,242,68,0.3)] transition-transform hover:scale-105"
+              >
+                {playing ? <Pause className="h-5 w-5" /> : <Play className="ml-0.5 h-5 w-5" />}
+              </button>
+              <div className="min-w-0 flex-1">
+                <div className="relative h-1.5 rounded-full bg-edge">
+                  <div className="absolute inset-y-0 left-0 rounded-full bg-volt" style={{ width: `${duration ? (time / duration) * 100 : 0}%` }} />
+                  <input
+                    type="range"
+                    min={0}
+                    max={duration}
+                    step={0.5}
+                    value={time}
+                    onChange={(e) => seek(Number(e.target.value))}
+                    aria-label="Seek recording"
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  />
+                </div>
+                <div className="mt-1.5 flex justify-between font-mono text-[10px] text-zinc-500">
+                  <span>{fmt(time)}</span>
+                  <span>{fmt(duration)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="mt-3 grid grid-cols-2 gap-2">
+            {ESTATE_MOMENTS.map((m) => (
+              <button
+                key={m.t}
+                onClick={() => seek(m.t)}
+                className="flex cursor-pointer items-center justify-between rounded-xl border border-edge bg-void/40 px-3 py-2 text-left transition-colors hover:border-volt/40"
+              >
+                <span className="text-[12px] text-zinc-300">{m.label}</span>
+                <span className="font-mono text-[10px] text-volt">{fmt(m.t)}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ────────────────────────────────────────────────────────
    PAGE
 ──────────────────────────────────────────────────────── */
 
 export function HowToBuildYourAIAgencyPage() {
+  // Only one recording with sound plays at a time (muted gallery loops are left alone).
+  useEffect(() => {
+    const onPlay = (e: Event) => {
+      const target = e.target as HTMLMediaElement;
+      if (!(target instanceof HTMLMediaElement) || target.muted) return;
+      document.querySelectorAll<HTMLMediaElement>("audio, video").forEach((m) => {
+        if (m !== target && !m.muted && !m.paused) m.pause();
+      });
+    };
+    document.addEventListener("play", onPlay, true);
+    return () => document.removeEventListener("play", onPlay, true);
+  }, []);
+
   const [openSession, setOpenSession] = useState<number | null>(0);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -1892,7 +1969,7 @@ export function HowToBuildYourAIAgencyPage() {
 
       <main>
         {/* ══════════ HERO ══════════ */}
-        <section className="relative overflow-hidden border-b border-edge/40">
+        <section className="relative overflow-clip border-b border-edge/40">
           <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-50" />
           <div className="pointer-events-none absolute -top-40 left-[10%] h-[620px] w-[620px] rounded-full bg-volt/[0.08] blur-[170px]" />
           <div className="pointer-events-none absolute bottom-[-20%] right-[-5%] h-[500px] w-[500px] rounded-full bg-lilac/[0.07] blur-[160px]" />
@@ -1963,8 +2040,8 @@ export function HowToBuildYourAIAgencyPage() {
             </div>
 
             <Reveal delay={0.15}>
-              <div className="relative mx-auto w-full max-w-md">
-                <LiveCallCard />
+              <div id="demos" className="relative mx-auto w-full max-w-md scroll-mt-28">
+                <HeroCalls />
                 <div className="absolute -bottom-6 -left-4 hidden rounded-xl border border-edge bg-void/90 px-4 py-3 backdrop-blur-md sm:block">
                   <p className="font-mono text-[9px] font-bold uppercase tracking-widest text-zinc-500">You build this in session 4</p>
                 </div>
@@ -1986,7 +2063,8 @@ export function HowToBuildYourAIAgencyPage() {
         </div>
 
         {/* ══════════ LIVE DEMOS ══════════ */}
-        <LiveDemos />
+        {/* Both calls now live in the hero card (HeroCalls), so this section is parked. */}
+        {/* <LiveDemos /> */}
 
         {/* ══════════ CTA: TALK TO TEAM ══════════ */}
         <TalkToTeam

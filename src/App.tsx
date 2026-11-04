@@ -4,7 +4,8 @@ import { Hero } from "./components/Hero";
 import { ToolsMarquee } from "./components/TerminalShowcase";
 import { FounderStory } from "./components/FounderStory";
 import { Workshops } from "./components/Workshops";
-import { Membership } from "./components/Membership";
+// import { Membership } from "./components/Membership"; // AAA Accelerator block, replaced by CourseSpotlight
+import { CourseSpotlight } from "./components/CourseSpotlight";
 import { Mentors } from "./components/Mentors";
 import { Community } from "./components/Community";
 import { Team } from "./components/Team";
@@ -191,7 +192,8 @@ export default function App() {
         <Community />
         <CircuitDivider />
         <Workshops />
-        <Membership />
+        {/* <Membership /> */}
+        <CourseSpotlight />
         {/* <Agenda /> */}
         {/* <Pathways /> */}
         <CircuitDivider flip />
