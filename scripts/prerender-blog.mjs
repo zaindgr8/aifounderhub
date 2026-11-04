@@ -53,6 +53,35 @@ function withHead({ title, description, path, image = `${SITE}/og-cover.jpg`, ty
   return html;
 }
 
+// Names a route as a page of the site, with its place under the homepage.
+function routeSchema({ title, description, path, label }) {
+  const url = `${SITE}${path}`;
+  const schema = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        isPartOf: { "@id": `${SITE}/#site` },
+        publisher: { "@id": `${SITE}/#org` },
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: `${SITE}/` },
+          { "@type": "ListItem", position: 2, name: label ?? title, item: url },
+        ],
+      },
+    ],
+  };
+  return `<script type="application/ld+json">${JSON.stringify(schema).replace(/</g, "\\u003c")}</script>`;
+}
+
 function page({ element, image, extraHead = "", ...head }) {
   const rss = `<link rel="alternate" type="application/rss+xml" title="AI Founder Hub Blog" href="${SITE}/rss.xml" />`;
   return withHead({ ...head, author: "Zain Ul Abideen Baloch", image: image ? `${SITE}${image}` : undefined })
@@ -102,7 +131,8 @@ for (const route of routes) {
   if (!rewrites.some((r) => r.source === route.path && r.destination === file)) {
     throw new Error(`vercel.json needs a rewrite from ${route.path} to ${file}`);
   }
-  write(file.slice(1), withHead(route));
+  const html = withHead(route);
+  write(file.slice(1), route.noindex ? html : html.replace("</head>", () => `    ${routeSchema(route)}\n  </head>`));
 }
 
 // Unknown URLs still show the homepage, but noindexed and with no canonical, so they can't

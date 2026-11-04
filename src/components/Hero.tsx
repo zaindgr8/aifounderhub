@@ -47,6 +47,14 @@ const COUNTRIES: Country[] = [
   { name: "Australia", code: "AU", flag: "🇦🇺", dialCode: "+61" },
 ];
 
+/* what AI Founder Hub offers, shown under the headline */
+const OFFERS = [
+  { title: "Free Weekly Sessions", desc: "Live and led by builders", href: "#workshops" },
+  { title: "Physical Events", desc: "Meet and network with founders", href: "#community" },
+  { title: "Knowledge Sharing", desc: "Regular learnings from the community", href: "#community" },
+  { title: "Your Agency Plan", desc: "Build and scale your AI agency", href: "#membership" },
+];
+
 /* goal → pathway routing (feeds the CRM segmentation) */
 const GOALS = [
   { id: "agency", label: "Start an AI Automation Agency (AAA)", pathway: "AAA Agency Launch" },
@@ -358,12 +366,12 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-volt opacity-70" />
               <span className="pulse-glow-dot relative inline-flex h-2 w-2 rounded-full bg-volt" />
             </span>
-            Free Weekly Masterclass — Join Live 🚀
+            AI Founder Hub — Global Community
           </motion.div>
 
           <h1 className="mt-7 font-display font-extrabold uppercase leading-[0.9] tracking-tight text-white text-[46px] sm:text-[62px] lg:text-[72px] xl:text-[80px]">
             <StaggerLine delay={0.35}>
-              <HoverWord>Your</HoverWord> <HoverWord>AI</HoverWord> <HoverWord>Automation</HoverWord> <HoverWord>Agency</HoverWord>
+              <HoverWord>Where</HoverWord> <HoverWord>Founders</HoverWord>
             </StaggerLine>
             <StaggerLine delay={0.45}>
               <motion.span
@@ -371,19 +379,19 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                 transition={{ type: "spring", stiffness: 300, damping: 14 }}
                 className="text-shimmer inline-block cursor-default"
               >
-                Starts Now.
+                Build With AI.
               </motion.span>
             </StaggerLine>
           </h1>
 
-          {/* Proof Stats Row */}
+          {/* Brand line */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.65 }}
-            className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2"
+            className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 lg:justify-start"
           >
-            {["First Client", "$15K Retainer", "90 Days Challenge"].map((stat, i) => (
+            {["Build", "Sell", "Scale"].map((stat, i) => (
               <span key={i} className="flex items-center gap-2">
                 <span className="font-display text-[15px] sm:text-[17px] font-extrabold uppercase tracking-tight text-volt">
                   {stat}
@@ -399,28 +407,28 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
             transition={{ duration: 0.7, delay: 0.8 }}
             className="mx-auto mt-6 max-w-xl text-[15px] leading-relaxed text-zinc-300 lg:mx-0"
           >
-            The proven roadmap to launch and scale a high-margin <strong className="text-white">AI Automation Agency (AAA)</strong>. We train you to build production-grade <strong className="text-volt font-medium">AI Lead Management Systems &amp; Voice Assistants</strong>, package high-ticket offers, and land clients paying <strong className="text-white">$2,000–$5,000/month</strong> in recurring revenue.
+            <strong className="text-white">AI Founder Hub</strong> is a global community bringing <strong className="text-volt font-medium">founders, investors and enthusiasts</strong> onto one platform. Join free weekly sessions by builders, physical events and founder networking, regular knowledge sharing, and a clear plan to build and scale your AI agency.
           </motion.p>
 
-          {/* Market Potential $$$ Value Strip */}
+          {/* What AI Founder Hub offers */}
           <motion.div
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.88 }}
-            className="mx-auto mt-5 flex max-w-xl flex-wrap items-center justify-center gap-2 sm:gap-2.5 lg:mx-0 lg:justify-start"
+            className="mx-auto mt-6 grid max-w-xl grid-cols-2 gap-2.5 text-left lg:mx-0"
           >
-            <div className="flex items-center gap-1.5 rounded-xl border border-volt/25 bg-volt/[0.06] px-3 py-1.5 font-mono text-[11px] text-zinc-200">
-              <span className="font-display text-xs sm:text-sm font-extrabold text-volt">$1.14T</span>
-              <span className="text-[10px] uppercase tracking-wider text-zinc-400">AI Market Wave</span>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-1.5 font-mono text-[11px] text-zinc-200">
-              <span className="font-display text-xs sm:text-sm font-extrabold text-white">$50B</span>
-              <span className="text-[10px] uppercase tracking-wider text-zinc-400">Agency Sector</span>
-            </div>
-            <div className="flex items-center gap-1.5 rounded-xl border border-emerald-500/25 bg-emerald-950/40 px-3 py-1.5 font-mono text-[11px] text-emerald-300">
-              <span className="font-display text-xs sm:text-sm font-extrabold text-emerald-400">$2K–$5K/mo</span>
-              <span className="text-[10px] uppercase tracking-wider text-emerald-400/80">Client Retainer</span>
-            </div>
+            {OFFERS.map((offer) => (
+              <a
+                key={offer.title}
+                href={offer.href}
+                className="rounded-xl border border-white/10 bg-white/[0.03] px-3.5 py-3 transition-colors hover:border-volt/40"
+              >
+                <span className="block font-display text-[13px] font-extrabold uppercase tracking-tight text-white sm:text-sm">
+                  {offer.title}
+                </span>
+                <span className="mt-0.5 block text-[12px] leading-snug text-zinc-400">{offer.desc}</span>
+              </a>
+            ))}
           </motion.div>
 
           {/* 
@@ -468,7 +476,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                 className="group relative flex items-center gap-2.5 overflow-hidden rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_40px_rgba(204,242,68,0.25)] transition-shadow duration-300 hover:shadow-[0_0_60px_rgba(204,242,68,0.5)] cursor-pointer"
               >
                 <span className="absolute inset-0 -translate-x-full bg-white/30 [transform:skewX(-25deg)] transition-transform duration-700 group-hover:translate-x-[250%] w-1/2" />
-                <span className="relative">START YOUR AI AGENCY</span>
+                <span className="relative">SEE THE MASTER COURSE</span>
                 <ArrowRight className="relative h-4.5 w-4.5 transition-transform duration-300 group-hover:translate-x-1" />
               </button>
             </Magnetic>
@@ -487,8 +495,8 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                 )}
               </div>
               <div className="text-left">
-                <span className="block text-xs font-bold text-zinc-200">Growing Community of Active Builders</span>
-                <span className="block font-mono text-[10px] text-zinc-500">Dubai &amp; Global Network</span>
+                <span className="block text-xs font-bold text-zinc-200">Founders, Investors &amp; Enthusiasts</span>
+                <span className="block font-mono text-[10px] text-zinc-500">One Global Community</span>
               </div>
             </div>
           </motion.div>
@@ -757,11 +765,11 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         Don't want to wait for Saturday?
                       </span>
                       <p className="mt-1.5 text-xs leading-relaxed text-zinc-300">
-                        AAA Accelerator members start tonight:{" "}
+                        The Master Course is open now:{" "}
                         <span className="font-bold text-white">
-                          full access, live builds, 1:1 support, the sales playbook.
+                          five live classes in one month to build and sell AI voice agents.
                         </span>{" "}
-                        Cancel anytime · 7-day money-back.
+                        1,500 AED for the first 10 students only.
                       </p>
                       <button
                         type="button"
@@ -772,7 +780,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                         }}
                         className="group mt-2.5 flex items-center gap-1.5 font-display text-[11px] font-extrabold uppercase tracking-wide text-volt transition-colors hover:text-white cursor-pointer"
                       >
-                        GET INSTANT ACCESS · $159/mo
+                        SEE THE MASTER COURSE
                         <span className="transition-transform duration-300 group-hover:translate-x-0.5">→</span>
                       </button>
                     </div>
@@ -845,7 +853,7 @@ export function Hero({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") =>
                       <button
                         onClick={() => {
                           navigator.clipboard
-                            .writeText("I just claimed my seat at the AI Founder Hub 3-day build summit. It's free. Come build with me!")
+                            .writeText("I just claimed my seat at the AI Founder Hub free live masterclass. Come build with me!")
                             .then(() => {
                               setCopied(true);
                               setTimeout(() => setCopied(false), 2000);

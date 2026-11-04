@@ -122,7 +122,7 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
           <span className="truncate">⚡ FREE LIVE MASTERCLASS THIS SATURDAY (LIMITED SEATS) • BUILD &amp; SELL REAL AI AUTOMATION SYSTEMS • CLICK "JOIN THE COMMUNITY"</span>
         </div>
 
-        {/* Banner 2: AAA Accelerator Monthly Membership */}
+        {/* Banner 2: AI Agency Master Course (#membership is the CourseSpotlight section) */}
         <div 
           onClick={() => {
             const el = document.getElementById("membership");
@@ -135,10 +135,12 @@ export function Nav({ onOpenClaudeModal }: NavProps) {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-volt opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-volt"></span>
             </span>
-            AAA ACCELERATOR:
+            <span className="sm:hidden">AI AGENCY COURSE:</span>
+            <span className="hidden sm:inline">HOW TO BUILD YOUR AI AGENCY:</span>
           </span>
-          <span className="truncate">
-            LAUNCH YOUR AGENCY • $159/MONTH SUBSCRIPTION • INSTANT ACCESS • ENROLL NOW →
+          <span className="truncate sm:hidden">1,500 AED • FIRST 10 ONLY →</span>
+          <span className="hidden truncate sm:inline">
+            BUILD &amp; SELL AI VOICE AGENTS • 1,500 AED INSTEAD OF 8,000 AED • FIRST 10 STUDENTS ONLY • SEE THE COURSE →
           </span>
         </div>
 
