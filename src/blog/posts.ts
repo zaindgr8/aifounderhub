@@ -10,7 +10,7 @@ export const BLOG_AUTHOR = {
   name: "Zain Ul Abideen Baloch",
   url: "https://aifounderhub.com/zain-ul-abideen-baloch",
   photo: "/me.svg",
-  role: "Founder & CEO, DevMate Solutions · Co-founder, AI Founder Hub",
+  role: "Founder, AI Founder Hub · Founder & CEO, DevMate Solutions",
 };
 
 export interface Post {

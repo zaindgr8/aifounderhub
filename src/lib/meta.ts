@@ -36,9 +36,9 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     label: "AI Community in Dubai",
   },
   home: {
-    title: "AI Automation Agency Training | Build & Sell AI Systems — AI Founder Hub",
+    title: "AI Founder Hub | Global Community for AI Founders & Builders",
     description:
-      "Learn to build and sell AI Lead Management Systems and voice agents — no code required. Free live masterclass every Saturday, plus the 90-day AAA Accelerator to your first $2,000/month client. Dubai and global.",
+      "A global community for AI founders, investors and enthusiasts: free weekly sessions by builders, physical events, networking and a plan to scale your AI agency.",
     path: "/",
   },
   "claude-master": {
@@ -49,9 +49,9 @@ export const ROUTE_META: Record<string, RouteMeta> = {
     label: "Master Claude in 7 Days",
   },
   "founder-hub": {
-    title: "Zain Ul Abideen Baloch | Co-founder, AI Founder Hub | Founder & CEO, DevMate Solutions, Dubai",
+    title: "Zain Ul Abideen Baloch | Founder, AI Founder Hub | Founder & CEO, DevMate Solutions",
     description:
-      "Zain Ul Abideen Baloch is the co-founder of AI Founder Hub, alongside Ahmed Yahya, and the Founder and CEO of DevMate Solutions, based in Dubai. We teach founders how to build and sell AI lead management systems.",
+      "Zain Ul Abideen Baloch is the founder of AI Founder Hub, with co-founder Ahmed Yahya Al Kindi, and the Founder and CEO of DevMate Solutions, based in Dubai. He teaches founders to build and sell AI systems.",
     path: "/zain-ul-abideen-baloch",
     label: "Zain Ul Abideen Baloch",
   },
