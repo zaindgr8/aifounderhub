@@ -19,7 +19,7 @@ const SAME_AS = [
 const FAQS = [
   {
     q: "Who is Zain Ul Abideen Baloch?",
-    a: "Zain Ul Abideen Baloch is the co-founder of AI Founder Hub, alongside Ahmed Yahya, and the Founder and CEO of DevMate Solutions, a Dubai AI and software agency. He is based in Dubai, and he teaches founders how to build and sell AI lead management systems.",
+    a: "Zain Ul Abideen Baloch is the founder of AI Founder Hub, with co-founder Ahmed Yahya Al Kindi, and the Founder and CEO of DevMate Solutions, a Dubai AI and software agency. He is based in Dubai, and he teaches founders how to build and sell AI lead management systems.",
   },
   {
     q: "What is AI Founder Hub?",
@@ -90,9 +90,9 @@ export function FounderHubPage() {
       "@type": "Person",
       name: "Zain Ul Abideen Baloch",
       alternateName: "Zain Ul Abideen",
-      jobTitle: "Co-founder, AI Founder Hub",
+      jobTitle: "Founder, AI Founder Hub",
       description:
-        "Co-founder of AI Founder Hub, an AI education platform for entrepreneurs, and Founder and CEO of DevMate Solutions, a Dubai AI and software agency.",
+        "Founder of AI Founder Hub, a global AI community for founders, investors and enthusiasts, and Founder and CEO of DevMate Solutions, a Dubai AI and software agency.",
       url: "https://aifounderhub.com/zain-ul-abideen-baloch",
       address: { "@type": "PostalAddress", addressLocality: "Dubai", addressCountry: "AE" },
       worksFor: [
@@ -134,13 +134,13 @@ export function FounderHubPage() {
         <section className="py-12 md:py-16">
           <p className="mb-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs tracking-wide" style={{ borderColor: LIME, color: LIME }}>
             <span className="inline-block h-2 w-2 rounded-full" style={{ backgroundColor: LIME }} />
-            Dubai · Co-founder, AI Founder Hub
+            Dubai · Founder, AI Founder Hub
           </p>
           <h1 className="text-4xl font-bold leading-tight text-white md:text-6xl">
             Zain Ul Abideen Baloch — <span style={{ color: LIME }}>building AI founders, not just AI tools.</span>
           </h1>
           <p className="mt-5 max-w-3xl text-lg leading-relaxed text-zinc-400">
-            Zain Ul Abideen Baloch is the co-founder of AI Founder Hub, alongside Ahmed Yahya, and the Founder and CEO of DevMate Solutions. We teach founders how to build AI lead management systems, package them as a service, and land a first client — using the same systems we sell commercially in Dubai.
+            Zain Ul Abideen Baloch is the founder of AI Founder Hub, with co-founder Ahmed Yahya Al Kindi, and the Founder and CEO of DevMate Solutions. We teach founders how to build AI lead management systems, package them as a service, and land a first client — using the same systems we sell commercially in Dubai.
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <a href="https://cal.com/devmate/aaa-strategy-call" className="inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-black" style={{ backgroundColor: LIME }}>
@@ -166,7 +166,7 @@ export function FounderHubPage() {
         </section>
 
         <section className="py-10">
-          <p className="text-xs tracking-widest" style={{ color: LIME }}>CO-FOUNDER STORY</p>
+          <p className="text-xs tracking-widest" style={{ color: LIME }}>FOUNDER STORY</p>
           <h2 className="mt-2 text-3xl font-bold text-white">Learn it by building it, live</h2>
           <div className="mt-5 grid gap-6 md:grid-cols-2">
             <p className="leading-relaxed text-zinc-400">

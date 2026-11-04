@@ -1342,8 +1342,8 @@ const ZAIN_CREDENTIALS = [
 const DEVMATE_REGISTERED = ["Dubai", "Muscat", "NYC"];
 
 const AHMED = {
-  name: "Ahmed Yahya",
-  role: "Co-founder · AI Founder Hub",
+  name: "Ahmed Yahya Al Kindi",
+  role: "Co-Founder · AI Founder Hub",
   photo: "/ay2.png",
   points: ["GCC Top 20 Entrepreneur", "Published author", "Featured on Gulf News, Times of Oman, Oman TV & Smashi TV"],
   socials: [
