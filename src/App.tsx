@@ -30,6 +30,9 @@ const AAAAcceleratorPage = lazy(() => import("./pages/AAAAcceleratorPage").then(
 const FounderHubPage = lazy(() => import("./pages/FounderHubPage").then(m => ({ default: m.FounderHubPage })));
 const HowToBuildYourAIAgencyPage = lazy(() => import("./pages/HowToBuildYourAIAgencyPage").then(m => ({ default: m.HowToBuildYourAIAgencyPage })));
 const CrmPage = lazy(() => import("./pages/CrmPage").then(m => ({ default: m.CrmPage })));
+const BlogHubPage = lazy(() => import("./pages/BlogHubPage").then(m => ({ default: m.BlogHubPage })));
+const SaasIsDeadArticle = lazy(() => import("./pages/SaasIsDeadArticle").then(m => ({ default: m.SaasIsDeadArticle })));
+const AiCommunityDubaiPage = lazy(() => import("./pages/AiCommunityDubaiPage").then(m => ({ default: m.AiCommunityDubaiPage })));
 const PolicyModal = lazy(() => import("./components/PolicyModal").then(m => ({ default: m.PolicyModal })));
 const ClaudeMasterclassPopupModal = lazy(() => import("./components/ClaudeMasterclassPopupModal").then(m => ({ default: m.ClaudeMasterclassPopupModal })));
 
@@ -59,6 +62,9 @@ function useRoute() {
   if (path === "/how-to-build-your-ai-agency") return "how-to-build-your-ai-agency";
   if (path === "/admin") return "admin";
   if (path === "/crm") return "crm";
+  if (path === "/blog") return "blog";
+  if (path === "/blog/saas-is-dead-what-it-means-for-your-business") return "saas-is-dead-article";
+  if (path === "/ai-community-dubai") return "ai-community-dubai";
   return "home";
 }
 
@@ -170,6 +176,30 @@ export default function App() {
     return (
       <Suspense fallback={<PageLoader />}>
         <CrmPage />
+      </Suspense>
+    );
+  }
+
+  if (route === "blog") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <BlogHubPage />
+      </Suspense>
+    );
+  }
+
+  if (route === "saas-is-dead-article") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <SaasIsDeadArticle />
+      </Suspense>
+    );
+  }
+
+  if (route === "ai-community-dubai") {
+    return (
+      <Suspense fallback={<PageLoader />}>
+        <AiCommunityDubaiPage />
       </Suspense>
     );
   }
