@@ -37,6 +37,17 @@
         "3200"
       ],
       "port": 3200
+    },
+    {
+      "name": "blog-prod-preview",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "vite",
+        "preview",
+        "--port",
+        "4173"
+      ],
+      "port": 4173
     }
   ]
 }

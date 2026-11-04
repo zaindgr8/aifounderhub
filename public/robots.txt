@@ -1,20 +1,17 @@
 # Robots.txt for AI Founder Hub (https://aifounderhub.com)
 # User-agent rules for search engines and crawlers
+#
+# Keep private pages (/admin, /crm, /thank-you, /payment-*) crawlable: they carry a noindex
+# tag, and a crawler blocked here would never see it.
 
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /payment-success
-Disallow: /payment-failed
-Disallow: /admin
 
 # Googlebot specific rules
 User-agent: Googlebot
 Allow: /
 Disallow: /api/
-Disallow: /payment-success
-Disallow: /payment-failed
-Disallow: /admin
 
 # Googlebot-Image (allow crawling all images, favicons, logos)
 User-agent: Googlebot-Image
@@ -24,9 +21,6 @@ Allow: /
 User-agent: Bingbot
 Allow: /
 Disallow: /api/
-Disallow: /payment-success
-Disallow: /payment-failed
-Disallow: /admin
 
 # Sitemap location
 Sitemap: https://aifounderhub.com/sitemap.xml

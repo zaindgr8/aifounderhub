@@ -42,13 +42,13 @@ export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") 
           </a>
           <span className="hidden sm:inline text-zinc-800">·</span>
           <a
-            href="https://www.instagram.com/aifounderhub.me?igsh=eDFpOWl6OWpydjZx&utm_source=qr"
+            href="https://www.instagram.com/aifounderhubofficial/"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 hover:text-volt transition-colors"
           >
             <Instagram className="h-4 w-4 text-volt" />
-            <span>@aifounderhub.me</span>
+            <span>@aifounderhubofficial</span>
           </a>
         </div>
 
@@ -71,6 +71,10 @@ export function Footer({ onOpenModal }: { onOpenModal: (m: "privacy" | "terms") 
           <span className="text-zinc-700">·</span>
           <a href="mailto:support@aifounderhub.com" className="transition-colors hover:text-volt">
             Contact
+          </a>
+          <span className="text-zinc-700">·</span>
+          <a href="/blog" className="transition-colors hover:text-volt">
+            Blog
           </a>
         </div>
 
