@@ -32,6 +32,12 @@ export interface Post {
   toc: { id: string; text: string }[];
   faqs: { q: string; a: string }[];
   readMinutes: number;
+  /** Guest author. Falls back to BLOG_AUTHOR when absent. */
+  authorName: string;
+  authorRole: string;
+  authorPhoto: string;
+  authorUrl: string;
+  authorBio: string;
 }
 
 const files = import.meta.glob("./posts/*.md", { query: "?raw", import: "default", eager: true }) as Record<string, string>;
@@ -123,6 +129,13 @@ function parsePost(path: string, raw: string): Post & { draft: boolean } {
     toc,
     faqs: extractFaqs(body),
     readMinutes: Math.max(1, Math.round(stripMarkdown(body).split(" ").length / 220)),
+    authorName: data.authorName || BLOG_AUTHOR.name,
+    authorRole: data.authorRole || BLOG_AUTHOR.role,
+    authorPhoto: data.authorPhoto || BLOG_AUTHOR.photo,
+    authorUrl: data.authorUrl || BLOG_AUTHOR.url,
+    authorBio:
+      data.authorBio ||
+      "He has worked with 40+ brands since 2019, and his team builds and sells AI voice agents to real businesses.",
     draft: data.draft === "true",
   };
 }
