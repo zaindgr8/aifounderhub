@@ -113,7 +113,7 @@ export function BlogIndex() {
             url: `${SITE}/blog/${p.slug}`,
             datePublished: p.date,
             dateModified: p.updated,
-            author: { "@type": "Person", name: BLOG_AUTHOR.name, url: BLOG_AUTHOR.url },
+            author: { "@type": "Person", name: p.authorName, url: p.authorUrl },
           })),
         }}
       />
@@ -201,7 +201,7 @@ export function BlogPost({ post }: { post: Post }) {
               dateModified: post.updated,
               image: `${SITE}${post.cover ?? "/og-cover.jpg"}`,
               articleSection: post.category,
-              author: { "@type": "Person", name: BLOG_AUTHOR.name, url: BLOG_AUTHOR.url },
+              author: { "@type": "Person", name: post.authorName, url: post.authorUrl },
               publisher: ORG,
             },
             {
@@ -243,15 +243,15 @@ export function BlogPost({ post }: { post: Post }) {
             </h1>
             <p className="mt-5 text-[19px] leading-relaxed text-zinc-400">{post.description}</p>
             <div className="mt-7 flex items-center gap-3">
-              <img src={BLOG_AUTHOR.photo} alt={BLOG_AUTHOR.name} width={40} height={40} className="h-10 w-10 rounded-full border border-edge bg-panel object-cover" />
+              <img src={post.authorPhoto} alt={post.authorName} width={40} height={40} className="h-10 w-10 rounded-full border border-edge bg-panel object-cover" />
               <div className="text-[13.5px] leading-snug">
-                <a href={BLOG_AUTHOR.url} className="font-semibold text-white hover:text-volt">{BLOG_AUTHOR.name}</a>
+                <a href={post.authorUrl} className="font-semibold text-white hover:text-volt">{post.authorName}</a>
                 {post.updated !== post.date && (
                   <p className="text-zinc-500">
                     Updated <time dateTime={post.updated}>{formatDate(post.updated)}</time>
                   </p>
                 )}
-                {post.updated === post.date && <p className="text-zinc-500">{BLOG_AUTHOR.role.split(" · ")[0]}</p>}
+                {post.updated === post.date && <p className="text-zinc-500">{post.authorRole.split(" · ")[0]}</p>}
               </div>
             </div>
           </header>
@@ -293,13 +293,13 @@ export function BlogPost({ post }: { post: Post }) {
 
         <div className="mx-auto max-w-3xl lg:max-w-5xl">
           <section aria-label="About the author" className="mt-16 flex max-w-3xl gap-4 border-t border-edge pt-8">
-            <img src={BLOG_AUTHOR.photo} alt="" width={56} height={56} className="h-14 w-14 flex-shrink-0 rounded-full border border-edge bg-panel object-cover" />
+            <img src={post.authorPhoto} alt="" width={56} height={56} className="h-14 w-14 flex-shrink-0 rounded-full border border-edge bg-panel object-cover" />
             <div>
               <p className="font-display text-[16px] font-bold text-white">
-                <a href={BLOG_AUTHOR.url} className="hover:text-volt">{BLOG_AUTHOR.name}</a>
+                <a href={post.authorUrl} className="hover:text-volt">{post.authorName}</a>
               </p>
               <p className="mt-1 text-[14.5px] leading-relaxed text-zinc-400">
-                {BLOG_AUTHOR.role}. He has worked with 40+ brands since 2019, and his team builds and sells AI voice agents to real businesses.
+                {post.authorRole}. {post.authorBio}
               </p>
             </div>
           </section>
