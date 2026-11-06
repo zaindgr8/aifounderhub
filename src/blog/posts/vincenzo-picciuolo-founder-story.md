@@ -5,8 +5,13 @@ description: Vincenzo Picciuolo went from a 9600 BPS modem to building HORNO Net
 tldr: Vincenzo Picciuolo learned to build before he learned to earn. From a 9600 BPS modem to HORNO Network and now OYYO ONE AI, he kept building through bills, doubt and years of unseen work. His rule: find one thing you can do today, fix one problem, take one more step. A difficult season does not erase your work.
 category: AI trends
 date: 2026-11-05
-cover: /gallery/vincenzo-picciuolo.jpg
+cover: /gallery/vincenzo-picciuolo-cover.jpg
 coverAlt: Portrait of Vincenzo Picciuolo, founder of HORNO Network and OYYO ONE AI
+authorName: Vincenzo Picciuolo
+authorRole: Founder, HORNO Network & OYYO ONE AI
+authorPhoto: /gallery/vincenzo-picciuolo.jpg
+authorUrl: https://horno.net
+authorBio: Founder of HORNO Network and OYYO ONE AI. Author of 9600 BPS: The Start: Curiosity Never Had an Off Switch.
 ---
 
 *A guest founder story by Vincenzo Picciuolo, founder of HORNO Network and OYYO ONE AI.*
