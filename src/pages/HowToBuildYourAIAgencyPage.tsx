@@ -117,6 +117,8 @@ function Cite({ n }: { n: number }) {
 
 const PRICE = { aed: "1,500 AED", omr: "158 OMR", usd: "$408", was: "8,000 AED", save: "81%" };
 
+const WHATSAPP_TEAM_URL = `https://wa.me/971542968754?text=${encodeURIComponent("Hi, I have a question about the AI Agency course.")}`;
+
 const TICKER = [
   "AI voice agents: $2.54B market in 2025 → $35.2B by 2033 [1]",
   "39% yearly growth forecast, 2026–2033 [1]",
@@ -220,7 +222,7 @@ const VALUE_STACK = [
   { item: "Full AI voice agent build kit", value: "3,000 AED" },
   { item: "AFH MasterMind Group — 60 days", value: "2,000 AED" },
   { item: "Direct access to the founders, Zain & Ahmed — 30 days", value: "1,500 AED" },
-  { item: "Sales pitch and first-deal closing playbook", value: "2,000 AED" },
+  { item: "The First Client Playbook: pitch, pricing and closing scripts", value: "2,000 AED" },
   { item: "Instant-callback demo form template", value: "500 AED" },
   { item: "Client portal: call recordings, intent & sentiment scoring", value: "Included" },
   { item: "Advanced n8n automations: voice → CRM and AI email nurture", value: "Included" },
@@ -234,6 +236,18 @@ const FAQS = [
   {
     q: "When does the course start?",
     a: "The start date will be confirmed and shared with enrolled students first. There are 10 places, given in the order payments are confirmed.",
+  },
+  {
+    q: "What if I miss a class?",
+    a: "Every class is recorded, and you keep the resources, so you can catch up from the recording.",
+  },
+  {
+    q: "Can I do this alongside a full-time job?",
+    a: "Yes, if you can make time to build between classes. Class times are shared with the start date, and every class is recorded in case you can't attend one live.",
+  },
+  {
+    q: "Why is it 1,500 AED instead of 8,000 AED?",
+    a: "This is our founding cohort. The first 10 students pay 1,500 AED because we want our first case studies to come from this group.",
   },
   {
     q: "Do I need to know how to code?",
@@ -257,7 +271,7 @@ const FAQS = [
   },
   {
     q: "What do I get to give my clients?",
-    a: "A client portal where your clients see their calls, leads, campaigns and spend, plus the n8n automations that connect the voice agent to their CRM or sheet. You leave with a product you can demo and hand over, not just knowledge.",
+    a: "A client portal where your clients see their calls, leads, campaigns and spend, plus the n8n automations that connect the voice agent to their CRM or sheet. You leave with a product you can demo and hand over.",
   },
   {
     q: "Do I get a certificate?",
@@ -479,7 +493,7 @@ function EnrollmentForm() {
         ) : (
           <>
             <Lock className="relative h-4 w-4" />
-            <span className="relative">Secure my place — {PRICE.aed}</span>
+            <span className="relative">Secure my place · {PRICE.aed}</span>
             <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-1" />
           </>
         )}
@@ -511,7 +525,7 @@ function EnrollButton({ className = "", children }: { className?: string; childr
       href="#enroll"
       className={`group inline-flex items-center justify-center gap-2.5 rounded-full bg-volt px-8 py-4 font-display text-[15px] font-extrabold uppercase tracking-wide text-void shadow-[0_0_60px_rgba(204,242,68,0.35)] transition-shadow hover:shadow-[0_0_100px_rgba(204,242,68,0.65)] ${className}`}
     >
-      {children ?? <>Enroll — {PRICE.aed}</>}
+      {children ?? <>Enroll · {PRICE.aed}</>}
       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
     </a>
   );
@@ -885,7 +899,7 @@ function FreeOnYouTube() {
       <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-10">
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <Reveal>
-            <SectionTag index="09" label="Free first" />
+            <SectionTag index="04" label="Free first" />
             <H2>
               Try his teaching <span className="text-volt">for free</span>
             </H2>
@@ -1081,7 +1095,7 @@ function Toolkit() {
       <div className="pointer-events-none absolute right-[-10%] top-[10%] h-[460px] w-[460px] rounded-full bg-volt/[0.05] blur-[160px]" />
       <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-10">
         <Reveal>
-          <SectionTag index="08" label="Your toolkit" />
+          <SectionTag index="10" label="Your toolkit" />
           <H2>
             You don't start from zero.
             <br />
@@ -1256,7 +1270,7 @@ function OnSiteGallery() {
       <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-10">
         <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <Reveal>
-            <SectionTag index="02" label="On the ground" />
+            <SectionTag index="03" label="On the ground" />
             <H2>
               Not a faceless course.
               <br />
@@ -1434,7 +1448,7 @@ function Instructor() {
           {/* story */}
           <div>
             <Reveal>
-              <SectionTag index="01" label="Your coach" />
+              <SectionTag index="02" label="Your coach" />
               <H2>
                 Learn from someone who <span className="text-volt">sells this every week</span>
               </H2>
@@ -1921,6 +1935,166 @@ function HeroCalls() {
    PAGE
 ──────────────────────────────────────────────────────── */
 
+/* ────────────────────────────────────────────────────────
+   IS THIS FOR YOU — buyer picker + before / after
+──────────────────────────────────────────────────────── */
+
+const FIT = [
+  {
+    label: "I have a job",
+    title: "Build it alongside your job",
+    body: "Pick one market and one offer first, then set up outreach before you spend more on tools. Every class is recorded, so you can catch up if work gets in the way.",
+    focus: "Start with sessions 1, 2 and 3",
+  },
+  {
+    label: "I freelance or run an agency",
+    title: "Add voice to what you already sell",
+    body: "You already have clients and a way to reach them. Build the agent, then use the pitch and pricing to offer it to the people who already trust you.",
+    focus: "Start with sessions 4 and 5",
+  },
+  {
+    label: "I own a business",
+    title: "Answer your own phone first",
+    body: "Build an agent on a real number and use it on your own business. Once you've seen it work, decide whether to sell it to others too.",
+    focus: "Start with session 4",
+  },
+  {
+    label: "I'm a complete beginner",
+    title: "You don't need to code",
+    body: "The build uses visual and low-code tools, and we build alongside you. You do need to follow technical steps carefully and be comfortable testing real calls.",
+    focus: "Take all five classes in order",
+  },
+];
+
+const BEFORE_AFTER = [
+  { before: "Not sure who to sell to", after: "One market, one industry and one offer" },
+  { before: "No way to reach clients", after: "Outreach engine set up: domain, Brevo, n8n and landing page" },
+  { before: "Watching tutorials", after: "A production agent on a real phone number" },
+  { before: "Nothing to show a prospect", after: "A form that triggers an AI callback in front of them" },
+  { before: "Unsure what to charge", after: "A pitch, a price and scripts for objections" },
+];
+
+function IsThisForYou() {
+  const [active, setActive] = useState(0);
+  const fit = FIT[active];
+  return (
+    <section id="for-you" className="scroll-mt-20 border-b border-edge/40 py-16 sm:py-24">
+      <div className="mx-auto max-w-6xl px-4 md:px-10">
+        <Reveal>
+          <SectionTag index="01" label="Is this for you?" />
+          <H2>Which one are you?</H2>
+        </Reveal>
+
+        <div className="mt-10 grid gap-5 lg:grid-cols-2">
+          <Reveal>
+            <div className="h-full rounded-3xl border border-edge bg-panel/50 p-5 sm:p-7">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2" role="group" aria-label="Choose what describes you">
+                {FIT.map((f, i) => (
+                  <button
+                    key={f.label}
+                    onClick={() => setActive(i)}
+                    aria-pressed={active === i}
+                    className={`cursor-pointer rounded-xl border px-3.5 py-3 text-left text-[13px] font-semibold transition-colors ${
+                      active === i ? "border-volt/50 bg-volt/10 text-white" : "border-edge bg-void/40 text-zinc-400 hover:border-zinc-600 hover:text-white"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+              <div className="mt-6" aria-live="polite">
+                <h3 className="font-display text-2xl font-extrabold leading-tight text-white">{fit.title}</h3>
+                <p className="mt-3 text-[14.5px] leading-relaxed text-zinc-400">{fit.body}</p>
+                <p className="mt-4 font-mono text-[11px] font-bold uppercase tracking-widest text-volt">{fit.focus}</p>
+              </div>
+              <p className="mt-6 border-t border-edge/60 pt-4 text-[13px] leading-relaxed text-zinc-500">
+                This isn't for you if you want passive income. Selling takes calls, follow-ups and rejection.
+              </p>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.08}>
+            <div className="h-full overflow-hidden rounded-3xl border border-edge bg-panel/50">
+              <div className="grid grid-cols-2 border-b border-edge bg-void/40 font-mono text-[10px] font-bold uppercase tracking-widest">
+                <span className="px-4 py-3.5 text-zinc-500 sm:px-5">Today</span>
+                <span className="px-4 py-3.5 text-volt sm:px-5">After class 5</span>
+              </div>
+              {BEFORE_AFTER.map((r) => (
+                <div key={r.before} className="grid grid-cols-2 border-b border-edge/50 last:border-b-0">
+                  <span className="px-4 py-4 text-[13.5px] leading-snug text-zinc-500 sm:px-5">{r.before}</span>
+                  <span className="px-4 py-4 text-[13.5px] font-medium leading-snug text-white sm:px-5">{r.after}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+
+        <Reveal delay={0.1}>
+          <div className="mt-8">
+            <EnrollButton />
+          </div>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
+/* ────────────────────────────────────────────────────────
+   OFFER EXTRAS — named bonus, price framing, alternatives
+──────────────────────────────────────────────────────── */
+
+const ALTERNATIVES = [
+  { name: "Free YouTube classes", get: "Full builds you can follow, for free.", gap: "Nobody checks your build or answers questions about your exact setup." },
+  { name: "Hiring a developer", get: "An agent, built for you.", gap: "You still can't build the next one, and you still have to find clients." },
+  { name: "This course", get: "5 live classes, your build reviewed, and help onboarding your first client.", gap: "Only 10 places, and the outreach is still your work.", best: true },
+];
+
+function FirstClientPlaybook() {
+  return (
+    <div className="mt-10 grid gap-6 rounded-3xl border border-lilac/25 bg-lilac/[0.05] p-6 sm:p-8 md:grid-cols-[1fr_1.1fr] md:items-center">
+      <div>
+        <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-lilac">Included when you join</p>
+        <h3 className="mt-3 font-display text-3xl font-extrabold leading-tight text-white">The First Client Playbook</h3>
+        <p className="mt-3 text-[14px] leading-relaxed text-zinc-400">What to say and charge once a prospect replies, with scripts you can use the same week.</p>
+      </div>
+      <ul className="space-y-2.5">
+        {["From outreach reply to a booked sales call", "The pitch, in the owner's language", "Pricing and objection answers", "Closing your first deal"].map((t) => (
+          <li key={t} className="flex items-start gap-2.5 text-[14px] text-zinc-200">
+            <Check className="mt-0.5 h-4 w-4 flex-shrink-0 text-lilac" strokeWidth={3} />
+            {t}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function PriceInContext() {
+  return (
+    <>
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
+        <div className="rounded-2xl border border-edge bg-panel/50 p-5">
+          <p className="font-display text-3xl font-black text-white">300 AED</p>
+          <p className="mt-1 text-[13px] text-zinc-400">per live class, with everything else in the table included</p>
+        </div>
+        <div className="rounded-2xl border border-edge bg-panel/50 p-5">
+          <p className="font-display text-3xl font-black text-white">About 5×</p>
+          <p className="mt-1 text-[13px] text-zinc-400">the course price: the ~$2,000 example setup fee taught in session 5. An illustration, not a promise.</p>
+        </div>
+      </div>
+      <div className="mt-5 grid gap-3 md:grid-cols-3">
+        {ALTERNATIVES.map((a) => (
+          <div key={a.name} className={`rounded-2xl border p-5 ${a.best ? "border-volt/35 bg-volt/[0.06]" : "border-edge bg-panel/50"}`}>
+            <p className={`font-display text-[15px] font-extrabold uppercase ${a.best ? "text-volt" : "text-white"}`}>{a.name}</p>
+            <p className="mt-3 text-[13.5px] leading-relaxed text-zinc-200">{a.get}</p>
+            <p className="mt-2 text-[13px] leading-relaxed text-zinc-500">{a.gap}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export function HowToBuildYourAIAgencyPage() {
   // Only one recording with sound plays at a time (muted gallery loops are left alone).
   useEffect(() => {
@@ -1961,7 +2135,7 @@ export function HowToBuildYourAIAgencyPage() {
             href="#enroll"
             className="hidden items-center gap-2 rounded-full bg-volt px-5 py-2.5 font-display text-[12px] font-extrabold uppercase tracking-wide text-void transition-shadow hover:shadow-[0_0_40px_rgba(204,242,68,0.5)] sm:flex"
           >
-            Enroll — {PRICE.aed}
+            Enroll · {PRICE.aed}
             <ArrowRight className="h-3.5 w-3.5" />
           </a>
         </div>
@@ -1979,7 +2153,7 @@ export function HowToBuildYourAIAgencyPage() {
               <Reveal>
                 <div className="inline-flex items-center gap-2 rounded-full border border-volt/30 bg-volt/[0.08] px-4 py-1.5 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-volt">
                   <span className="h-2 w-2 rounded-full bg-volt pulse-glow-dot" />
-                  Accepting now · First 10 students only
+                  Founding cohort · First 10 students only
                 </div>
               </Reveal>
 
@@ -2066,24 +2240,19 @@ export function HowToBuildYourAIAgencyPage() {
         {/* Both calls now live in the hero card (HeroCalls), so this section is parked. */}
         {/* <LiveDemos /> */}
 
-        {/* ══════════ CTA: TALK TO TEAM ══════════ */}
-        <TalkToTeam
-          placement="after-demos"
-          eyebrow="Talk to our team"
-          title="Want one of these built for your niche?"
-          sub="Leave your details and we'll call you to walk through how it works and whether the course is right for you."
-        />
+        {/* ══════════ IS THIS FOR YOU ══════════ */}
+        <IsThisForYou />
 
-        {/* ══════════ COACH + ON SITE ══════════ */}
+        {/* ══════════ COACH + ON SITE + FREE TEACHING ══════════ */}
         <Instructor />
         <OnSiteGallery />
-        <CommunityBand />
+        <FreeOnYouTube />
 
         {/* ══════════ 01 MARKET ══════════ */}
         <section id="market" className="relative scroll-mt-20 border-b border-edge/40 py-16 sm:py-24">
           <div className="mx-auto max-w-6xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="03" label="Why now" />
+              <SectionTag index="05" label="Why now" />
               <H2>
                 The phone is the last thing <span className="text-volt">AI hasn't eaten.</span> Yet.
               </H2>
@@ -2142,10 +2311,10 @@ export function HowToBuildYourAIAgencyPage() {
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-volt/[0.03] to-transparent" />
           <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="04" label="The math" />
+              <SectionTag index="06" label="The math" />
               <H2>Why owners say yes</H2>
               <p className="mt-5 max-w-2xl text-[15.5px] leading-relaxed text-zinc-400">
-                You're not selling "AI". You're selling a front desk that never misses a call, at a fraction of a salary.
+                You sell a front desk that never misses a call, at a fraction of a salary.
               </p>
             </Reveal>
 
@@ -2213,7 +2382,7 @@ export function HowToBuildYourAIAgencyPage() {
         <section id="calculator" className="scroll-mt-20 border-b border-edge/40 py-16 sm:py-24">
           <div className="mx-auto max-w-6xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="05" label="Calculator" />
+              <SectionTag index="07" label="Calculator" />
               <H2>
                 What a small agency <span className="text-volt">can look like</span>
               </H2>
@@ -2242,7 +2411,7 @@ export function HowToBuildYourAIAgencyPage() {
           <div className="pointer-events-none absolute inset-0 bg-grid-dark opacity-30" />
           <div className="relative z-10 mx-auto max-w-6xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="06" label="Who buys" />
+              <SectionTag index="08" label="Who buys" />
               <H2>Every business with a phone</H2>
               <p className="mt-5 max-w-2xl text-[15.5px] leading-relaxed text-zinc-400">
                 The best clients have high call volume, high value per call, and staff who can't answer everything. These are the ones we start with.
@@ -2273,10 +2442,10 @@ export function HowToBuildYourAIAgencyPage() {
             <div className="grid gap-12 lg:grid-cols-[1fr_1.4fr]">
               <div className="lg:sticky lg:top-28 lg:self-start">
                 <Reveal>
-                  <SectionTag index="07" label="Curriculum" />
+                  <SectionTag index="09" label="Curriculum" />
                   <H2>5 classes. 1 month. A real business.</H2>
                   <p className="mt-5 text-[15.5px] leading-relaxed text-zinc-400">
-                    Each class ends with something built, not just something learned. Recordings and resources for every session.
+                    Each class ends with something built. Recordings and resources for every session.
                   </p>
                 </Reveal>
                 <Reveal delay={0.08}>
@@ -2347,19 +2516,19 @@ export function HowToBuildYourAIAgencyPage() {
         {/* ══════════ TOOLKIT ══════════ */}
         <Toolkit />
 
-        {/* ══════════ FREE ON YOUTUBE ══════════ */}
-        <FreeOnYouTube />
-
         {/* ══════════ 06 VALUE ══════════ */}
         <section className="relative overflow-hidden border-b border-edge/40 py-16 sm:py-24">
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-volt/[0.04] via-void to-void" />
           <div className="relative z-10 mx-auto max-w-4xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="10" label="Everything included" />
+              <SectionTag index="11" label="Everything included" />
               <H2>What you get</H2>
             </Reveal>
+            <Reveal delay={0.05}>
+              <FirstClientPlaybook />
+            </Reveal>
             <Reveal delay={0.08}>
-              <div className="mt-10 overflow-hidden rounded-2xl border border-edge bg-panel/50">
+              <div className="mt-5 overflow-hidden rounded-2xl border border-edge bg-panel/50">
                 {VALUE_STACK.map((row) => (
                   <div key={row.item} className="flex items-center justify-between gap-4 border-b border-edge/50 px-5 py-4 sm:px-6">
                     <span className="flex items-start gap-3 text-[14px] text-zinc-200">
@@ -2389,6 +2558,9 @@ export function HowToBuildYourAIAgencyPage() {
                 </div>
               </div>
             </Reveal>
+            <Reveal delay={0.1}>
+              <PriceInContext />
+            </Reveal>
           </div>
         </section>
 
@@ -2397,7 +2569,7 @@ export function HowToBuildYourAIAgencyPage() {
         <section className="border-b border-edge/40 py-16 sm:py-24">
           <div className="mx-auto max-w-5xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="11" label="Straight talk" />
+              <SectionTag index="12" label="Straight talk" />
               <H2>What we promise, and what we don't</H2>
             </Reveal>
             <div className="mt-10 grid gap-4 md:grid-cols-2">
@@ -2453,7 +2625,7 @@ export function HowToBuildYourAIAgencyPage() {
         <section id="faq" className="scroll-mt-20 border-b border-edge/40 py-16 sm:py-24">
           <div className="mx-auto max-w-3xl px-4 md:px-10">
             <Reveal>
-              <SectionTag index="12" label="FAQ" />
+              <SectionTag index="13" label="FAQ" />
               <H2>Questions</H2>
             </Reveal>
             <div className="mt-10 space-y-3">
@@ -2486,15 +2658,15 @@ export function HowToBuildYourAIAgencyPage() {
           <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-12 px-4 md:px-10 lg:grid-cols-2">
             <div>
               <Reveal>
-                <SectionTag index="13" label="Enroll" />
+                <SectionTag index="14" label="Enroll" />
                 <h2 className="mt-5 font-display text-[44px] font-extrabold uppercase leading-[0.9] tracking-tight text-white sm:text-6xl">
                   Ten places.
                   <br />
-                  <span className="text-volt">One cohort.</span>
+                  <span className="text-volt">Our founding cohort.</span>
                 </h2>
                 <p className="mt-6 max-w-md text-[15.5px] leading-relaxed text-zinc-300">
-                  Instead of {PRICE.was}, it's {PRICE.aed} for the first 10 students only. We're accepting enrolments now, and places go in the order payments are confirmed.
-                  The start date is announced to enrolled students first.
+                  Instead of {PRICE.was}, it's {PRICE.aed} for the first 10 students, because we want our first case studies to come from this group.
+                  We're accepting enrolments now, and places go in the order payments are confirmed. The start date is announced to enrolled students first.
                 </p>
               </Reveal>
               <Reveal delay={0.08}>
@@ -2532,11 +2704,22 @@ export function HowToBuildYourAIAgencyPage() {
                   </div>
                   <EnrollmentForm />
                   <p className="mt-4 text-center font-mono text-[10px] text-zinc-600">You'll be redirected to Ziina's secure checkout</p>
+                  <a
+                    href={WHATSAPP_TEAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-4 flex items-center justify-center gap-2 border-t border-edge pt-4 text-[13px] text-zinc-300 transition-colors hover:text-volt"
+                  >
+                    <MessageCircle className="h-4 w-4 text-[#25D366]" /> Quick question? Message us on WhatsApp
+                  </a>
                 </div>
               </div>
             </Reveal>
           </div>
         </section>
+
+        {/* ══════════ NOT READY YET ══════════ */}
+        <CommunityBand />
 
         {/* ══════════ FOLLOW US ══════════ */}
         <FollowUs />
