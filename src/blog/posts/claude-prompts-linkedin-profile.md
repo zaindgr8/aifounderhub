@@ -1,19 +1,19 @@
 ---
-title: 7 Claude Prompts That Fix Your LinkedIn Profile (No Premium Needed)
-seoTitle: 7 Claude Prompts to Fix Your LinkedIn Profile
-description: FLM Pro Network's viral carousel says 7 Claude prompts replace LinkedIn Premium. We tested the claim, rewrote all 7 prompts in our own words, and kept the honest part: what prompts fix, and what stays paid.
-tldr: Seven Claude prompts fix the parts of your LinkedIn profile a recruiter actually reads — headline, About, experience bullets, keywords, value proposition, and a 30-second pitch. They do not replace Premium: InMail, profile views, and applicant insights stay paid. Premium Career is $39.99 a month; if all you need is a better profile, the prompts do the job free.
+title: I Cancelled LinkedIn Premium. 7 Claude Prompts Did the Job for Free.
+seoTitle: I Cancelled LinkedIn Premium. 7 Claude Prompts Did It Free
+description: I cancelled LinkedIn Premium and replaced it with 7 Claude prompts. Here is what they fix, what still stays paid, and the honesty check each prompt needs.
+tldr: I cancelled LinkedIn Premium and replaced it with seven Claude prompts. They fix the parts of your profile a recruiter actually reads — headline, About, experience bullets, keywords, value proposition, and a 30-second pitch. They do not replace Premium: InMail, profile views, and applicant insights stay paid. Premium Career is $39.99 a month; if all you need is a better profile, the prompts do the job free.
 category: Tools & comparisons
 date: 2026-11-09
 ---
 
-"I cancelled LinkedIn Premium. 7 Claude prompts changed everything!"
+I cancelled LinkedIn Premium.
 
-That is the cover of [FLM Pro Network's carousel](https://www.instagram.com/p/Dfei5vzGIc_/), posted 8 November 2026 to 442,000 followers. It drew 5,733 likes and 851 comments, mostly from people who wanted the prompts.
+I did not miss it. Seven Claude prompts did the job for free — my headline, my About section, my experience bullets, my keywords, my value proposition, and my elevator pitch.
 
-The prompts are real, and they are good. The headline claim is half true. This article gives you all seven prompts, rewritten in our own words, and tells you plainly which half is true.
+Half of the claim is true. This article gives you all seven prompts, the way I use them, and tells you plainly which half is true.
 
-## What the carousel promises — and what is actually true
+## What I expected — and what is actually true
 
 LinkedIn Premium Career costs $39.99 a month when billed monthly, or $239.88 a year, according to LinkedIn's own plan pages checked in October 2026. Here is what that money buys, and what a prompt can and cannot replace.
 
@@ -39,7 +39,7 @@ Paste your current headline and two honest sentences about your work. Pick the o
 
 ## 2. The About section prompt — under 260 words
 
-The carousel's rule is a good one: keep About under 260 words. Nobody reads the fourth paragraph of an About section.
+My rule: keep About under 260 words. Nobody reads the fourth paragraph of an About section.
 
 > "Here is my current About section: [paste it]. Rewrite it in under 260 words. First line must hook a recruiter in one sentence — the problem I solve, not my job history. Then three short paragraphs: what I do, proof of it, and what I am looking for next. Plain words, no corporate filler. Keep every fact I wrote; cut everything that does not earn its place."
 
@@ -71,7 +71,7 @@ Read the result out loud. If it sounds like it was written for a search engine, 
 
 ## 6. The Unique Value Proposition — one line at the top of About
 
-The carousel puts the value proposition at the top of About, and that is the right place for it. It is the first thing a recruiter reads after your headline.
+I put the value proposition at the top of About, and that is the right place for it. It is the first thing a recruiter reads after your headline.
 
 > "Based on this summary of my work: [three sentences — what you do, who you serve, one result]. Write 5 one-line value propositions for the top of my LinkedIn About section. Each must follow this shape: I help [who] get [outcome] through [how]. One line, plain words, one proof point maximum. No adjectives about me — only the outcome for them."
 
@@ -104,7 +104,7 @@ Prompts fix words. They do not fix the rest.
 - **Proof stays yours.** Claude can shape your experience; it cannot create it. The profile still has to be true.
 - **Outreach still needs you.** A polished profile gets you found. It does not introduce you. That part is still a message from a person, not a prompt.
 
-That is the real lesson of the carousel. AI removed the excuse of a weak profile. What is left is the work only you can do: the experience, the judgment, and the message you send after someone finds you.
+That is the real lesson here. AI removed the excuse of a weak profile. What is left is the work only you can do: the experience, the judgment, and the message you send after someone finds you.
 
 If you want to see what that message can become, our guide on [how to become an AI consultant in 2027](/blog/how-to-become-ai-consultant-2027) walks through the same logic for a whole business — one bottleneck, one client, one system that works. And if you are building in Dubai, the [Dubai AI community](/ai-community-dubai) meets in person to build these systems live.
 
