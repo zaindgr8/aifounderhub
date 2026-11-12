@@ -8,7 +8,7 @@ import { Workshops } from "./components/Workshops";
 import { CourseSpotlight } from "./components/CourseSpotlight";
 import { Mentors } from "./components/Mentors";
 import { Community } from "./components/Community";
-import { Team } from "./components/Team";
+// import { Team } from "./components/Team"; // "The people behind the hub", hidden for now
 import { Testimonials } from "./components/Testimonials";
 import { Faq } from "./components/Faq";
 import { BlogTeaser } from "./components/BlogTeaser";
@@ -221,8 +221,8 @@ export default function App() {
         {/* <Agenda /> */}
         {/* <Pathways /> */}
         <CircuitDivider flip />
-        <Team />
-        <CircuitDivider />
+        {/* <Team /> */}
+        {/* <CircuitDivider /> */}
         <Mentors />
         <Testimonials />
         <Faq />
