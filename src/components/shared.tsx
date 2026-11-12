@@ -172,13 +172,24 @@ export function CountUp({
 }
 
 /* ————————————————————————————————————————————————
-   LogoMark — the bolt-in-a-tile brand mark
+   Brand marks — geometry copied from the AIFH logo kit
+   (SVG/aifh-icon-*.svg, aifh-logo-*.svg). Never retype the
+   logo in a font; change these only from new kit files.
 ———————————————————————————————————————————————— */
-export function LogoMark({ size = 34 }: { size?: number }) {
+const BRAND = { void: "#07070B", volt: "#CCF244", mist: "#F4F4F5" };
+
+/** The H icon in a rounded tile. "volt" for favicons and small tiles, "void" for avatars. */
+export function LogoMark({ size = 34, variant = "volt" }: { size?: number; variant?: "volt" | "void" }) {
+  const onVolt = variant === "volt";
+  const ink = onVolt ? BRAND.void : BRAND.mist;
   return (
-    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden="true">
-      <rect width="64" height="64" rx="14" fill="var(--color-volt)" />
-      <path d="M35 8 L18 38 H30 L27 56 L46 26 H33 Z" fill="var(--color-void)" />
+    <svg width={size} height={size} viewBox="133 -70 204 204" aria-hidden="true">
+      <rect x="133" y="-70" width="204" height="204" rx="44.88" fill={onVolt ? BRAND.volt : BRAND.void} />
+      <rect x="200" y="0" width="20" height="100" fill={ink} />
+      <rect x="250" y="0" width="20" height="100" fill={ink} />
+      <rect x="220" y="42" width="30" height="18" fill={onVolt ? BRAND.void : BRAND.volt} />
+      <circle cx="210" cy="-24" r="12" fill={ink} />
+      <circle cx="260" cy="-24" r="12" fill={ink} />
     </svg>
   );
 }
@@ -336,22 +347,37 @@ export function BackToTop() {
   );
 }
 
-export function Wordmark({ dark = false }: { dark?: boolean }) {
+/** The AIFH wordmark: the default logo for headers. `dark` = on a light background.
+    Brand minimum is 80px wide, so keep height at 41 or more. */
+export function Wordmark({ dark = false, height = 42 }: { dark?: boolean; height?: number }) {
+  const ink = dark ? BRAND.void : BRAND.mist;
+  // light-background version outlines the volt parts so they hold up on white
+  const ring = dark ? { stroke: BRAND.void, strokeWidth: 4 } : {};
   return (
-    <div className="flex items-center gap-2.5 select-none">
-      <LogoMark size={32} />
-      <div className="leading-none">
-        <span
-          className={`font-display font-extrabold tracking-tight text-[17px] block ${
-            dark ? "text-ink" : "text-white"
-          }`}
-        >
-          AI Founder Hub
-        </span>
-        <span className={`font-mono text-[8.5px] tracking-[0.32em] uppercase ${dark ? "text-ink/50" : "text-zinc-500"}`}>
-          BUILD → SELL → SCALE
-        </span>
-      </div>
-    </div>
+    <svg
+      height={height}
+      width={(height * 272) / 138}
+      viewBox="-1 -37 272 138"
+      role="img"
+      aria-label="AI Founder Hub"
+      className="block select-none"
+    >
+      <polygon points="0,100 26,0 46,0 72,100 52,100 36,38 20,100" fill={ink} />
+      <rect x="20" y="62" width="32" height="16" fill={ink} />
+      <rect x="88" y="0" width="20" height="100" fill={ink} />
+      <circle cx="98" cy="-24" r="12" fill={BRAND.volt} {...ring} />
+      <rect x="128" y="0" width="20" height="100" fill={ink} />
+      <rect x="128" y="0" width="52" height="18" fill={ink} />
+      <rect x="128" y="42" width="42" height="18" fill={ink} />
+      <rect x="200" y="0" width="20" height="100" fill={ink} />
+      <rect x="250" y="0" width="20" height="100" fill={ink} />
+      {dark ? (
+        <rect x="218" y="40" width="34" height="22" fill={BRAND.volt} {...ring} />
+      ) : (
+        <rect x="220" y="42" width="30" height="18" fill={BRAND.volt} />
+      )}
+      <circle cx="210" cy="-24" r="12" fill={ink} />
+      <circle cx="260" cy="-24" r="12" fill={ink} />
+    </svg>
   );
 }
