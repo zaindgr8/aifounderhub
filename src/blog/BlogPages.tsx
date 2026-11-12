@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { ArrowRight } from "lucide-react";
-import { LogoMark } from "../components/shared";
+import { Wordmark } from "../components/shared";
 import { applyMeta } from "../lib/meta";
 import { BLOG_AUTHOR, POSTS, formatDate, getPost, type Post } from "./posts";
 
@@ -29,9 +29,8 @@ function Shell({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen w-full bg-void font-sans text-zinc-100">
       <header className="border-b border-edge/60">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-4 md:px-8">
-          <a href="/" className="flex items-center gap-2.5" aria-label="AI Founder Hub home">
-            <LogoMark size={28} />
-            <span className="font-display text-[16px] font-extrabold tracking-tight text-white">AI Founder Hub</span>
+          <a href="/" className="flex items-center" aria-label="AI Founder Hub home">
+            <Wordmark />
           </a>
           <nav className="flex items-center gap-5 text-[13.5px] font-medium">
             <a href="/blog" className="text-zinc-300 transition-colors hover:text-white">Blog</a>
